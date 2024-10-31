@@ -6,13 +6,13 @@ import type { WebhookEvent } from "@clerk/nextjs/server";
 import {
   clientErrorResponse,
   serverErrorResponse,
-} from "@/lib/controllers/responses";
+} from "@/controllers/responses";
 
 import {
   handleCreateUser,
   handleDeleteUser,
   handleUpdateUser,
-} from "@/lib/controllers/mod";
+} from "@/controllers/mod";
 
 export async function POST(req: Request) {
   try {

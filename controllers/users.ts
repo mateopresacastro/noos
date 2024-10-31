@@ -1,4 +1,4 @@
-import { createUser, deleteUser, updateUser } from "@/lib/db/mod";
+import { createUser, deleteUser, updateUser } from "@/db/mod";
 import type { UserJSON, DeletedObjectJSON } from "@clerk/nextjs/server";
 
 export async function handleCreateUser(user: UserJSON) {
