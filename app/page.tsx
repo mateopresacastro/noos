@@ -1,7 +1,7 @@
 export default function Home() {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen py-2">
-      <h1>noos</h1>
+      <h2>noos</h2>
     </div>
   );
 }

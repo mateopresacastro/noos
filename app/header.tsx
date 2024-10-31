@@ -1,8 +1,9 @@
 "use client";
-import Samples from "@/components/profile/sample-packs";
+import SamplePacks from "@/components/profile/sample-packs";
+import Stripe from "@/components/profile/stripe";
 import { Button } from "@/components/ui/button";
 import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/nextjs";
-import { Music2 } from "lucide-react";
+import { Music2, DollarSign } from "lucide-react";
 
 export default function Header() {
   return (
@@ -20,10 +21,17 @@ export default function Header() {
           <UserButton>
             <UserButton.UserProfilePage
               label="Sample packs"
-              url="custom"
+              url="sample-packs"
               labelIcon={<Music2 className="w-4 h-4" />}
             >
-              <Samples />
+              <SamplePacks />
+            </UserButton.UserProfilePage>
+            <UserButton.UserProfilePage
+              label="Stripe"
+              url="stripe"
+              labelIcon={<DollarSign className="w-4 h-4" />}
+            >
+              <Stripe />
             </UserButton.UserProfilePage>
             <UserButton.UserProfilePage label="account" />
             <UserButton.UserProfilePage label="security" />
