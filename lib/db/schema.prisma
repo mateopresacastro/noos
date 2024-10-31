@@ -1,0 +1,49 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model User {
+  id          Int           @id @default(autoincrement())
+  email       String        @unique
+  name        String?
+  samplePacks SamplePack[]
+  createdAt   DateTime      @default(now())
+  Transaction Transaction[]
+}
+
+model SamplePack {
+  id          Int           @id @default(autoincrement())
+  title       String
+  description String?
+  price       Float?
+  samples     Sample[]
+  creator     User          @relation(fields: [creatorId], references: [id])
+  creatorId   Int
+  createdAt   DateTime      @default(now())
+  Transaction Transaction[]
+}
+
+model Sample {
+  id           Int         @id @default(autoincrement())
+  title        String
+  url          String
+  samplePack   SamplePack @relation(fields: [samplePackId], references: [id])
+  samplePackId Int
+  createdAt    DateTime    @default(now())
+}
+
+model Transaction {
+  id           Int        @id @default(autoincrement())
+  user         User       @relation(fields: [userId], references: [id])
+  userId       Int
+  samplePack   SamplePack @relation(fields: [samplePackId], references: [id])
+  samplePackId Int
+  amount       Float
+  createdAt    DateTime   @default(now())
+}
