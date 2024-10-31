@@ -9,7 +9,7 @@ import { Music2, DollarSign } from "lucide-react";
 
 export default function Header() {
   return (
-    <header className="fixed w-full max-w-7xl inset-0 px-6 mx-auto h-fit flex items-center justify-center">
+    <header className="fixed w-full max-w-6xl inset-0 px-6 mx-auto h-fit flex items-center justify-center">
       <div className="flex items-center justify-between py-2 border border-neutral-800/50 rounded-2xl px-5 w-full mt-3 backdrop-blur-lg">
         <div className="flex items-center justify-center space-x-6 text-sm tracking-wide">
           <Link href="/">
