@@ -1,26 +1,10 @@
 import prisma from "@/db/client";
 
-export function createUser(user: CreateUser) {
-  return create(user);
-}
-
-export function updateUser(user: UpdateUser) {
-  return update(user);
-}
-
-export function deleteUser(user: User) {
-  return deleteInternal(user);
-}
-
-export function readUser(user: User) {
-  return read(user);
-}
-
 type User = {
   clerkId: string;
 };
 
-async function read({ clerkId }: User) {
+export async function readUser({ clerkId }: User) {
   try {
     const user = await prisma.user.findUnique({
       where: {
@@ -29,12 +13,12 @@ async function read({ clerkId }: User) {
     });
     return user;
   } catch (error) {
-    console.error("Error creating user:", error);
+    console.error("Error reading user:", error);
     return null;
   }
 }
 
-async function deleteInternal({ clerkId }: User) {
+export async function deleteUser({ clerkId }: User) {
   try {
     const deletedUser = await prisma.user.delete({
       where: {
@@ -54,7 +38,7 @@ type UpdateUser = {
   email: string;
 };
 
-async function update({ clerkId, name, email }: UpdateUser) {
+export async function updateUser({ clerkId, name, email }: UpdateUser) {
   try {
     const updatedUser = await prisma.user.update({
       where: {
@@ -74,7 +58,7 @@ async function update({ clerkId, name, email }: UpdateUser) {
 
 type CreateUser = UpdateUser;
 
-async function create({ clerkId, name, email }: CreateUser) {
+export async function createUser({ clerkId, name, email }: CreateUser) {
   try {
     const newUser = await prisma.user.create({
       data: {
