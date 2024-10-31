@@ -1,5 +1,6 @@
 import { getData } from "@/db/mod";
 import Image from "next/image";
+import Link from "next/link";
 
 export default async function Page({
   params,
@@ -8,7 +9,8 @@ export default async function Page({
 }) {
   const userName = (await params).userName;
   const data = await getData(userName);
-  console.log(data);
+
+  // TODO: Handle error
   if (!data) return "Something went wrong";
 
   return (
@@ -24,7 +26,7 @@ export default async function Page({
         />
       </div>
       <span className="text-neutral-400 block pt-2">@{userName}</span>
-      <SamplePacks samplePacks={data.samplePacks} />
+      <SamplePacks samplePacks={data.samplePacks} userName={userName} />
     </div>
   );
 }
@@ -33,27 +35,41 @@ type SamplePackData = NonNullable<
   Awaited<ReturnType<typeof getData>>
 >["samplePacks"][number];
 
-function SamplePacks({ samplePacks }: { samplePacks: SamplePackData[] }) {
-  return (
-    <div className="">
-      {samplePacks.map((samplePack) => (
-        <SamplePack key={samplePack.title} samplePack={samplePack} />
-      ))}
-    </div>
-  );
+function SamplePacks({
+  samplePacks,
+  userName,
+}: {
+  samplePacks: SamplePackData[];
+  userName: string;
+}) {
+  return samplePacks.map((samplePack) => (
+    <SamplePack
+      key={samplePack.title}
+      samplePack={samplePack}
+      userName={userName}
+    />
+  ));
 }
 
-function SamplePack({ samplePack }: { samplePack: SamplePackData }) {
+function SamplePack({
+  samplePack,
+  userName,
+}: {
+  samplePack: SamplePackData;
+  userName: string;
+}) {
   console.log(samplePack.imgUrl);
   return (
-    <div className="flex flex-col items-center justify-center w-full h-full">
-      <Image
-        src={samplePack.imgUrl}
-        alt={samplePack.title}
-        width={200}
-        height={200}
-      />
-      <h4 className="font-bold">{samplePack.title}</h4>
-    </div>
+    <Link href={`/${userName}/${samplePack.name}`}>
+      <div className="flex flex-col items-center justify-center w-full h-full">
+        <Image
+          src={samplePack.imgUrl}
+          alt={samplePack.title}
+          width={200}
+          height={200}
+        />
+        <h4 className="font-bold">{samplePack.title}</h4>
+      </div>
+    </Link>
   );
 }

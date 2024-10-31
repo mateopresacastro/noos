@@ -113,3 +113,43 @@ export async function getData(userName: string) {
     return null;
   }
 }
+
+export async function getSamplePack({
+  userName,
+  samplePackName,
+}: {
+  userName: string;
+  samplePackName: string;
+}) {
+  try {
+    const user = await prisma.user.findUnique({
+      where: { userName },
+      select: { id: true },
+    });
+
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    const data = await prisma.samplePack.findFirst({
+      where: {
+        creatorId: user.id,
+        name: samplePackName,
+      },
+      include: {
+        samples: true,
+        creator: {
+          select: {
+            userName: true,
+            imgUrl: true,
+          },
+        },
+      },
+    });
+
+    if (!data) throw new Error("Sample pack not found");
+    return data;
+  } catch (error) {
+    console.error("Error getting sample pack", error);
+  }
+}

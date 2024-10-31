@@ -23,6 +23,7 @@ const user1 = await prisma.user.create({
           description: "Essential drum sounds for any genre",
           price: 19.99,
           imgUrl,
+          name: "drum-kit-essentials",
           samples: {
             create: Array(7)
               .fill(null)
@@ -37,6 +38,7 @@ const user1 = await prisma.user.create({
           description: "Retro synth sounds from the 80s",
           price: 24.99,
           imgUrl,
+          name: "synth-wave-collection",
           samples: {
             create: Array(7)
               .fill(null)
@@ -51,6 +53,7 @@ const user1 = await prisma.user.create({
           description: "Professional bass loops for producers",
           price: 29.99,
           imgUrl,
+          name: "bass-loops-pro",
           samples: {
             create: Array(7)
               .fill(null)
@@ -75,43 +78,46 @@ const user2 = await prisma.user.create({
     samplePacks: {
       create: [
         {
-          title: "Vocal Chops Deluxe",
-          description: "Premium vocal samples and chops",
-          price: 34.99,
+          title: "Drum Kit Essentials",
+          description: "Essential drum sounds for any genre",
+          price: 19.99,
           imgUrl,
+          name: "drum-kit-essentials",
           samples: {
             create: Array(7)
               .fill(null)
               .map((_, i) => ({
-                title: `Vocal ${i + 1}`,
+                title: `Drum ${i + 1}`,
                 url: imgUrl,
               })),
           },
         },
         {
-          title: "Guitar Riffs Collection",
-          description: "Rock and metal guitar riffs",
-          price: 27.99,
+          title: "Synth Wave Collection",
+          description: "Retro synth sounds from the 80s",
+          price: 24.99,
           imgUrl,
+          name: "synth-wave-collection",
           samples: {
             create: Array(7)
               .fill(null)
               .map((_, i) => ({
-                title: `Guitar ${i + 1}`,
+                title: `Synth ${i + 1}`,
                 url: imgUrl,
               })),
           },
         },
         {
-          title: "FX Arsenal",
-          description: "Sound effects and transitions",
-          price: 22.99,
+          title: "Bass Loops Pro",
+          description: "Professional bass loops for producers",
+          price: 29.99,
           imgUrl,
+          name: "bass-loops-pro",
           samples: {
             create: Array(7)
               .fill(null)
               .map((_, i) => ({
-                title: `FX ${i + 1}`,
+                title: `Bass ${i + 1}`,
                 url: imgUrl,
               })),
           },

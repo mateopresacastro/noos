@@ -7,7 +7,7 @@ import { Music2, DollarSign } from "lucide-react";
 
 export default function Header() {
   return (
-    <header className="fixed w-full max-w-7xl inset-0 px-6 mx-auto">
+    <header className="fixed w-full max-w-7xl inset-0 px-6 mx-auto h-fit">
       <div className="flex items-center justify-between py-6">
         <h1>noos</h1>
         <SignedOut>

@@ -24,6 +24,7 @@ model SamplePack {
   id          Int           @id @default(autoincrement())
   title       String
   imgUrl      String
+  name        String
   description String?
   price       Float?
   samples     Sample[]
@@ -31,6 +32,8 @@ model SamplePack {
   creatorId   Int
   createdAt   DateTime      @default(now())
   Transaction Transaction[]
+
+  @@unique([creatorId, name])
 }
 
 model Sample {
