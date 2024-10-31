@@ -60,7 +60,7 @@ function Option({ option }: { option: Option }) {
   return (
     <div
       className={cn(
-        "w-96 border border-neutral-800 p-6 text-neutral-400 rounded-lg bg-neutral-900",
+        "w-96 border border-neutral-800 p-6 text-neutral-400 rounded-lg bg-neutral-900 md:w-80",
         option.highlighted && "bg-gradient-to-b from-neutral-600 to-neutral-800"
       )}
     >

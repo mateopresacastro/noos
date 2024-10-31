@@ -9,25 +9,32 @@ import { Music2, DollarSign } from "lucide-react";
 
 export default function Header() {
   return (
-    <header className="fixed w-full max-w-7xl inset-0 px-6 mx-auto h-fit">
-      <div className="flex items-center justify-between py-6">
-        <div className="flex items-baseline gap-6">
+    <header className="fixed w-full max-w-7xl inset-0 px-6 mx-auto h-fit flex items-center justify-center">
+      <div className="flex items-center justify-between py-2 border border-neutral-800/50 rounded-2xl px-5 w-full mt-3 backdrop-blur-lg">
+        <div className="flex items-center justify-center space-x-6 text-sm tracking-wide">
           <Link href="/">
-            <h1 className="text-2xl tracking-tight">noos</h1>
+            <h1 className="text-xl tracking-normal">noos</h1>
           </Link>
           <Link href="/explore">
-            <span className="text-neutral-400">Explore</span>
+            <span className="text-neutral-300">Explore</span>
           </Link>
           <Link href="/pricing">
-            <span className="text-neutral-400">Pricing</span>
+            <span className="text-neutral-300">Pricing</span>
           </Link>
         </div>
         <SignedOut>
-          <SignInButton>
-            <Button size="sm" className="font-semibold">
-              Sign in
-            </Button>
-          </SignInButton>
+          <div className="flex justify-around items-center gap-4">
+            <SignInButton>
+              <Button size="sm" variant="secondary" className="font-medium">
+                Log in
+              </Button>
+            </SignInButton>
+            <SignInButton>
+              <Button size="sm" className="font-medium">
+                Sign in
+              </Button>
+            </SignInButton>
+          </div>
         </SignedOut>
         <SignedIn>
           <UserButton>
