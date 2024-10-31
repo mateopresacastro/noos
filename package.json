@@ -15,7 +15,7 @@
   },
   "prisma": {
     "schema": "db/schema.prisma",
-    "seed": "node --experimental-strip-types lib/db/seed.ts"
+    "seed": "node --experimental-strip-types db/seed.ts"
   },
   "dependencies": {
     "@clerk/nextjs": "^6.0.2",
@@ -32,6 +32,7 @@
     "prisma": "^5.21.1",
     "react": "19.0.0-rc-02c0e824-20241028",
     "react-dom": "19.0.0-rc-02c0e824-20241028",
+    "server-only": "^0.0.1",
     "svix": "^1.37.0",
     "tailwind-merge": "^2.5.4",
     "tailwindcss-animate": "^1.0.7"

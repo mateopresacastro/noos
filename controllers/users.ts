@@ -7,6 +7,7 @@ export async function handleCreateUser(user: UserJSON) {
     name: user.first_name ?? "",
     email: user.email_addresses[0].email_address,
     userName: user.username ?? "",
+    imgUrl: user.image_url ?? "",
   });
 }
 
@@ -16,6 +17,7 @@ export async function handleUpdateUser(user: UserJSON) {
     name: user.first_name ?? "",
     email: user.email_addresses[0].email_address,
     userName: user.username ?? "",
+    imgUrl: user.image_url ?? "",
   });
 }
 

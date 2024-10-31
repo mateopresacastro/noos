@@ -13,6 +13,7 @@ model User {
   clerkId     String        @unique
   email       String        @unique
   userName    String        @unique
+  imgUrl      String
   name        String?
   samplePacks SamplePack[]
   createdAt   DateTime      @default(now())
@@ -22,6 +23,7 @@ model User {
 model SamplePack {
   id          Int           @id @default(autoincrement())
   title       String
+  imgUrl      String
   description String?
   price       Float?
   samples     Sample[]

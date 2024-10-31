@@ -1,3 +1,4 @@
+import "server-only";
 import prisma from "@/db/client";
 
 type User = {
@@ -37,6 +38,7 @@ type UpdateUser = {
   name: string;
   email: string;
   userName: string;
+  imgUrl: string;
 };
 
 export async function updateUser({
@@ -44,6 +46,7 @@ export async function updateUser({
   name,
   email,
   userName,
+  imgUrl,
 }: UpdateUser) {
   try {
     const updatedUser = await prisma.user.update({
@@ -54,6 +57,7 @@ export async function updateUser({
         name,
         email,
         userName,
+        imgUrl,
       },
     });
     return updatedUser;
@@ -68,6 +72,7 @@ type CreateUser = {
   name: string;
   email: string;
   userName: string;
+  imgUrl: string;
 };
 
 export async function createUser({
@@ -75,6 +80,7 @@ export async function createUser({
   name,
   email,
   userName,
+  imgUrl,
 }: CreateUser) {
   try {
     const newUser = await prisma.user.create({
@@ -83,11 +89,27 @@ export async function createUser({
         name,
         email,
         userName,
+        imgUrl,
       },
     });
     return newUser;
   } catch (error) {
     console.error("Error creating user:", error);
+    return null;
+  }
+}
+
+export async function getData(userName: string) {
+  try {
+    const data = await prisma.user.findUnique({
+      where: { userName },
+      include: { samplePacks: true },
+    });
+
+    if (!data) throw new Error("User not found");
+    return data;
+  } catch (error) {
+    console.error(`Error getting sample packs from user: ${userName}`, error);
     return null;
   }
 }
