@@ -2,16 +2,12 @@ import { Webhook } from "svix";
 import { headers } from "next/headers";
 import { CLERK_WEBHOOK_SECRET } from "@/cfg";
 import type { WebhookEvent } from "@clerk/nextjs/server";
-
-import {
-  clientErrorResponse,
-  serverErrorResponse,
-} from "@/controllers/responses";
-
 import {
   handleCreateUser,
   handleDeleteUser,
   handleUpdateUser,
+  clientErrorResponse,
+  serverErrorResponse,
 } from "@/controllers/mod";
 
 export async function POST(req: Request) {

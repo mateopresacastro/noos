@@ -13,7 +13,7 @@
     "db:seed": "npx prisma db seed"
   },
   "prisma": {
-    "schema": "lib/db/schema.prisma",
+    "schema": "db/schema.prisma",
     "seed": "node --experimental-strip-types lib/db/seed.ts"
   },
   "dependencies": {
