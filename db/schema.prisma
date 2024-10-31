@@ -12,6 +12,7 @@ model User {
   id          Int           @id @default(autoincrement())
   clerkId     String        @unique
   email       String        @unique
+  userName    String        @unique
   name        String?
   samplePacks SamplePack[]
   createdAt   DateTime      @default(now())
@@ -31,12 +32,12 @@ model SamplePack {
 }
 
 model Sample {
-  id           Int         @id @default(autoincrement())
+  id           Int        @id @default(autoincrement())
   title        String
   url          String
   samplePack   SamplePack @relation(fields: [samplePackId], references: [id])
   samplePackId Int
-  createdAt    DateTime    @default(now())
+  createdAt    DateTime   @default(now())
 }
 
 model Transaction {

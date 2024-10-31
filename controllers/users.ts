@@ -6,6 +6,7 @@ export async function handleCreateUser(user: UserJSON) {
     clerkId: user.id,
     name: user.first_name ?? "",
     email: user.email_addresses[0].email_address,
+    userName: user.username ?? "",
   });
 }
 
@@ -14,12 +15,13 @@ export async function handleUpdateUser(user: UserJSON) {
     clerkId: user.id,
     name: user.first_name ?? "",
     email: user.email_addresses[0].email_address,
+    userName: user.username ?? "",
   });
 }
 
 export async function handleDeleteUser(deletedObject: DeletedObjectJSON) {
   if (!deletedObject.id) {
-    console.error("Error deleting user: id is missing");
+    console.warn("Deleted object id is missing, skipping user deletion");
     return null;
   }
 

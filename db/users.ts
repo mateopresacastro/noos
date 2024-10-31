@@ -36,9 +36,15 @@ type UpdateUser = {
   clerkId: string;
   name: string;
   email: string;
+  userName: string;
 };
 
-export async function updateUser({ clerkId, name, email }: UpdateUser) {
+export async function updateUser({
+  clerkId,
+  name,
+  email,
+  userName,
+}: UpdateUser) {
   try {
     const updatedUser = await prisma.user.update({
       where: {
@@ -47,6 +53,7 @@ export async function updateUser({ clerkId, name, email }: UpdateUser) {
       data: {
         name,
         email,
+        userName,
       },
     });
     return updatedUser;
@@ -56,15 +63,26 @@ export async function updateUser({ clerkId, name, email }: UpdateUser) {
   }
 }
 
-type CreateUser = UpdateUser;
+type CreateUser = {
+  clerkId: string;
+  name: string;
+  email: string;
+  userName: string;
+};
 
-export async function createUser({ clerkId, name, email }: CreateUser) {
+export async function createUser({
+  clerkId,
+  name,
+  email,
+  userName,
+}: CreateUser) {
   try {
     const newUser = await prisma.user.create({
       data: {
         clerkId,
         name,
         email,
+        userName,
       },
     });
     return newUser;

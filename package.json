@@ -10,7 +10,8 @@
     "lint": "next lint",
     "db:studio": "npx prisma studio",
     "db:format": "npx prisma format",
-    "db:seed": "npx prisma db seed"
+    "db:seed": "npx prisma db seed",
+    "db:push": "npx prisma db push"
   },
   "prisma": {
     "schema": "db/schema.prisma",
