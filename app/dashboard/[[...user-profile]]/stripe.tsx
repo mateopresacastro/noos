@@ -1,18 +1,17 @@
-import { hasRequirementsDue, createStripeAccountLink } from "@/app/actions";
+import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { useQuery } from "@tanstack/react-query";
 import { redirect } from "next/navigation";
+import { createStripeAccountLink, hasRequirementsDue } from "@/lib/stripe";
 
 export default function Stripe() {
   return (
     <div className="flex flex-col items-start justify-center w-full h-full">
       <h4 className="font-bold">Stripe</h4>
       <Separator className="my-4 text-neutral-200" />
-      <div className="flex items-center justify-between w-full">
-        <StripeAccountStatus />
-      </div>
+      <StripeAccountStatus />
     </div>
   );
 }
@@ -34,7 +33,7 @@ function StripeAccountStatus() {
   }
 
   return (
-    <div className="flex items-start justify-between flex-col w-full">
+    <div className="flex items-start justify-between  w-full">
       <div className="flex items-center gap-3 pb-3">
         <span className="text-sm">Account status:</span>
         {isLoading ? (
@@ -42,14 +41,18 @@ function StripeAccountStatus() {
         ) : requirements ? (
           <Badge variant="warn">Not ready</Badge>
         ) : (
-          <Badge>Ready</Badge>
+          <Badge variant="success">Ready</Badge>
         )}
       </div>
       {requirements ? (
         <Button size="sm" onClick={async () => await getStripeAccountLink()}>
           Finish setup
         </Button>
-      ) : null}
+      ) : isLoading ? null : (
+        <Link href="https://dashboard.stripe.com" target="_blank">
+          <Button>Go to Dashboard</Button>
+        </Link>
+      )}
     </div>
   );
 }
