@@ -73,6 +73,7 @@ type CreateUser = {
   email: string;
   userName: string;
   imgUrl: string;
+  stripeId?: string;
 };
 
 export async function createUser({
@@ -81,6 +82,7 @@ export async function createUser({
   email,
   userName,
   imgUrl,
+  stripeId,
 }: CreateUser) {
   try {
     const newUser = await prisma.user.create({
@@ -90,6 +92,7 @@ export async function createUser({
         email,
         userName,
         imgUrl,
+        stripeId,
       },
     });
     return newUser;

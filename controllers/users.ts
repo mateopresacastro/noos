@@ -1,24 +1,30 @@
 import { createUser, deleteUser, updateUser } from "@/db/mod";
+import { createConnectedAccount } from "@/lib/stripe";
 import type { UserJSON, DeletedObjectJSON } from "@clerk/nextjs/server";
 
 export async function handleCreateUser(user: UserJSON) {
-  return createUser({
-    clerkId: user.id,
-    name: user.first_name ?? "",
-    email: user.email_addresses[0].email_address,
-    userName: user.username ?? "",
-    imgUrl: user.image_url ?? "",
+  const stripeId = await createConnectedAccount(user.id);
+
+  if (!stripeId) {
+    console.warn("Creating account without stripe id");
+  }
+
+  const newUser = await createUser({
+    ...clean(user),
+    stripeId: stripeId ?? "",
   });
+
+  if (!newUser && stripeId) {
+    console.warn(
+      `A stripe connected account (${stripeId}) was created but the user creation failed (${user.username})`
+    );
+  }
+
+  return newUser;
 }
 
 export async function handleUpdateUser(user: UserJSON) {
-  return updateUser({
-    clerkId: user.id,
-    name: user.first_name ?? "",
-    email: user.email_addresses[0].email_address,
-    userName: user.username ?? "",
-    imgUrl: user.image_url ?? "",
-  });
+  return updateUser(clean(user));
 }
 
 export async function handleDeleteUser(deletedObject: DeletedObjectJSON) {
@@ -30,4 +36,14 @@ export async function handleDeleteUser(deletedObject: DeletedObjectJSON) {
   return deleteUser({
     clerkId: deletedObject.id,
   });
+}
+
+function clean(user: UserJSON) {
+  return {
+    clerkId: user.id,
+    name: user.first_name ?? "",
+    email: user.email_addresses[0].email_address,
+    userName: user.username ?? "",
+    imgUrl: user.image_url ?? "",
+  };
 }
