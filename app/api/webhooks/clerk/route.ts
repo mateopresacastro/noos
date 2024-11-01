@@ -22,7 +22,6 @@ export async function POST(req: Request) {
 
     const payload = await req.json();
     const body = JSON.stringify(payload);
-    console.log({ body });
     const wh = new Webhook(CLERK_WEBHOOK_SECRET);
     const evt = wh.verify(body, {
       "svix-id": svix_id,

@@ -154,5 +154,6 @@ export async function getSamplePack({
     return data;
   } catch (error) {
     console.error("Error getting sample pack", error);
+    return null;
   }
 }
