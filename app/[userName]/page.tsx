@@ -1,6 +1,7 @@
 import { getData } from "@/db/mod";
 import Image from "next/image";
 import Link from "next/link";
+import { notFound } from "next/navigation";
 
 export default async function Page({
   params,
@@ -11,21 +12,23 @@ export default async function Page({
   const data = await getData(userName);
 
   // TODO: Handle error
-  if (!data) return "Something went wrong";
+  if (!data) {
+    notFound();
+  }
 
   return (
     <div className="flex flex-col items-center justify-start min-h-screen pt-40">
-      <div className="rounded-full">
+      <div className="rounded-full size-40 overflow-hidden">
         <Image
           priority
           src={data.imgUrl}
-          height={150}
-          width={150}
+          height={160}
+          width={160}
           alt={`${userName}`}
-          className="rounded-full"
+          className="rounded-full object-cover h-40 w-40"
         />
       </div>
-      <span className="text-neutral-400 block pt-2">@{userName}</span>
+      <span className="text-neutral-400 block pt-4">@{userName}</span>
       <SamplePacks samplePacks={data.samplePacks} userName={userName} />
     </div>
   );
@@ -58,7 +61,6 @@ function SamplePack({
   samplePack: SamplePackData;
   userName: string;
 }) {
-  console.log(samplePack.imgUrl);
   return (
     <Link href={`/${userName}/${samplePack.name}`}>
       <div className="flex flex-col items-center justify-center w-full h-full">

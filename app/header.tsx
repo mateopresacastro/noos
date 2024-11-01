@@ -4,14 +4,20 @@ import SamplePacks from "@/components/profile/sample-packs";
 import Stripe from "@/components/profile/stripe";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/nextjs";
+import {
+  SignedIn,
+  SignedOut,
+  SignInButton,
+  SignUpButton,
+  UserButton,
+} from "@clerk/nextjs";
 import { Music2, DollarSign } from "lucide-react";
 
 export default function Header() {
   return (
     <header className="fixed w-full max-w-6xl inset-0 px-6 mx-auto h-fit flex items-center justify-center">
       <div className="flex items-center justify-between py-2 border border-neutral-800/50 rounded-2xl px-5 w-full mt-3 backdrop-blur-lg">
-        <div className="flex items-center justify-center space-x-6 text-sm tracking-wide">
+        <div className="flex items-center justify-center space-x-10 text-sm tracking-wide">
           <Link href="/">
             <h1 className="text-xl tracking-normal">noos</h1>
           </Link>
@@ -29,11 +35,11 @@ export default function Header() {
                 Log in
               </Button>
             </SignInButton>
-            <SignInButton>
+            <SignUpButton>
               <Button size="sm" className="font-medium">
-                Sign in
+                Sign up
               </Button>
-            </SignInButton>
+            </SignUpButton>
           </div>
         </SignedOut>
         <SignedIn>

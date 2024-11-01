@@ -13,7 +13,7 @@ type Option = {
 
 const OPTIONS: Option[] = [
   {
-    title: "Free",
+    title: "Starter",
     price: 0,
     subtitle: "To start",
     bullets: ["Up to 3 sample packs", "500MB per pack", "20% fee on each sale"],
@@ -21,7 +21,7 @@ const OPTIONS: Option[] = [
   },
   {
     title: "Pro",
-    price: 49.99,
+    price: 35,
     subtitle: "For profesionals",
     bullets: [
       "Unlimited sample packs",
@@ -32,7 +32,7 @@ const OPTIONS: Option[] = [
   },
   {
     title: "Basic",
-    price: 19.99,
+    price: 20,
     subtitle: "Best value",
     bullets: ["Up to 20 sample packs", "1GB per pack", "No extra fees"],
     highlighted: false,
@@ -56,50 +56,49 @@ export default function Pricing() {
   );
 }
 
-function Option({ option }: { option: Option }) {
+function Option({
+  option: { highlighted, price, subtitle, title, bullets },
+}: {
+  option: Option;
+}) {
   return (
     <div
       className={cn(
         "w-96 border border-neutral-800 p-6 text-neutral-400 rounded-lg bg-neutral-900 md:w-80",
-        option.highlighted && "bg-gradient-to-b from-neutral-600 to-neutral-800"
+        highlighted && "bg-gradient-to-b from-neutral-600 to-neutral-800"
       )}
     >
-      <div className="text-neutral-50">{option.title}</div>
+      <div className="text-neutral-50">{title}</div>
       <div
         className={cn(
           "pt-1 text-lg font-medium",
-          option.highlighted && "text-neutral-200"
+          highlighted && "text-neutral-200"
         )}
       >
-        ${option.price} per month
+        ${price} {price === 0 ? "" : "per month"}
       </div>
-      <div
-        className={cn("text-sm py-6", option.highlighted && "text-neutral-200")}
-      >
-        {option.subtitle}
+      <div className={cn("text-sm py-6", highlighted && "text-neutral-200")}>
+        {subtitle}
       </div>
-      <Separator className={cn(option.highlighted && "dark:bg-neutral-500")} />
-      {option.bullets.map((bullet) => (
+      <Separator className={cn(highlighted && "dark:bg-neutral-500")} />
+      {bullets.map((bullet) => (
         <div
           key={bullet}
           className={cn(
             "flex items-baseline text-sm space-y-6",
-            option.highlighted && "text-neutral-200"
+            highlighted && "text-neutral-200"
           )}
         >
           <Check
             className={cn(
               "size-3 text-neutral-600",
-              option.highlighted && "text-neutral-200"
+              highlighted && "text-neutral-200"
             )}
           />
           <p className="pl-3">{bullet}</p>
         </div>
       ))}
-      <Button
-        variant={option.highlighted ? "default" : "secondary"}
-        className="mt-12"
-      >
+      <Button variant={highlighted ? "default" : "secondary"} className="mt-12">
         Get started
       </Button>
     </div>
