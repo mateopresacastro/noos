@@ -49,7 +49,7 @@ export default function Pricing() {
       </p>
       <div className="gap-10 pb-32 flex flex-grow flex-wrap justify-center items-center">
         {OPTIONS.map((option) => (
-          <Option option={option} />
+          <Option option={option} key={option.title} />
         ))}
       </div>
     </div>

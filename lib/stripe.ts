@@ -1,7 +1,7 @@
 import { STRIPE_SECRET_KEY } from "@/cfg";
 import Stripe from "stripe";
 
-const stripe = new Stripe(STRIPE_SECRET_KEY);
+export const stripe = new Stripe(STRIPE_SECRET_KEY);
 
 export async function createConnectedAccount(clerkId: string) {
   try {

@@ -1,10 +1,10 @@
+import "server-only";
 import { createUser, deleteUser, updateUser } from "@/db/mod";
 import { createConnectedAccount } from "@/lib/stripe";
 import type { UserJSON, DeletedObjectJSON } from "@clerk/nextjs/server";
 
 export async function handleCreateUser(user: UserJSON) {
   const stripeId = await createConnectedAccount(user.id);
-
   if (!stripeId) {
     console.warn("Creating account without stripe id");
   }
@@ -16,7 +16,7 @@ export async function handleCreateUser(user: UserJSON) {
 
   if (!newUser && stripeId) {
     console.warn(
-      `A stripe connected account (${stripeId}) was created but the user creation failed (${user.username})`
+      `A stripe connected account (${stripeId}) was created but the user creation failed (${user.username}).`
     );
   }
 
