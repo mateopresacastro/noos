@@ -1,7 +1,5 @@
 "use client";
 
-import SamplePacks from "@/app/_header/sample-packs";
-import Stripe from "@/app/_header/stripe";
 import { Button } from "@/components/ui/button";
 import {
   SignedOut,
@@ -10,7 +8,6 @@ import {
   SignedIn,
   UserButton,
 } from "@clerk/nextjs";
-import { Music2, DollarSign } from "lucide-react";
 
 export default function Clerk() {
   return (
@@ -30,24 +27,7 @@ export default function Clerk() {
         </div>
       </SignedOut>
       <SignedIn>
-        <UserButton>
-          <UserButton.UserProfilePage
-            label="Sample packs"
-            url="sample-packs"
-            labelIcon={<Music2 className="w-4 h-4" />}
-          >
-            <SamplePacks />
-          </UserButton.UserProfilePage>
-          <UserButton.UserProfilePage
-            label="Stripe"
-            url="stripe"
-            labelIcon={<DollarSign className="w-4 h-4" />}
-          >
-            <Stripe />
-          </UserButton.UserProfilePage>
-          <UserButton.UserProfilePage label="account" />
-          <UserButton.UserProfilePage label="security" />
-        </UserButton>
+        <UserButton userProfileMode="navigation" userProfileUrl="/dashboard" />
       </SignedIn>
     </>
   );

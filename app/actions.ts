@@ -20,3 +20,22 @@ export async function createStripeAccountLink() {
 
   return url;
 }
+
+export async function hasRequirementsDue() {
+  const user = await currentUser();
+  if (!user) throw new Error();
+  const data = await readUser({ clerkId: user.id });
+  if (!data || !data.stripeId) throw new Error();
+  const { requirements } = await stripe.accounts.retrieve(data.stripeId);
+
+  // TODO check for future due requirements
+  if (
+    !requirements ||
+    !requirements.currently_due ||
+    requirements.currently_due.length === 0
+  ) {
+    return false;
+  }
+
+  return true;
+}
