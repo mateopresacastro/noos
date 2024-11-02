@@ -1,4 +1,4 @@
-import { getData } from "@/db/mod";
+import { getData } from "@/lib/db/mod";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
