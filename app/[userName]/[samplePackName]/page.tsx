@@ -1,5 +1,5 @@
-import { getSamplePack } from "@/db/mod";
 import Image from "next/image";
+import { getSamplePack } from "@/lib/db/mod";
 import {
   Card,
   CardContent,

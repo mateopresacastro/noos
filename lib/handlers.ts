@@ -1,24 +1,19 @@
 import "server-only";
-import { createUser, deleteUser, updateUser } from "@/db/mod";
 import { createConnectedAccount } from "@/lib/stripe";
+import { createUser, updateUser, deleteUser } from "@/lib/db/mod";
 import type { UserJSON, DeletedObjectJSON } from "@clerk/nextjs/server";
 
 export async function handleCreateUser(user: UserJSON) {
   const stripeId = await createConnectedAccount(user.id);
   if (!stripeId) {
-    console.warn("Creating account without stripe id");
+    console.error("Error creating connected account");
+    return null;
   }
 
   const newUser = await createUser({
     ...clean(user),
-    stripeId: stripeId ?? "",
+    stripeId,
   });
-
-  if (!newUser && stripeId) {
-    console.warn(
-      `A stripe connected account (${stripeId}) was created but the user creation failed (${user.username}).`
-    );
-  }
 
   return newUser;
 }
@@ -47,3 +42,6 @@ function clean(user: UserJSON) {
     imgUrl: user.image_url ?? "",
   };
 }
+
+export const clientErrorResponse = new Response(null, { status: 400 });
+export const serverErrorResponse = new Response(null, { status: 500 });

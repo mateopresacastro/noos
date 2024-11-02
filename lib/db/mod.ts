@@ -1,5 +1,5 @@
 import "server-only";
-import prisma from "@/db/client";
+import prisma from "@/lib/db/client";
 
 type User = {
   clerkId: string;

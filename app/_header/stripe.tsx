@@ -20,6 +20,7 @@ function StripeAccountStatus() {
   const { data: requirements, isLoading } = useQuery({
     queryKey: ["stripeRequirements"],
     queryFn: hasRequirementsDue,
+    refetchOnWindowFocus: false,
   });
 
   const { data: stripeAccountLink, refetch: getStripeAccountLink } = useQuery({
