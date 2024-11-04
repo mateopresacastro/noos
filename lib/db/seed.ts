@@ -9,7 +9,7 @@ await prisma.sample.deleteMany();
 await prisma.samplePack.deleteMany();
 await prisma.user.deleteMany();
 
-const user1 = await prisma.user.create({
+await prisma.user.create({
   data: {
     clerkId: "user_1",
     email: "user1@example.com",
@@ -68,7 +68,7 @@ const user1 = await prisma.user.create({
   },
 });
 
-const user2 = await prisma.user.create({
+await prisma.user.create({
   data: {
     clerkId: "user_2",
     email: "user2@example.com",
