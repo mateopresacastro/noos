@@ -1,6 +1,7 @@
 import "server-only";
 
-export const isDev = process.env.NODE_ENV === "development";
+export const isDev =
+  process.env.NODE_ENV === "development" || process.env.NODE_ENV === "test";
 
 export const CLERK_WEBHOOK_SECRET = getEnvVar("CLERK_WEBHOOK_SECRET");
 export const STRIPE_SECRET_KEY = getEnvVar("STRIPE_SECRET_KEY");

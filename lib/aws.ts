@@ -24,6 +24,7 @@ const clientCfg = isDev
         accessKeyId: "test",
         secretAccessKey: "test",
       },
+      forcePathStyle: true,
     }
   : {
       region: AWS_REGION,
