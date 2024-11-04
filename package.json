@@ -15,7 +15,7 @@
     "test": "npx jest --detectOpenHandles --forceExit"
   },
   "prisma": {
-    "schema": "db/schema.prisma",
+    "schema": "lib/db/schema.prisma",
     "seed": "node --experimental-strip-types db/seed.ts"
   },
   "dependencies": {
