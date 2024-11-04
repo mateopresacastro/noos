@@ -12,7 +12,7 @@
     "db:format": "npx prisma format",
     "db:seed": "npx prisma db seed",
     "db:push": "npx prisma db push",
-    "test": "docker compose up -d --remove-orphans && npx jest --detectOpenHandles --forceExit"
+    "test": "docker compose up -d --remove-orphans && npx jest --detectOpenHandles --forceExit --silent"
   },
   "prisma": {
     "schema": "lib/db/schema.prisma",
