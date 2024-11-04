@@ -5,6 +5,10 @@ import { ClerkProvider } from "@clerk/nextjs";
 import { dark } from "@clerk/themes";
 import Header from "@/app/_header/header";
 import Providers from "@/app/providers";
+import resolveConfig from "tailwindcss/resolveConfig";
+import tailwindConfig from "../tailwind.config";
+
+export const tailwind = resolveConfig(tailwindConfig);
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -38,6 +42,25 @@ export default function RootLayout({
         variables: {
           colorText: "#fafafa",
           colorBackground: "#171717",
+          fontFamily: tailwind.theme.fontFamily.sans.join(", "),
+          fontFamilyButtons: tailwind.theme.fontFamily.sans.join(", "),
+          fontSize: tailwind.theme.fontSize.sm[0],
+          fontWeight: {
+            bold: tailwind.theme.fontWeight.bold,
+            normal: tailwind.theme.fontWeight.normal,
+            medium: tailwind.theme.fontWeight.medium,
+          },
+          spacingUnit: tailwind.theme.spacing[4],
+        },
+        elements: {
+          dividerLine: "bg-neutral-700",
+          socialButtonsIconButton: "bg-neutral-700",
+          navbarButton: "text-neutral-50",
+          organizationSwitcherTrigger__open: "bg-neutral-950",
+          organizationPreviewMainIdentifier: "text-neutral-50",
+          organizationSwitcherTriggerIcon: "text-neutral-400",
+          organizationPreview__organizationSwitcherTrigger: "gap-2",
+          organizationPreviewAvatarContainer: "shrink-0",
         },
       }}
     >
