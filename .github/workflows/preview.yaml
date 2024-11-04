@@ -12,6 +12,16 @@ jobs:
     env:
       DATABASE_URL: postgresql://yourusername:yourpassword@localhost:5432/yourdatabase
       DIRECT_URL: postgresql://yourusername:yourpassword@localhost:5432/yourdatabase
+      CLERK_WEBHOOK_SECRET: mock-clerk-webhook-secret
+      STRIPE_SECRET_KEY: mock-stripe-secret-key
+      AWS_REGION: mock-aws-region
+      AWS_ACCESS_KEY_ID: mock-aws-access-key-id
+      AWS_SECRET_ACCESS_KEY: mock-aws-secret-access-key
+      AWS_PRIVATE_BUCKET_ARN: mock-aws-private-bucket-arn
+      AWS_PRIVATE_BUCKET_NAME: mock-aws-private-bucket-name
+      AWS_PUBLIC_BUCKET_ARN: mock-aws-public-bucket-arn
+      AWS_PUBLIC_BUCKET_NAME: mock-aws-public-bucket-name
+      AWS_PUBLIC_BUCKET_URL: mock-aws-public-bucket-url
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
