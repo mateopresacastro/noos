@@ -24,11 +24,14 @@ jobs:
       - name: Install Dependencies
         run: npm install --legacy-peer-deps
 
+      - name: Start Docker Compose Services
+        run: docker compose up -d --remove-orphans
+
       - name: Run Prisma Migrations
         run: npm run db:push
 
       - name: Run Tests
-        run: npm test
+        run: npx jest --detectOpenHandles --forceExit
 
       - name: Stop Docker Compose Services
         if: always()
