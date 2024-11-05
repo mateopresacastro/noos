@@ -1,48 +1,18 @@
 "use server";
 import "server-only";
+import s3 from "@/lib/aws/client";
 import crypto from "node:crypto";
-
-import {
-  AWS_REGION,
-  AWS_ACCESS_KEY_ID,
-  AWS_SECRET_ACCESS_KEY,
-  isDev,
-  AWS_PRIVATE_BUCKET_NAME,
-  AWS_PUBLIC_BUCKET_NAME,
-} from "@/cfg";
-
+import { isDev, AWS_PRIVATE_BUCKET_NAME, AWS_PUBLIC_BUCKET_NAME } from "@/cfg";
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
+import { currentUser } from "@clerk/nextjs/server";
 import {
   ListBucketsCommand,
   PutObjectCommand,
   GetObjectCommand,
   DeleteObjectCommand,
-  S3Client,
   CreateBucketCommand,
   ListObjectsCommand,
 } from "@aws-sdk/client-s3";
-
-import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
-import { currentUser } from "@clerk/nextjs/server";
-
-const clientCfg = isDev
-  ? {
-      endpoint: "http://localhost:4566",
-      region: "eu-central-1",
-      credentials: {
-        accessKeyId: "test",
-        secretAccessKey: "test",
-      },
-      forcePathStyle: true,
-    }
-  : {
-      region: AWS_REGION,
-      credentials: {
-        accessKeyId: AWS_ACCESS_KEY_ID,
-        secretAccessKey: AWS_SECRET_ACCESS_KEY,
-      },
-    };
-
-const s3 = new S3Client(clientCfg);
 
 (async () => {
   if (!isDev) return;
