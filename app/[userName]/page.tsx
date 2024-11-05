@@ -1,6 +1,7 @@
-import { getData } from "@/lib/db/mod";
 import Image from "next/image";
 import Link from "next/link";
+import UploadButton from "@/app/[userName]/upload-button";
+import { getData } from "@/lib/db/mod";
 import { notFound } from "next/navigation";
 
 export default async function Page({
@@ -10,26 +11,26 @@ export default async function Page({
 }) {
   const userName = (await params).userName;
   const data = await getData(userName);
-
-  // TODO: Handle error
   if (!data) {
     notFound();
   }
 
   return (
     <div className="flex flex-col items-center justify-start min-h-screen pt-40">
-      <div className="rounded-full size-40 overflow-hidden">
+      <div className="rounded-full size-32 overflow-hidden">
         <Image
           priority
           src={data.imgUrl}
           height={160}
           width={160}
           alt={`${userName}`}
-          className="rounded-full object-cover h-40 w-40"
+          className="rounded-full object-cover h-32 w-32"
         />
       </div>
-      <span className="text-neutral-400 block pt-4">@{userName}</span>
+      <span className="block pt-3">{data.name}</span>
+      <span className="text-neutral-400 block pt-0.5 text-sm">@{userName}</span>
       <SamplePacks samplePacks={data.samplePacks} userName={userName} />
+      <UploadButton userName={userName} />
     </div>
   );
 }

@@ -3,16 +3,20 @@
 import SamplePacks from "@/app/_header/sample-packs";
 import Stripe from "@/app/_header/stripe";
 import { Button } from "@/components/ui/button";
-import { DollarSign, Music2 } from "lucide-react";
+import { DollarSign, DotIcon, Music2 } from "lucide-react";
 import {
   SignedOut,
   SignInButton,
   SignUpButton,
   SignedIn,
   UserButton,
+  useUser,
 } from "@clerk/nextjs";
 
 export default function Clerk() {
+  const data = useUser();
+  const username = data?.user?.username;
+  
   return (
     <>
       <SignedOut>
@@ -31,6 +35,14 @@ export default function Clerk() {
       </SignedOut>
       <SignedIn>
         <UserButton>
+          <UserButton.UserProfilePage label="account" />
+          {username ? (
+            <UserButton.UserProfileLink
+              label="Public profile"
+              url={`/${username}`}
+              labelIcon={<DotIcon className="w-4 h-4" />}
+            />
+          ) : null}
           <UserButton.UserProfilePage
             label="Stripe"
             url="stripe"
@@ -45,7 +57,6 @@ export default function Clerk() {
           >
             <SamplePacks />
           </UserButton.UserProfilePage>
-          <UserButton.UserProfilePage label="account" />
           <UserButton.UserProfilePage label="security" />
         </UserButton>
       </SignedIn>

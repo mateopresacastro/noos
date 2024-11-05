@@ -4,7 +4,7 @@ import {
   createPresignedUrl,
   getObject,
   deleteObject,
-} from "@/lib/aws";
+} from "@/lib/aws/mod";
 
 import {
   CreateBucketCommand,

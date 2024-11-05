@@ -26,6 +26,7 @@ model SamplePack {
   title       String
   imgUrl      String
   name        String
+  url         String
   description String?
   price       Float?
   samples     Sample[]
