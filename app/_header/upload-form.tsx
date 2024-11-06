@@ -52,12 +52,14 @@ export default function UploadForm() {
   });
 
   function createSignedUrlsOnSuccess(preSignedUrls: PreSignedUrls) {
+    const { zipFileSignedUrl, imageSignedUrl, samplesSignedUrls } =
+      preSignedUrls;
     return uploadToS3({
-      zipFileSignedUrl: preSignedUrls.zipFileSignedUrl.url,
+      zipFileSignedUrl: zipFileSignedUrl.url,
       zipFile: formValues.zipFile[0],
-      imageSignedUrl: preSignedUrls.imageSignedUrl.url,
+      imageSignedUrl: imageSignedUrl.url,
       image: formValues.img[0],
-      samplesSignedUrls: preSignedUrls.samplesSignedUrls.map(({ url }) => url),
+      samplesSignedUrls: samplesSignedUrls.map(({ url }) => url),
       samples: formValues.samples,
     });
   }
