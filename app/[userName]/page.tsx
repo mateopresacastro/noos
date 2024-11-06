@@ -29,8 +29,8 @@ export default async function Page({
       </div>
       <span className="block pt-3">{data.name}</span>
       <span className="text-neutral-400 block pt-0.5 text-sm">@{userName}</span>
-      <SamplePacks samplePacks={data.samplePacks} userName={userName} />
       <UploadButton userName={userName} />
+      <SamplePacks samplePacks={data.samplePacks} userName={userName} />
     </div>
   );
 }
@@ -46,13 +46,17 @@ function SamplePacks({
   samplePacks: SamplePackData[];
   userName: string;
 }) {
-  return samplePacks.map((samplePack) => (
-    <SamplePack
-      key={samplePack.title}
-      samplePack={samplePack}
-      userName={userName}
-    />
-  ));
+  return (
+    <div className="pt-32 flex flex-grow flex-wrap gap-4">
+      {samplePacks.map((samplePack) => (
+        <SamplePack
+          key={samplePack.title}
+          samplePack={samplePack}
+          userName={userName}
+        />
+      ))}
+    </div>
+  );
 }
 
 function SamplePack({
@@ -64,14 +68,15 @@ function SamplePack({
 }) {
   return (
     <Link href={`/${userName}/${samplePack.name}`}>
-      <div className="flex flex-col items-center justify-center w-full h-full">
+      <div className="flex flex-col items-start justify-center object-cover rounded-xl text-left p-4 bg-neutral-900 hover:bg-neutral-800">
         <Image
           src={samplePack.imgUrl}
           alt={samplePack.title}
-          width={200}
-          height={200}
+          width={160}
+          height={160}
+          className="rounded-xl size-40 object-cover"
         />
-        <h4 className="font-bold">{samplePack.title}</h4>
+        <h4 className="font-medium">{samplePack.title}</h4>
       </div>
     </Link>
   );

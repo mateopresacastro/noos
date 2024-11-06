@@ -7,6 +7,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import Link from "next/link";
 
 export default async function Page({
   params,
@@ -39,9 +40,13 @@ export default async function Page({
         </div>
         <div>
           <h1 className="text-3xl font-bold">{samplePack.title}</h1>
-          <p className="text-gray-500">by @{samplePack.creator.userName}</p>
+          <Link href={`/${userName}`}>
+            <p className="text-neutral-500">
+              by @{samplePack.creator.userName}
+            </p>
+          </Link>
           {samplePack.description && (
-            <p className="mt-2 text-gray-600">{samplePack.description}</p>
+            <p className="mt-2 text-neutral-600">{samplePack.description}</p>
           )}
           {samplePack.price && (
             <p className="mt-2 text-xl font-semibold">
