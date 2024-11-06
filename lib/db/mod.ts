@@ -157,3 +157,72 @@ export async function getSamplePack({
     return null;
   }
 }
+
+export async function createSamplePack({
+  clerkId,
+  samplePackName,
+  description,
+  price,
+  imgUrl,
+  title,
+  url,
+}: {
+  clerkId: string;
+  samplePackName: string;
+  description?: string;
+  price: number;
+  imgUrl: string;
+  title: string;
+  url: string;
+}) {
+  try {
+    const user = await prisma.user.findUnique({
+      where: { clerkId },
+      select: { id: true },
+    });
+
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    const samplePack = await prisma.samplePack.create({
+      data: {
+        creatorId: user.id,
+        name: samplePackName,
+        description,
+        price,
+        imgUrl,
+        title,
+        url,
+      },
+    });
+
+    return samplePack;
+  } catch (error) {
+    console.error("Error creating sample pack", error);
+    return null;
+  }
+}
+
+export async function addSampleToSamplePack(
+  samplePackId: number,
+  samples: { url: string }[]
+) {
+  try {
+    const newSamples = await prisma.sample.createMany({
+      data: samples.map(({ url }) => ({
+        url,
+        samplePackId,
+      })),
+    });
+
+    if (!newSamples || newSamples.count === 0) {
+      throw new Error("No samples created");
+    }
+
+    return newSamples;
+  } catch (error) {
+    console.error("Error adding sample to sample pack", error);
+    return null;
+  }
+}

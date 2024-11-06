@@ -4,7 +4,6 @@ import s3 from "@/lib/aws/client";
 import crypto from "node:crypto";
 import { isDev, AWS_PRIVATE_BUCKET_NAME, AWS_PUBLIC_BUCKET_NAME } from "@/cfg";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
-import { currentUser } from "@clerk/nextjs/server";
 import {
   ListBucketsCommand,
   PutObjectCommand,
@@ -55,23 +54,31 @@ export async function listBuckets() {
   }
 }
 
-const FIFTEEN_MIN_IN_SECONDS = 15 * 60;
+const FIVE_MIN_IN_SECONDS = 5 * 60;
 
 export async function createPresignedUrl({
   bucketName,
+  fileType,
 }: {
   bucketName: string;
+  fileType: "image" | "samples" | "zip";
 }) {
   try {
     const randomPrefix = crypto.randomBytes(16).toString("hex");
-    const key = `uploads/${randomPrefix}`;
+    const key = `uploads/${fileType}/${randomPrefix}`;
     const command = new PutObjectCommand({
       Bucket: bucketName,
       Key: key,
+      ContentType:
+        fileType === "image"
+          ? "image/*"
+          : fileType === "samples"
+          ? "audio/*"
+          : "application/zip",
     });
 
     const url = await getSignedUrl(s3, command, {
-      expiresIn: FIFTEEN_MIN_IN_SECONDS,
+      expiresIn: FIVE_MIN_IN_SECONDS,
     });
 
     return { url, key };
@@ -79,17 +86,6 @@ export async function createPresignedUrl({
     console.error("Error creating presigned URL:", error);
     return null;
   }
-}
-
-export async function handleCreatePreSignedUrl(bucket: "private" | "public") {
-  const user = await currentUser();
-  if (!user) throw new Error();
-  const bucketName =
-    bucket === "private" ? AWS_PRIVATE_BUCKET_NAME : AWS_PUBLIC_BUCKET_NAME;
-
-  const result = await createPresignedUrl({ bucketName });
-  if (!result) throw new Error();
-  return result;
 }
 
 export async function getObject({

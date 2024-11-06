@@ -36,6 +36,7 @@ describe("AWS S3 integration tests with LocalStack", () => {
     it("should create a presigned URL", async () => {
       const data = await createPresignedUrl({
         bucketName: "test-bucket",
+        fileType: "image",
       });
 
       expect(data?.url).toContain("http://localhost:4566");
