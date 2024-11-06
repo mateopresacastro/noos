@@ -24,7 +24,7 @@ import "server-only";
 async function createLocalStackBuckets() {
   const buckets = await listBuckets();
   if (buckets && buckets.length > 0) return;
-  [AWS_PUBLIC_BUCKET_NAME, AWS_PRIVATE_BUCKET_NAME].forEach(
+  [AWS_PUBLIC_BUCKET_NAME, AWS_PRIVATE_BUCKET_NAME, "test-bucket"].forEach(
     async (bucket) =>
       await s3.send(
         new CreateBucketCommand({
