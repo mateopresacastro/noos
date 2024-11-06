@@ -1,10 +1,6 @@
 import { S3Client } from "@aws-sdk/client-s3";
-import {
-  isDev,
-  AWS_REGION,
-  AWS_ACCESS_KEY_ID,
-  AWS_SECRET_ACCESS_KEY,
-} from "@/cfg";
+import { AWS_REGION, AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY } from "@/cfg";
+import { isDev } from "@/lib/utils";
 
 const clientCfg = isDev
   ? {

@@ -1,4 +1,3 @@
-import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
@@ -12,143 +11,97 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import {
+  UploadFormSchema,
+  uploadFormSchema,
+} from "@/app/_header/upload-form-schema";
 import { useMutation } from "@tanstack/react-query";
 import { handleCreatePreSignedUrl, handlePersistData } from "@/lib/aws/actions";
 import { handleUploadToS3, type UploadToS3Data } from "@/lib/aws/upload";
+import { createSamplePackName, isDev } from "@/lib/utils";
 
-const ONE_GB_IN_BYTES = 1000 * 1024 * 1024;
-const FIVE_MB_IN_BYTES = 5 * 1024 * 1024;
+type PreSignedUrls = Awaited<ReturnType<typeof handleCreatePreSignedUrl>>;
 
-const uploadFormSchema = z.object({
-  title: z.string().min(5).max(50),
-  description: z.string().min(5).max(100).optional(),
-  price: z.number().min(0),
-  img: z
-    .instanceof(FileList)
-    .refine((files) => files.length === 1, "Select on image")
-    .refine(
-      (files) => files[0]?.size <= FIVE_MB_IN_BYTES,
-      "Image must be less than 5MB"
-    )
-    .refine(
-      (files) => files[0]?.type.startsWith("image/"),
-      "File must be an image"
-    ),
-  zipFile: z
-    .instanceof(FileList)
-    .refine((files) => files.length === 1, "Select one file")
-    .refine(
-      (files) => files[0]?.size <= ONE_GB_IN_BYTES,
-      "Zip must be less than 1GB"
-    )
-    .refine(
-      (files) => files[0]?.type === "application/zip",
-      "File must be in ZIP format"
-    ),
-  samples: z
-    .instanceof(FileList)
-    .refine((files) => files.length >= 1 && files.length <= 100)
-    .refine((files) => {
-      const totalSize = Array.from(files).reduce(
-        (acc, file) => acc + file.size,
-        0
-      );
-      return totalSize <= ONE_GB_IN_BYTES;
-    }, "The total of the samples must be less than 1GB")
-    .refine(
-      (files) =>
-        Array.from(files).every((file) => file.type.startsWith("audio/")),
-      "Each sample file must be an audio file"
-    ),
-});
+const defaultValues = {
+  title: "",
+  description: "",
+  price: 0,
+};
 
-type UploadFormSchema = z.infer<typeof uploadFormSchema>;
-
-function UploadForm() {
+export default function UploadForm() {
   const form = useForm<UploadFormSchema>({
     resolver: zodResolver(uploadFormSchema),
-    defaultValues: {
-      title: "",
-      description: "",
-      price: 0,
-    },
+    defaultValues,
   });
+
+  const formValues = form.getValues();
 
   const {
     mutate: createPreSignedUrls,
     data: preSignedUrls,
     isPending: isCreatingPresignedUrls,
   } = useMutation({
-    mutationFn: () => handleCreatePreSignedUrl(form.getValues().samples.length),
-    onSuccess: (preSignedUrls) => {
-      return uploadToS3({
-        zipFileSignedUrl: preSignedUrls.zipFileSignedUrl.url,
-        zipFile: form.getValues().zipFile[0],
-        imageSignedUrl: preSignedUrls.imageSignedUrl.url,
-        image: form.getValues().img[0],
-        samplesSignedUrls: preSignedUrls.samplesSignedUrls.map(
-          ({ url }) => url
-        ),
-        samples: form.getValues().samples,
-      });
-    },
-    onSettled: () => console.log("Pre-signed URLs creation is done"),
+    mutationFn: async () =>
+      await handleCreatePreSignedUrl(formValues.samples.length),
+    onSuccess: createSignedUrlsOnSuccess,
   });
 
   const { mutate: uploadToS3, isPending: isUploadingToS3 } = useMutation({
-    mutationFn: async (data: UploadToS3Data) => {
-      await handleUploadToS3(data);
-    },
+    mutationFn: async (data: UploadToS3Data) => await handleUploadToS3(data),
     onSuccess: () => persistData(),
   });
 
+  function createSignedUrlsOnSuccess(preSignedUrls: PreSignedUrls) {
+    return uploadToS3({
+      zipFileSignedUrl: preSignedUrls.zipFileSignedUrl.url,
+      zipFile: formValues.zipFile[0],
+      imageSignedUrl: preSignedUrls.imageSignedUrl.url,
+      image: formValues.img[0],
+      samplesSignedUrls: preSignedUrls.samplesSignedUrls.map(({ url }) => url),
+      samples: formValues.samples,
+    });
+  }
+
   const { mutate: persistData, isPending: isPersistingData } = useMutation({
     mutationFn: async () => {
-      if (!preSignedUrls) throw new Error("Pre-signed urls not found");
-      await handlePersistData({
-        samplePack: {
-          samplePackName: form
-            .getValues()
-            .title.split(" ")
-            .map((word) =>
-              word
-                .split("")
-                .map((char) => char.toLowerCase())
-                .join("")
-            )
-            .join("-"),
-          description: form.getValues().description,
-          price: form.getValues().price,
-          imgUrl: createPublicUrl({
-            key: preSignedUrls.imageSignedUrl.key,
-            visibility: "public",
-          }),
-          title: form.getValues().title,
-          url: createPublicUrl({
-            key: preSignedUrls.zipFileSignedUrl.key,
-            visibility: "public",
-          }),
-        },
-        samples: preSignedUrls?.samplesSignedUrls.map(({ key }) => ({
-          url: createPublicUrl({ key, visibility: "public" }),
-        })),
-      });
+      const data = getDataToPersist();
+      if (!data) throw new Error();
+      await handlePersistData(data);
     },
-    onSuccess: () => console.log("Data persisted"),
   });
+
+  function getDataToPersist() {
+    if (!preSignedUrls) return;
+    const { description, price, title } = formValues;
+    const { imageSignedUrl, zipFileSignedUrl, samplesSignedUrls } =
+      preSignedUrls;
+    const samplePackName = createSamplePackName(title);
+    const imgUrl = createPublicUrl(imageSignedUrl.key, "public");
+    const url = createPublicUrl(zipFileSignedUrl.key, "public");
+    const samples = samplesSignedUrls.map(({ key }) => ({
+      url: createPublicUrl(key, "public"),
+    }));
+    return {
+      samplePack: {
+        price,
+        title,
+        description,
+        samplePackName,
+        imgUrl,
+        url,
+      },
+      samples,
+    };
+  }
 
   const imgRef = form.register("img");
   const zipRef = form.register("zipFile");
   const samplesRef = form.register("samples");
 
-  function onSubmit() {
-    createPreSignedUrls();
-  }
-
   return (
     <Form {...form}>
       <form
-        onSubmit={form.handleSubmit(onSubmit)}
+        onSubmit={form.handleSubmit(() => createPreSignedUrls())}
         className="space-y-14 w-full pt-8 overflow-y-scroll"
       >
         <FormField
@@ -243,16 +196,13 @@ function UploadForm() {
   );
 }
 
-function createPublicUrl({
-  key,
-  visibility,
-}: {
-  key: string;
-  visibility: "private" | "public";
-}) {
-  const bucketName =
-    visibility === "private" ? "noos-private-assets" : "noos-public-assets";
-  return `https://localhost.localstack.cloud:4566/${bucketName}/${key}`;
-}
+function createPublicUrl(key: string, visibility: "private" | "public") {
+  if (isDev) {
+    const bucketName =
+      visibility === "private" ? "noos-private-assets" : "noos-public-assets";
+    return `https://localhost.localstack.cloud:4566/${bucketName}/${key}`;
+  }
 
-export default UploadForm;
+  // TODO: Handle prod url
+  return "";
+}

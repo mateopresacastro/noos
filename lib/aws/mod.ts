@@ -1,9 +1,10 @@
 "use server";
-import "server-only";
+
 import s3 from "@/lib/aws/client";
 import crypto from "node:crypto";
-import { isDev, AWS_PRIVATE_BUCKET_NAME, AWS_PUBLIC_BUCKET_NAME } from "@/cfg";
+import { AWS_PRIVATE_BUCKET_NAME, AWS_PUBLIC_BUCKET_NAME } from "@/cfg";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
+import { isDev } from "@/lib/utils";
 import {
   ListBucketsCommand,
   PutObjectCommand,
@@ -12,6 +13,7 @@ import {
   CreateBucketCommand,
   ListObjectsCommand,
 } from "@aws-sdk/client-s3";
+import "server-only";
 
 (async () => {
   if (!isDev) return;
