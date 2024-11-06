@@ -11,14 +11,14 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import {
-  UploadFormSchema,
-  uploadFormSchema,
-} from "@/app/_header/upload-form-schema";
 import { useMutation } from "@tanstack/react-query";
 import { handleCreatePreSignedUrl, handlePersistData } from "@/lib/aws/actions";
 import { handleUploadToS3, type UploadToS3Data } from "@/lib/aws/upload";
 import { createSamplePackName, isDev } from "@/lib/utils";
+import {
+  type UploadFormSchema,
+  uploadFormSchema,
+} from "@/app/_header/upload-form-schema";
 
 type PreSignedUrls = Awaited<ReturnType<typeof handleCreatePreSignedUrl>>;
 
