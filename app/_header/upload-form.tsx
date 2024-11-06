@@ -62,7 +62,7 @@ const uploadFormSchema = z.object({
     ),
 });
 
-export type UploadFormSchema = z.infer<typeof uploadFormSchema>;
+type UploadFormSchema = z.infer<typeof uploadFormSchema>;
 
 function UploadForm() {
   const form = useForm<UploadFormSchema>({
@@ -77,13 +77,9 @@ function UploadForm() {
   const {
     mutate: createPreSignedUrls,
     data: preSignedUrls,
-    isError: isPresignedUrlsError,
     isPending: isCreatingPresignedUrls,
   } = useMutation({
-    mutationFn: () =>
-      handleCreatePreSignedUrl({
-        numOfSamples: form.getValues().samples.length,
-      }),
+    mutationFn: () => handleCreatePreSignedUrl(form.getValues().samples.length),
     onSuccess: (preSignedUrls) => {
       return uploadToS3({
         zipFileSignedUrl: preSignedUrls.zipFileSignedUrl.url,
@@ -105,18 +101,6 @@ function UploadForm() {
     },
     onSuccess: () => persistData(),
   });
-
-  function createPublicUrl({
-    key,
-    visibility,
-  }: {
-    key: string;
-    visibility: "private" | "public";
-  }) {
-    const bucketName =
-      visibility === "private" ? "noos-private-assets" : "noos-public-assets";
-    return `https://localhost.localstack.cloud:4566/${bucketName}/${key}`;
-  }
 
   const { mutate: persistData, isPending: isPersistingData } = useMutation({
     mutationFn: async () => {
@@ -160,12 +144,6 @@ function UploadForm() {
   function onSubmit() {
     createPreSignedUrls();
   }
-
-  console.log({
-    preSignedUrls,
-    isCreatingPresignedUrls,
-    isPresignedUrlsError,
-  });
 
   return (
     <Form {...form}>
@@ -257,12 +235,24 @@ function UploadForm() {
             : isUploadingToS3
             ? "Uploading..."
             : isPersistingData
-            ? "Persisting Data"
+            ? "Persisting Data..."
             : "Submit"}
         </Button>
       </form>
     </Form>
   );
+}
+
+function createPublicUrl({
+  key,
+  visibility,
+}: {
+  key: string;
+  visibility: "private" | "public";
+}) {
+  const bucketName =
+    visibility === "private" ? "noos-private-assets" : "noos-public-assets";
+  return `https://localhost.localstack.cloud:4566/${bucketName}/${key}`;
 }
 
 export default UploadForm;

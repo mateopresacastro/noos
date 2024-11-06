@@ -6,11 +6,7 @@ import { AWS_PRIVATE_BUCKET_NAME, AWS_PUBLIC_BUCKET_NAME } from "@/cfg";
 import { addSampleToSamplePack, createSamplePack } from "@/lib/db/mod";
 import "server-only";
 
-export async function handleCreatePreSignedUrl({
-  numOfSamples,
-}: {
-  numOfSamples: number;
-}) {
+export async function handleCreatePreSignedUrl(numOfSamples: number) {
   try {
     const user = await currentUser();
     if (!user) throw new Error();
