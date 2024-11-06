@@ -42,7 +42,7 @@ jobs:
         run: npm run db:push
 
       - name: Run Tests
-        run: npx jest --detectOpenHandles --forceExit --silent
+        run: npx jest --detectOpenHandles --forceExit
 
       - name: Stop Docker Compose Services
         if: always()
