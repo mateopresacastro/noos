@@ -7,6 +7,7 @@ import Header from "@/app/_header/header";
 import Providers from "@/app/providers";
 import resolveConfig from "tailwindcss/resolveConfig";
 import tailwindConfig from "../tailwind.config";
+import colors from "tailwindcss/colors";
 
 export const tailwind = resolveConfig(tailwindConfig);
 
@@ -40,8 +41,8 @@ export default function RootLayout({
           shimmer: false,
         },
         variables: {
-          colorText: "#fafafa",
-          colorBackground: "#171717",
+          colorText: colors.neutral[50],
+          colorBackground: colors.neutral[900],
           fontFamily: tailwind.theme.fontFamily.sans.join(", "),
           fontFamilyButtons: tailwind.theme.fontFamily.sans.join(", "),
           fontSize: tailwind.theme.fontSize.sm[0],
@@ -51,6 +52,13 @@ export default function RootLayout({
             medium: tailwind.theme.fontWeight.medium,
           },
           spacingUnit: tailwind.theme.spacing[4],
+          borderRadius: tailwind.theme.borderRadius.xl,
+          colorTextSecondary: colors.neutral[400],
+          colorPrimary: colors.neutral[50],
+          colorInputBackground: colors.neutral[900],
+          colorDanger: colors.red[500],
+          colorSuccess: colors.emerald[500],
+          colorWarning: colors.amber[500],
         },
         elements: {
           dividerLine: "bg-neutral-700",

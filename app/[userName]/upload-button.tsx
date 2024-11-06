@@ -3,25 +3,33 @@
 import UploadForm from "@/app/_header/upload-form";
 import { Button } from "@/components/ui/button";
 import { useUser } from "@clerk/nextjs";
-import { useRef, useState } from "react";
-import { useOnClickOutside } from "usehooks-ts";
+import {
+  Dialog,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+  DialogContent,
+} from "@/components/ui/dialog";
 
 export default function UploadButton({ userName }: { userName: string }) {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const ref = useRef<HTMLFormElement>(null!);
   const currentUserData = useUser();
   const isOwner = userName === currentUserData?.user?.username;
 
-  useOnClickOutside(ref, () => setIsModalOpen(false));
-
-  return (
-    <>
-      {isOwner ? (
-        <Button className="mt-4" onClick={() => setIsModalOpen(true)}>
-          Upload
-        </Button>
-      ) : null}
-      {isModalOpen ? <UploadForm ref={ref} /> : null}
-    </>
-  );
+  return isOwner ? (
+    <Dialog>
+      <DialogTrigger asChild>
+        <Button className="mt-4">Upload</Button>
+      </DialogTrigger>
+      <DialogContent className="max-h-[95dvh] max-w-[95dvw] overflow-y-auto px-10">
+        <DialogHeader>
+          <DialogTitle>Upload a Sample Pack</DialogTitle>
+          <DialogDescription>
+            Fill the information. Click submit when you&apos;re done.
+          </DialogDescription>
+        </DialogHeader>
+        <UploadForm />
+      </DialogContent>
+    </Dialog>
+  ) : null;
 }

@@ -81,10 +81,7 @@ export async function createPresignedUrl({
   }
 }
 
-export async function handleCreatePreSignedUrl(
-  bucket: "private" | "public",
-  key: string
-) {
+export async function handleCreatePreSignedUrl(bucket: "private" | "public") {
   const user = await currentUser();
   if (!user) throw new Error();
   const bucketName =
