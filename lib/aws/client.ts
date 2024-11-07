@@ -1,24 +1,25 @@
 import { S3Client } from "@aws-sdk/client-s3";
 import { AWS_REGION, AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY } from "@/cfg";
-import { isDev } from "@/lib/utils";
+import { isDev, isTest } from "@/lib/utils";
 
-const clientCfg = isDev
-  ? {
-      endpoint: "http://localhost:4566",
-      region: "eu-central-1",
-      credentials: {
-        accessKeyId: "test",
-        secretAccessKey: "test",
-      },
-      forcePathStyle: true,
-    }
-  : {
-      region: AWS_REGION,
-      credentials: {
-        accessKeyId: AWS_ACCESS_KEY_ID,
-        secretAccessKey: AWS_SECRET_ACCESS_KEY,
-      },
-    };
+const clientCfg =
+  isDev || isTest
+    ? {
+        endpoint: "http://localhost:4566",
+        region: "eu-central-1",
+        credentials: {
+          accessKeyId: "test",
+          secretAccessKey: "test",
+        },
+        forcePathStyle: true,
+      }
+    : {
+        region: AWS_REGION,
+        credentials: {
+          accessKeyId: AWS_ACCESS_KEY_ID,
+          secretAccessKey: AWS_SECRET_ACCESS_KEY,
+        },
+      };
 
 console.log({ clientCfg });
 
