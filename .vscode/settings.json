@@ -11,7 +11,9 @@
     "profesionals",
     "samplemakers",
     "svix",
+    "tailwindcss",
     "tanstack",
-    "trpc"
+    "trpc",
+    "wavesurfer"
   ]
 }

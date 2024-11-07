@@ -19,7 +19,7 @@ export default function UploadButton({ userName }: { userName: string }) {
   return isOwner ? (
     <Dialog>
       <DialogTrigger asChild>
-        <Button className="mt-4">Upload</Button>
+        <Button className="mt-6">Upload</Button>
       </DialogTrigger>
       <DialogContent className="max-h-[95dvh] max-w-2xl overflow-y-auto ">
         <DialogHeader>

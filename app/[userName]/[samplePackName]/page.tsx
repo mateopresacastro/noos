@@ -1,13 +1,9 @@
 import Image from "next/image";
-import { getSamplePack } from "@/lib/db/mod";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import Link from "next/link";
+import { getSamplePack } from "@/lib/db/mod";
+import { notFound } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import WaveForm from "@/components/waveform";
 
 export default async function Page({
   params,
@@ -16,61 +12,36 @@ export default async function Page({
 }) {
   const { userName, samplePackName } = await params;
   const samplePack = await getSamplePack({ userName, samplePackName });
-
   if (!samplePack) {
-    return (
-      <div className="flex flex-col items-center justify-center min-h-screen">
-        <h1 className="text-2xl font-bold text-red-500">
-          Sample pack not found
-        </h1>
-      </div>
-    );
+    notFound();
   }
 
   return (
-    <div className="container mx-auto px-4 py-8 pt-40">
-      <div className="flex items-center gap-6 mb-8">
-        <div className="relative h-32 w-32">
-          <Image
-            src={samplePack.imgUrl}
-            alt={samplePack.title}
-            fill
-            className="object-cover rounded-lg"
-          />
-        </div>
-        <div>
-          <h1 className="text-3xl font-bold">{samplePack.title}</h1>
-          <Link href={`/${userName}`} prefetch={true}>
-            <p className="text-neutral-500">
-              by @{samplePack.creator.userName}
-            </p>
-          </Link>
-          {samplePack.description && (
-            <p className="mt-2 text-neutral-600">{samplePack.description}</p>
-          )}
-          {samplePack.price && (
-            <p className="mt-2 text-xl font-semibold">
-              ${samplePack.price.toFixed(2)}
-            </p>
-          )}
-        </div>
+    <div className="flex flex-col items-center justify-start min-h-screen py-24 sm:py-32">
+      <div className="rounded-2xl size-80 aspect-square mb-2 object-cover">
+        <Image
+          src={samplePack.imgUrl}
+          alt={samplePack.title}
+          width={160}
+          height={160}
+          className="rounded-2xl w-full h-full object-cover"
+        />
       </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {samplePack.samples.map((sample) => (
-          <Card key={sample.id}>
-            <CardHeader>
-              <CardTitle className="text-lg">{sample.title}</CardTitle>
-              <CardDescription>
-                Created {new Date(sample.createdAt).toLocaleDateString()}
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <audio controls className="w-full" src={sample.url}>
-                Your browser does not support the audio element.
-              </audio>
-            </CardContent>
-          </Card>
+      <span className="block pt-5 text-xl">{samplePack.title}</span>
+      <span className="block text-sm text-neutral-400">
+        {samplePack.description}
+      </span>
+      <Link href={`/${userName}`} prefetch={true}>
+        <span className="text-neutral-600 block pt-0.5 font-medium text-xs">
+          by @{userName}
+        </span>
+      </Link>
+      <Button className="font-medium my-10" size="lg">
+        ${samplePack.price}
+      </Button>
+      <div className="w-full max-w-96 flex flex-col gap-16 pt-16">
+        {samplePack.samples.map(({ url }) => (
+          <WaveForm url={url} key={url} />
         ))}
       </div>
     </div>

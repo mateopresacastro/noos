@@ -200,8 +200,16 @@ export default function UploadForm() {
 
 function createPublicUrl(key: string, visibility: "private" | "public") {
   if (isDev) {
+    if (
+      !process.env.NEXT_PUBLIC_AWS_PRIVATE_BUCKET_NAME ||
+      !process.env.NEXT_PUBLIC_AWS_PUBLIC_BUCKET_NAME
+    ) {
+      throw new Error("AWS bucket names not set");
+    }
     const bucketName =
-      visibility === "private" ? "noos-private-assets" : "noos-public-assets";
+      visibility === "private"
+        ? process.env.NEXT_PUBLIC_AWS_PRIVATE_BUCKET_NAME
+        : process.env.NEXT_PUBLIC_AWS_PUBLIC_BUCKET_NAME;
     return `https://localhost.localstack.cloud:4566/${bucketName}/${key}`;
   }
 

@@ -106,7 +106,13 @@ export async function getData(userName: string) {
   try {
     const data = await prisma.user.findUnique({
       where: { userName },
-      include: { samplePacks: true },
+      include: {
+        samplePacks: {
+          include: {
+            samples: true,
+          },
+        },
+      },
     });
 
     if (!data) throw new Error("User not found");

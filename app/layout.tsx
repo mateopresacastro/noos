@@ -1,6 +1,6 @@
-import type { Metadata } from "next";
-import localFont from "next/font/local";
 import "./globals.css";
+import type { Metadata } from "next";
+import { Inter } from "next/font/google";
 import { ClerkProvider } from "@clerk/nextjs";
 import { dark } from "@clerk/themes";
 import Header from "@/components/header";
@@ -11,22 +11,12 @@ import colors from "tailwindcss/colors";
 
 export const tailwind = resolveConfig(tailwindConfig);
 
-const geistSans = localFont({
-  src: "./fonts/GeistVF.woff",
-  variable: "--font-geist-sans",
-  weight: "100 900",
-});
-
-const geistMono = localFont({
-  src: "./fonts/GeistMonoVF.woff",
-  variable: "--font-geist-mono",
-  weight: "100 900",
-});
-
 export const metadata: Metadata = {
   title: "noos",
   description: "The marketplace for samplemakers",
 };
+
+const inter = Inter({ subsets: ["latin"] });
 
 export default function RootLayout({
   children,
@@ -74,7 +64,7 @@ export default function RootLayout({
     >
       <html lang="en">
         <body
-          className={`${geistSans.variable} ${geistMono.variable} antialiased max-w-6xl px-6 mx-auto bg-neutral-950 text-neutral-50 dark`}
+          className={`${inter.className} antialiased max-w-6xl px-6 mx-auto bg-neutral-950 text-neutral-50 dark`}
         >
           <Providers>
             <Header />
