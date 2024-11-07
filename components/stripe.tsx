@@ -9,7 +9,7 @@ import { createStripeAccountLink, hasRequirementsDue } from "@/lib/stripe";
 export default function Stripe() {
   return (
     <div className="flex flex-col items-start justify-center w-full h-full">
-      <h4 className="font-bold">Stripe</h4>
+      <h4 className="font-medium">Stripe</h4>
       <Separator className="my-4 text-neutral-200" />
       <StripeAccountStatus />
     </div>

@@ -29,7 +29,7 @@ export default async function Page({
           className="rounded-full object-cover h-24 w-24"
         />
       </div>
-      <span className="block pt-6 text-xl">{data.name}</span>
+      <span className="block pt-6 text-xl font-medium">{data.name}</span>
       <div className="flex items-center justify-center">
         <span className="text-neutral-400 block pt-0.5 text-sm font-medium">
           @{userName}

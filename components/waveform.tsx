@@ -3,6 +3,7 @@
 import WaveSurfer from "wavesurfer.js";
 import { useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
+import colors from "tailwindcss/colors";
 
 export default function WaveForm({ url }: { url: string }) {
   const waveformRef = useRef<HTMLDivElement>(null);
@@ -17,9 +18,9 @@ export default function WaveForm({ url }: { url: string }) {
       barWidth: 1,
       height: 30,
       normalize: true,
-      waveColor: "#a1a1aa",
-      progressColor: "#3f3f46",
-      cursorColor: "#f4f4f5",
+      waveColor: colors.neutral[700],
+      progressColor: colors.neutral[600],
+      cursorColor: colors.neutral[50],
       hideScrollbar: true,
       url,
     };
