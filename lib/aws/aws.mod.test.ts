@@ -13,7 +13,7 @@ import {
 } from "@aws-sdk/client-s3";
 
 describe("AWS S3 integration tests with LocalStack", () => {
-  beforeEach(async () => {
+  beforeAll(async () => {
     try {
       await s3.send(new CreateBucketCommand({ Bucket: "test-bucket" }));
     } catch (error) {
