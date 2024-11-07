@@ -68,7 +68,7 @@ describe("AWS S3 integration tests with LocalStack", () => {
         key: "test-key",
       });
 
-      console.log({ data });
+      console.log("getObject", { data });
       expect(data).toBeDefined();
     });
   });

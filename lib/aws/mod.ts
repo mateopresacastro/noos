@@ -105,11 +105,11 @@ export async function getObject({
       })
     );
 
-    if (!data.Body) {
+    if (!data) {
       throw new Error("No data in the response");
     }
 
-    return data.Body;
+    return data;
   } catch (error) {
     console.error("Error getting object:", error);
     return null;
