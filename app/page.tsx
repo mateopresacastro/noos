@@ -10,7 +10,7 @@ export default function Home() {
       <span className="block text-neutral-300 pb-8 text-xl text-center sm:text-left">
         noos is a marketplace for music creators.
       </span>
-      <Link href="/sign-up">
+      <Link href="/sign-up" prefetch={true}>
         <Button>Start Selling</Button>
       </Link>
     </div>

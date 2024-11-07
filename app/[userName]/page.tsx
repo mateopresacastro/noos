@@ -67,7 +67,7 @@ function SamplePack({
   userName: string;
 }) {
   return (
-    <Link href={`/${userName}/${samplePack.name}`}>
+    <Link href={`/${userName}/${samplePack.name}`} prefetch={true}>
       <div className="flex flex-col items-start justify-center object-cover rounded-xl text-left p-4 bg-neutral-900 hover:bg-neutral-800">
         <Image
           src={samplePack.imgUrl}

@@ -37,7 +37,7 @@ export default function Clerk() {
           <UserButton.UserProfilePage label="account" />
           {username ? (
             <UserButton.UserProfileLink
-              label="Public profile"
+              label="Your store"
               url={`/${username}`}
               labelIcon={<SquareArrowOutUpRight className="w-4 h-4" />}
             />

@@ -40,7 +40,7 @@ export default async function Page({
         </div>
         <div>
           <h1 className="text-3xl font-bold">{samplePack.title}</h1>
-          <Link href={`/${userName}`}>
+          <Link href={`/${userName}`} prefetch={true}>
             <p className="text-neutral-500">
               by @{samplePack.creator.userName}
             </p>
