@@ -21,8 +21,6 @@ const clientCfg =
         },
       };
 
-console.log({ clientCfg });
-
 const s3 = new S3Client(clientCfg);
 
 export default s3;

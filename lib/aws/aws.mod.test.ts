@@ -32,7 +32,6 @@ describe("AWS S3 integration tests with LocalStack", () => {
   describe("listBuckets", () => {
     it("should return a list of buckets", async () => {
       const result = await listBuckets();
-      console.log("List buckets result on test", result);
       expect(result).toEqual(
         expect.arrayContaining([
           expect.objectContaining({ Name: "test-bucket" }),
@@ -54,7 +53,7 @@ describe("AWS S3 integration tests with LocalStack", () => {
 
   describe("getObject", () => {
     it("should retrieve object data", async () => {
-      const putObjectResult = await s3.send(
+      await s3.send(
         new PutObjectCommand({
           Bucket: "test-bucket",
           Key: "test-key",
@@ -62,7 +61,6 @@ describe("AWS S3 integration tests with LocalStack", () => {
         })
       );
 
-      console.log("getObject put object check", putObjectResult);
       const data = await getObject({
         bucketName: "test-bucket",
         key: "test-key",
