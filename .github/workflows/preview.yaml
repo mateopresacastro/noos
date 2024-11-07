@@ -18,9 +18,9 @@ jobs:
       AWS_ACCESS_KEY_ID: mock-aws-access-key-id
       AWS_SECRET_ACCESS_KEY: mock-aws-secret-access-key
       AWS_PRIVATE_BUCKET_ARN: mock-aws-private-bucket-arn
-      AWS_PRIVATE_BUCKET_NAME: mock-aws-private-bucket-name
+      AWS_PRIVATE_BUCKET_NAME: noos-private-assets
       AWS_PUBLIC_BUCKET_ARN: mock-aws-public-bucket-arn
-      AWS_PUBLIC_BUCKET_NAME: mock-aws-public-bucket-name
+      AWS_PUBLIC_BUCKET_NAME: noos-public-assets
       AWS_PUBLIC_BUCKET_URL: mock-aws-public-bucket-url
       FORCE_COLOR: 1
     steps:
