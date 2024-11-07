@@ -11,20 +11,18 @@ import {
   GetObjectCommand,
   DeleteObjectCommand,
   CreateBucketCommand,
-  ListObjectsCommand,
 } from "@aws-sdk/client-s3";
 import "server-only";
 
 (async () => {
   if (!isDev) return;
   await createLocalStackBuckets();
-  await listAllObjects();
 })();
 
 async function createLocalStackBuckets() {
   const buckets = await listBuckets();
   if (buckets && buckets.length > 0) return;
-  [AWS_PUBLIC_BUCKET_NAME, AWS_PRIVATE_BUCKET_NAME, "test-bucket"].forEach(
+  [AWS_PUBLIC_BUCKET_NAME, AWS_PRIVATE_BUCKET_NAME].forEach(
     async (bucket) =>
       await s3.send(
         new CreateBucketCommand({
@@ -37,13 +35,6 @@ async function createLocalStackBuckets() {
   );
 
   console.log("Buckets created on localstack", await listBuckets());
-}
-
-async function listAllObjects() {
-  [AWS_PUBLIC_BUCKET_NAME, AWS_PRIVATE_BUCKET_NAME].forEach(async (bucket) => {
-    const objects = await s3.send(new ListObjectsCommand({ Bucket: bucket }));
-    console.log("Objects in bucket: ", bucket, objects);
-  });
 }
 
 export async function listBuckets() {
