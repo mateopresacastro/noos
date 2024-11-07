@@ -18,7 +18,7 @@ import { createSamplePackName, isDev } from "@/lib/utils";
 import {
   type UploadFormSchema,
   uploadFormSchema,
-} from "@/app/_header/upload-form-schema";
+} from "@/components/upload-form-schema";
 
 type PreSignedUrls = Awaited<ReturnType<typeof handleCreatePreSignedUrl>>;
 

@@ -1,6 +1,6 @@
 "use client";
 
-import UploadForm from "@/app/_header/upload-form";
+import UploadForm from "@/components/upload-form";
 import { Button } from "@/components/ui/button";
 import { useUser } from "@clerk/nextjs";
 import {
@@ -21,7 +21,7 @@ export default function UploadButton({ userName }: { userName: string }) {
       <DialogTrigger asChild>
         <Button className="mt-4">Upload</Button>
       </DialogTrigger>
-      <DialogContent className="max-h-[95dvh] max-w-[95dvw] overflow-y-auto px-10">
+      <DialogContent className="max-h-[95dvh] max-w-2xl overflow-y-auto ">
         <DialogHeader>
           <DialogTitle>Upload a Sample Pack</DialogTitle>
           <DialogDescription>

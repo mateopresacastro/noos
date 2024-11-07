@@ -1,5 +1,5 @@
 import Link from "next/link";
-import Clerk from "@/app/_header/clerk";
+import Clerk from "@/components/clerk";
 
 export default function Header() {
   return (

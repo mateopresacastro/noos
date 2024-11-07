@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import UploadButton from "@/app/[userName]/upload-button";
+import UploadButton from "@/components/upload-button";
 import { getData } from "@/lib/db/mod";
 import { notFound } from "next/navigation";
 

@@ -1,9 +1,8 @@
 "use client";
 
-import SamplePacks from "@/app/_header/sample-packs";
-import Stripe from "@/app/_header/stripe";
+import Stripe from "@/components/stripe";
 import { Button } from "@/components/ui/button";
-import { DollarSign, DotIcon, Music2 } from "lucide-react";
+import { DollarSign, SquareArrowOutUpRight } from "lucide-react";
 import {
   SignedOut,
   SignInButton,
@@ -16,7 +15,7 @@ import {
 export default function Clerk() {
   const data = useUser();
   const username = data?.user?.username;
-  
+
   return (
     <>
       <SignedOut>
@@ -40,7 +39,7 @@ export default function Clerk() {
             <UserButton.UserProfileLink
               label="Public profile"
               url={`/${username}`}
-              labelIcon={<DotIcon className="w-4 h-4" />}
+              labelIcon={<SquareArrowOutUpRight className="w-4 h-4" />}
             />
           ) : null}
           <UserButton.UserProfilePage
@@ -49,13 +48,6 @@ export default function Clerk() {
             labelIcon={<DollarSign className="w-4 h-4" />}
           >
             <Stripe />
-          </UserButton.UserProfilePage>
-          <UserButton.UserProfilePage
-            label="Sample packs"
-            url="sample-packs"
-            labelIcon={<Music2 className="w-4 h-4" />}
-          >
-            <SamplePacks />
           </UserButton.UserProfilePage>
           <UserButton.UserProfilePage label="security" />
         </UserButton>
