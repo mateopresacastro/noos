@@ -12,11 +12,11 @@
     "db:format": "npx prisma format",
     "db:seed": "npx prisma db seed",
     "db:push": "npx prisma db push",
-    "test": "docker compose up -d --remove-orphans && npm run db:push && npx jest --detectOpenHandles --forceExit --runInBand --silent"
+    "test": "docker compose up -d --remove-orphans && npm run db:push && npx jest --detectOpenHandles --forceExit --verbose --runInBand --silent"
   },
   "prisma": {
-    "schema": "lib/db/schema.prisma",
-    "seed": "node --experimental-strip-types lib/db/seed.ts"
+    "schema": "lib/db/cfg/schema.prisma",
+    "seed": "node --experimental-strip-types lib/db/cfg/seed.ts"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.685.0",
