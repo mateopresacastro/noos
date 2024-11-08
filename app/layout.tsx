@@ -63,13 +63,15 @@ export default function RootLayout({
       }}
     >
       <html lang="en">
-        <body
-          className={`${inter.className} antialiased max-w-6xl px-6 mx-auto bg-neutral-950 text-neutral-50 dark`}
-        >
-          <Providers>
-            <Header />
-            {children}
-          </Providers>
+        <body className="bg-neutral-950 text-neutral-50 dark">
+          <div
+            className={`${inter.className} antialiased max-w-6xl px-6 mx-auto `}
+          >
+            <Providers>
+              <Header />
+              {children}
+            </Providers>
+          </div>
         </body>
       </html>
     </ClerkProvider>
