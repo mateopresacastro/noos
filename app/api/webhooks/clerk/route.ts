@@ -7,7 +7,7 @@ import {
   handleDeleteUser,
   handleUpdateUser,
   serverErrorResponse,
-} from "@/lib/clerk-webhooks";
+} from "@/lib/clerk-webhook-handlers";
 import type { WebhookEvent } from "@clerk/nextjs/server";
 
 export async function POST(req: Request) {
