@@ -2,7 +2,11 @@
 
 import { z } from "zod";
 import { auth } from "@clerk/nextjs/server";
-import { deleteSamplePack, readUser, updateSamplePack } from "@/lib/db/mod";
+import {
+  deleteSamplePack,
+  readUser,
+  updateSamplePack,
+} from "@/lib/db/queries/mod";
 import "server-only";
 
 const deleteSamplePackActionSchema = z.object({
@@ -56,7 +60,7 @@ export async function deleteSamplePackAction({
 }
 
 const updateSamplePackActionSchema = z.object({
-  samplePackName: z.string(),
+  name: z.string(),
   userName: z.string(),
   title: z.string().min(5).max(50),
   description: z.string().min(5).max(100).optional(),

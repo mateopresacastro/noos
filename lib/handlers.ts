@@ -1,7 +1,8 @@
 import "server-only";
 import { createConnectedAccount } from "@/lib/stripe";
-import { createUser, updateUser, deleteUser } from "@/lib/db/mod";
+
 import type { UserJSON, DeletedObjectJSON } from "@clerk/nextjs/server";
+import { createUser, deleteUser, updateUser } from "@/lib/db/queries/mod";
 
 export async function handleCreateUser(user: UserJSON) {
   const stripeId = await createConnectedAccount(user.id);

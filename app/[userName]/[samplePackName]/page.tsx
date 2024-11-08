@@ -1,8 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
-import { getSamplePack } from "@/lib/db/mod";
 import { notFound } from "next/navigation";
 import { Button } from "@/components/ui/button";
+import { getSamplePack } from "@/lib/db/queries/mod";
 import WaveForm from "@/components/waveform";
 import EditPackButton from "@/components/edit-pack-button";
 import NumberFlow from "@number-flow/react";

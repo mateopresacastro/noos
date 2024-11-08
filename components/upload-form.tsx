@@ -77,7 +77,7 @@ export default function UploadForm() {
     const { description, price, title } = formValues;
     const { imageSignedUrl, zipFileSignedUrl, samplesSignedUrls } =
       preSignedUrls;
-    const samplePackName = createSamplePackName(title);
+    const name = createSamplePackName(title);
     const imgUrl = createPublicUrl(imageSignedUrl.key, "public");
     const url = createPublicUrl(zipFileSignedUrl.key, "public");
     const samples = samplesSignedUrls.map(({ key }) => ({
@@ -88,7 +88,7 @@ export default function UploadForm() {
         price,
         title,
         description,
-        samplePackName,
+        name,
         imgUrl,
         url,
       },

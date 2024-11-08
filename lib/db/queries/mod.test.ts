@@ -214,13 +214,13 @@ describe("DB Queries", () => {
           userName: testUser.userName,
         };
         const updatedSamplePack = await updateSamplePack(data);
-
-        expect(updatedSamplePack?.title).toBe(data.title);
-        expect(updatedSamplePack?.description).toBe(data.description);
-        expect(updatedSamplePack?.price).toBe(data.price);
+        if (!updatedSamplePack) throw new Error("Error updating sample pack");
+        expect(updatedSamplePack.title).toBe(data.title);
+        expect(updatedSamplePack.description).toBe(data.description);
+        expect(updatedSamplePack.price).toBe(data.price);
 
         await deleteSamplePack({
-          samplePackName: updatedSamplePack?.name!,
+          samplePackName: updatedSamplePack.name,
           userName: testUser.userName,
         });
         await deleteUser({ clerkId: testUser.clerkId });

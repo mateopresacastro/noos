@@ -53,7 +53,7 @@ type EditPackSchema = z.infer<typeof editPackSchema>;
 
 export default function EditPackButton({
   userName,
-  samplePackName,
+  samplePackName: name,
   description,
   price,
 }: {
@@ -69,7 +69,7 @@ export default function EditPackButton({
   const form = useForm<EditPackSchema>({
     resolver: zodResolver(editPackSchema),
     defaultValues: {
-      title: urlNameToTitle(samplePackName),
+      title: urlNameToTitle(name),
       description,
       price,
     },
@@ -84,7 +84,7 @@ export default function EditPackButton({
   // TODO handle loading and error state
   const { mutate: deleteSamplePack } = useMutation({
     mutationFn: async () => {
-      await deleteSamplePackAction({ samplePackName, userName });
+      await deleteSamplePackAction({ samplePackName: name, userName });
     },
     onSuccess: () => router.push(`/${userName}`),
   });
@@ -92,7 +92,7 @@ export default function EditPackButton({
   const { mutate: updateSamplePack, data: newSamplePackName } = useMutation({
     mutationFn: async () => {
       const res = await updateSamplePackAction({
-        samplePackName,
+        name,
         userName,
         title: newTitle,
         description: newDescription,
@@ -109,7 +109,7 @@ export default function EditPackButton({
     }
 
     router.push(`/${userName}/${newSamplePackName}`);
-  }, [newSamplePackName, router, samplePackName, userName]);
+  }, [newSamplePackName, router, name, userName]);
 
   function onSubmit() {
     // TODO check that user actually changed values

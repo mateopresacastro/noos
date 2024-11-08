@@ -3,8 +3,9 @@
 import { createPresignedUrl } from "@/lib/aws/mod";
 import { currentUser } from "@clerk/nextjs/server";
 import { AWS_PRIVATE_BUCKET_NAME, AWS_PUBLIC_BUCKET_NAME } from "@/cfg";
-import { addSampleToSamplePack, createSamplePack } from "@/lib/db/mod";
+
 import "server-only";
+import { addSampleToSamplePack, createSamplePack } from "@/lib/db/queries/mod";
 
 export async function handleCreatePreSignedUrl(numOfSamples: number) {
   try {
@@ -79,7 +80,7 @@ export async function handleCreatePreSignedUrl(numOfSamples: number) {
 }
 
 type SamplePack = {
-  samplePackName: string;
+  name: string;
   description?: string;
   price: number;
   imgUrl: string;
@@ -92,7 +93,7 @@ type Sample = {
 };
 
 export async function handlePersistData({
-  samplePack: { samplePackName, description, price, imgUrl, title, url },
+  samplePack: { name, description, price, imgUrl, title, url },
   samples,
 }: {
   samplePack: SamplePack;
@@ -104,7 +105,7 @@ export async function handlePersistData({
     // TODO: sanitize inputs
     const newSamplePack = await createSamplePack({
       clerkId: user.id,
-      samplePackName,
+      name,
       description,
       price,
       imgUrl,

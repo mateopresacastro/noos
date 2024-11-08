@@ -5,7 +5,7 @@ import "server-only";
 import Stripe from "stripe";
 import { currentUser } from "@clerk/nextjs/server";
 import { HOST_URL, STRIPE_SECRET_KEY } from "@/cfg";
-import { readUser } from "@/lib/db/mod";
+import { readUser } from "@/lib/db/queries/mod";
 
 const stripe = new Stripe(STRIPE_SECRET_KEY);
 
