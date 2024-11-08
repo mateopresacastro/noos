@@ -6,18 +6,6 @@ import { HOST_URL } from "@/cfg";
 import { readUser } from "@/lib/db/queries/mod";
 import "server-only";
 
-export async function createConnectedAccountAction(clerkId: string) {
-  try {
-    const account = await stripe.accounts.create({
-      metadata: { clerkId },
-    });
-
-    return account.id;
-  } catch (error) {
-    console.error("Error creating connected account:", error);
-    return null;
-  }
-}
 
 export async function createStripeAccountLinkAction() {
   const user = await currentUser();
