@@ -1,6 +1,6 @@
 "use client";
 
-import { set, z } from "zod";
+import { z } from "zod";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useUser } from "@clerk/nextjs";
@@ -40,7 +40,6 @@ import {
   updateSamplePackAction,
 } from "@/lib/db/actions";
 import { urlNameToTitle } from "@/lib/utils";
-import { ChartNoAxesColumnDecreasing } from "lucide-react";
 import { useEffect, useState } from "react";
 
 // TODO: handle image upload
@@ -105,12 +104,12 @@ export default function EditPackButton({
   });
 
   useEffect(() => {
-    if (!newSamplePackName || newSamplePackName === samplePackName) {
+    if (!newSamplePackName) {
       return;
     }
 
     router.push(`/${userName}/${newSamplePackName}`);
-  }, [newSamplePackName]);
+  }, [newSamplePackName, router, samplePackName, userName]);
 
   function onSubmit() {
     // TODO check that user actually changed values
@@ -125,7 +124,7 @@ export default function EditPackButton({
         </Button>
       </DialogTrigger>
       <DialogContent>
-        <DialogHeader>
+        <DialogHeader className="p-1">
           <DialogTitle>Edit sample pack</DialogTitle>
           <DialogDescription>
             If you want to change the samples delete this pack and create a new
@@ -135,7 +134,7 @@ export default function EditPackButton({
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
-            className="space-y-14 w-full pt-8 overflow-y-scroll"
+            className="space-y-8 w-full pt-8 overflow-y-scroll px-1"
           >
             <FormField
               control={form.control}
@@ -183,7 +182,7 @@ export default function EditPackButton({
                 </FormItem>
               )}
             />
-            <div className="flex justify-between items-center">
+            <div className="flex justify-between items-center pt-8">
               <Button type="submit">Submit</Button>
               <AlertDialog>
                 <AlertDialogTrigger

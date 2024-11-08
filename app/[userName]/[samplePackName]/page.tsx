@@ -36,14 +36,14 @@ export default async function Page({
         <span className="block text-neutral-400">{samplePack.description}</span>
         <Link href={`/${userName}`} prefetch={true}>
           <span className="text-neutral-400 block pt-1 font-medium text-xs">
-            by @{userName}
+            @{userName}
           </span>
         </Link>
         <NumberFlow
           value={Number(samplePack.price.toFixed(2))}
           format={{ style: "currency", currency: "USD" }}
           locales="en-US"
-          className="pt-1"
+          className="pt-4"
         />
         <Button className="font-medium w-full my-6 text-base" size="lg">
           Buy
