@@ -4,7 +4,10 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { useQuery } from "@tanstack/react-query";
 import { redirect } from "next/navigation";
-import { createStripeAccountLink, hasRequirementsDue } from "@/lib/stripe";
+import {
+  createStripeAccountLinkAction,
+  hasRequirementsDueAction,
+} from "@/lib/stripe";
 
 export default function Stripe() {
   return (
@@ -19,13 +22,13 @@ export default function Stripe() {
 function StripeAccountStatus() {
   const { data: requirements, isLoading } = useQuery({
     queryKey: ["stripeRequirements"],
-    queryFn: hasRequirementsDue,
+    queryFn: hasRequirementsDueAction,
     refetchOnWindowFocus: false,
   });
 
   const { data: stripeAccountLink, refetch: getStripeAccountLink } = useQuery({
     queryKey: ["stripeAccountLink"],
-    queryFn: createStripeAccountLink,
+    queryFn: createStripeAccountLinkAction,
     enabled: false,
   });
 

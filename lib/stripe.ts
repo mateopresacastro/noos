@@ -1,15 +1,14 @@
 "use server";
 
-import "server-only";
-
 import Stripe from "stripe";
 import { currentUser } from "@clerk/nextjs/server";
 import { HOST_URL, STRIPE_SECRET_KEY } from "@/cfg";
 import { readUser } from "@/lib/db/queries/mod";
+import "server-only";
 
 const stripe = new Stripe(STRIPE_SECRET_KEY);
 
-export async function createConnectedAccount(clerkId: string) {
+export async function createConnectedAccountAction(clerkId: string) {
   try {
     const account = await stripe.accounts.create({
       metadata: { clerkId },
@@ -22,7 +21,7 @@ export async function createConnectedAccount(clerkId: string) {
   }
 }
 
-export async function createStripeAccountLink() {
+export async function createStripeAccountLinkAction() {
   const user = await currentUser();
   if (!user) throw new Error();
   const data = await readUser({ clerkId: user.id });
@@ -37,7 +36,7 @@ export async function createStripeAccountLink() {
   return url;
 }
 
-export async function hasRequirementsDue() {
+export async function hasRequirementsDueAction() {
   const user = await currentUser();
   if (!user) throw new Error();
   const data = await readUser({ clerkId: user.id });
