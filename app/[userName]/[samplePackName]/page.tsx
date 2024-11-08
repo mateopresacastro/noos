@@ -20,14 +20,13 @@ export default async function Page({
 
   return (
     <div className="flex flex-col items-center justify-start min-h-screen py-24 sm:py-32">
-      <div className="flex items-start flex-col max-w-96">
+      <div className="flex items-start flex-col w-full max-w-96">
         <div className="w-full flex items-center justify-center">
-          <div className="rounded-2xl w-full h-full aspect-square mb-2 object-cover">
+          <div className="rounded-2xl w-full h-full aspect-square mb-3 object-cover relative">
             <Image
               src={samplePack.imgUrl}
               alt={samplePack.title}
-              width={384}
-              height={384}
+              fill
               className="rounded-2xl w-full h-full object-cover"
             />
           </div>

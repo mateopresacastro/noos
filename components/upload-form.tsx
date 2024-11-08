@@ -104,7 +104,7 @@ export default function UploadForm() {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(() => createPreSignedUrls())}
-        className="space-y-14 w-full pt-8 overflow-y-scroll"
+        className="space-y-14 w-full pt-8 overflow-y-scroll px-1"
       >
         <FormField
           control={form.control}

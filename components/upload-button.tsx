@@ -22,7 +22,7 @@ export default function UploadButton({ userName }: { userName: string }) {
         <Button className="mt-6">Upload</Button>
       </DialogTrigger>
       <DialogContent className="max-h-[95dvh] max-w-2xl overflow-y-auto ">
-        <DialogHeader>
+        <DialogHeader className="p-1">
           <DialogTitle>Upload a Sample Pack</DialogTitle>
           <DialogDescription>
             Fill the information. Click submit when you&apos;re done.

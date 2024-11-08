@@ -30,12 +30,12 @@ export default async function Page({
         />
       </div>
       <span className="block pt-6 text-xl font-medium">{data.name}</span>
-      <div className="flex items-center justify-center">
-        <span className="text-neutral-400 block pt-0.5 text-sm font-medium">
+      <div className="flex items-baseline justify-center pt-1">
+        <span className="text-neutral-400 block text-sm font-medium">
           @{userName}
         </span>
-        <DotIcon className="text-neutral-400 size-4 mt-1" />
-        <span className="text-neutral-400 block pt-0.5 text-sm font-medium">
+        <DotIcon className="text-neutral-400 size-4 pt-2" />
+        <span className="text-neutral-400 block text-sm font-medium">
           {data.samplePacks.length} Packs
         </span>
       </div>
@@ -57,11 +57,7 @@ function SamplePacks({
   userName: string;
 }) {
   return (
-    <div
-      className="pt-10 sm:pt-16 grid grid-cols-2 sm:grid-cols-3
-
-    lg:grid-cols-4 xl:grid-cols-5 gap-6 sm:gap-14 w-full mb-32"
-    >
+    <div className="pt-10 sm:pt-16 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 sm:gap-14 w-fit mb-32 mx-auto">
       {samplePacks.map((samplePack) => (
         <SamplePack
           key={samplePack.title}
