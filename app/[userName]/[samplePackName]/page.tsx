@@ -44,9 +44,11 @@ export default async function Page({
           locales="en-US"
           className="pt-4"
         />
-        <Button className="font-medium w-full my-6 text-base" size="lg">
-          Buy
-        </Button>
+        <Link href={samplePack.stripePaymentLink} className="w-full">
+          <Button className="font-medium w-full my-6 text-base" size="lg">
+            Buy
+          </Button>
+        </Link>
         <EditPackButton
           userName={userName}
           samplePackName={samplePack.name}

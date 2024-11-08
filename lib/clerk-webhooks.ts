@@ -1,5 +1,5 @@
 import "server-only";
-import { createConnectedAccountAction } from "@/lib/stripe";
+import { createConnectedAccountAction } from "@/lib/stripe/actions";
 
 import type { UserJSON, DeletedObjectJSON } from "@clerk/nextjs/server";
 import { createUser, deleteUser, updateUser } from "@/lib/db/queries/mod";

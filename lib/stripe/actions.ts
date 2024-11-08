@@ -1,12 +1,10 @@
 "use server";
 
-import Stripe from "stripe";
+import stripe from "@/lib/stripe/client";
 import { currentUser } from "@clerk/nextjs/server";
-import { HOST_URL, STRIPE_SECRET_KEY } from "@/cfg";
+import { HOST_URL } from "@/cfg";
 import { readUser } from "@/lib/db/queries/mod";
 import "server-only";
-
-const stripe = new Stripe(STRIPE_SECRET_KEY);
 
 export async function createConnectedAccountAction(clerkId: string) {
   try {

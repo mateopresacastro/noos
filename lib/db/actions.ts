@@ -1,13 +1,17 @@
 "use server";
 
+import "server-only";
 import { z } from "zod";
-import { auth } from "@clerk/nextjs/server";
+import { auth, currentUser } from "@clerk/nextjs/server";
 import {
+  addSampleToSamplePack,
+  createSamplePack,
   deleteSamplePack,
   readUser,
   updateSamplePack,
 } from "@/lib/db/queries/mod";
-import "server-only";
+import { createProduct } from "@/lib/stripe/queries/products";
+import { createPaymentLink } from "@/lib/stripe/queries/links";
 
 const deleteSamplePackActionSchema = z.object({
   samplePackName: z.string(),
@@ -106,6 +110,84 @@ export async function updateSamplePackAction(
 
     // I throw here becase this action will be consumed by TanStack Query
     // No message for security
+    throw new Error();
+  }
+}
+
+type SamplePack = {
+  name: string;
+  description?: string;
+  price: number;
+  imgUrl: string;
+  title: string;
+  url: string;
+};
+
+type Sample = {
+  url: string;
+};
+
+export async function persistSamplePackDataAction({
+  samplePack: { name, description, price, imgUrl, title, url },
+  samples,
+}: {
+  samplePack: SamplePack;
+  samples: Sample[];
+}) {
+  try {
+    const user = await currentUser();
+    if (!user || !user.username) {
+      throw new Error("User not found or username not set");
+    }
+
+    const userData = await readUser({ clerkId: user.id });
+    if (!userData || !userData.stripeId) {
+      throw new Error("User not found or stripeId not set");
+    }
+
+    // TODO: sanitize inputs
+    const stripeProduct = await createProduct({
+      title,
+      description,
+      price,
+      imgUrl,
+      samplePackName: name,
+      userName: user.username,
+      clerkId: user.id,
+      stripeConnectedAccountId: userData.stripeId,
+    });
+
+    if (!stripeProduct) throw new Error("Error creating product");
+
+    const stripePaymentLink = await createPaymentLink(
+      stripeProduct.priceId,
+      userData.stripeId
+    );
+
+    if (!stripePaymentLink) throw new Error("Error creating payment link");
+
+    const newSamplePack = await createSamplePack({
+      clerkId: user.id,
+      name,
+      description,
+      price,
+      imgUrl,
+      title,
+      url,
+      stripePaymentLink,
+    });
+
+    if (!newSamplePack) throw new Error("Error creating sample pack");
+
+    const samplesCreated = await addSampleToSamplePack(
+      newSamplePack.id,
+      samples
+    );
+
+    if (!samplesCreated) throw new Error("Error creating samples");
+    return true;
+  } catch (error) {
+    console.error("Error persisting sample pack data", error);
     throw new Error();
   }
 }

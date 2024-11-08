@@ -10,6 +10,7 @@ export async function createSamplePack({
   imgUrl,
   title,
   url,
+  stripePaymentLink,
 }: {
   clerkId: string;
   name: string;
@@ -18,6 +19,7 @@ export async function createSamplePack({
   imgUrl: string;
   title: string;
   url: string;
+  stripePaymentLink: string;
 }) {
   try {
     const user = await prisma.user.findUnique({
@@ -29,6 +31,17 @@ export async function createSamplePack({
       throw new Error("User not found");
     }
 
+    console.log("creating sample pack", {
+      clerkId,
+      name,
+      description,
+      price,
+      imgUrl,
+      title,
+      url,
+      stripePaymentLink,
+    });
+
     const samplePack = await prisma.samplePack.create({
       data: {
         creatorId: user.id,
@@ -38,6 +51,7 @@ export async function createSamplePack({
         imgUrl,
         title,
         url,
+        stripePaymentLink,
       },
     });
 

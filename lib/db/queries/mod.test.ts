@@ -128,6 +128,7 @@ describe("DB Queries", () => {
     title: "Test Sample Pack",
     url: "http://example.com/samplepack.zip",
     clerkId: testUser.clerkId,
+    stripePaymentLink: "http://example.com/stripe-payment-link",
   };
 
   describe("Sample pack", () => {

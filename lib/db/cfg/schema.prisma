@@ -22,18 +22,19 @@ model User {
 }
 
 model SamplePack {
-  id          Int           @id @default(autoincrement())
-  title       String
-  imgUrl      String
-  name        String
-  url         String
-  description String?
-  price       Float?
-  samples     Sample[]
-  creator     User          @relation(fields: [creatorId], references: [id])
-  creatorId   Int
-  createdAt   DateTime      @default(now())
-  Transaction Transaction[]
+  id                Int           @id @default(autoincrement())
+  title             String
+  imgUrl            String
+  name              String
+  stripePaymentLink String        @default("")
+  url               String
+  description       String?
+  price             Float?
+  samples           Sample[]
+  creator           User          @relation(fields: [creatorId], references: [id])
+  creatorId         Int
+  createdAt         DateTime      @default(now())
+  Transaction       Transaction[]
 
   @@unique([creatorId, name])
 }

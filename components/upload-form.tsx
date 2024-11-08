@@ -12,9 +12,10 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { useMutation } from "@tanstack/react-query";
-import { handleCreatePreSignedUrl, handlePersistData } from "@/lib/aws/actions";
+import { handleCreatePreSignedUrl } from "@/lib/aws/actions";
 import { handleUploadToS3, type UploadToS3Data } from "@/lib/aws/upload";
 import { createSamplePackName, isDev } from "@/lib/utils";
+import { persistSamplePackDataAction } from "@/lib/db/actions";
 import {
   type UploadFormSchema,
   uploadFormSchema,
@@ -68,7 +69,7 @@ export default function UploadForm() {
     mutationFn: async () => {
       const data = getDataToPersist();
       if (!data) throw new Error();
-      await handlePersistData(data);
+      await persistSamplePackDataAction(data);
     },
   });
 

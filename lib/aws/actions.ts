@@ -1,11 +1,9 @@
 "use server";
 
+import "server-only";
 import { createPresignedUrl } from "@/lib/aws/mod";
 import { currentUser } from "@clerk/nextjs/server";
 import { AWS_PRIVATE_BUCKET_NAME, AWS_PUBLIC_BUCKET_NAME } from "@/cfg";
-
-import "server-only";
-import { addSampleToSamplePack, createSamplePack } from "@/lib/db/queries/mod";
 
 export async function handleCreatePreSignedUrl(numOfSamples: number) {
   try {
@@ -76,52 +74,5 @@ export async function handleCreatePreSignedUrl(numOfSamples: number) {
     // I throw here becase this function will be consumed by TanStack Query
     // No message for security
     throw new Error();
-  }
-}
-
-type SamplePack = {
-  name: string;
-  description?: string;
-  price: number;
-  imgUrl: string;
-  title: string;
-  url: string;
-};
-
-type Sample = {
-  url: string;
-};
-
-export async function handlePersistData({
-  samplePack: { name, description, price, imgUrl, title, url },
-  samples,
-}: {
-  samplePack: SamplePack;
-  samples: Sample[];
-}) {
-  try {
-    const user = await currentUser();
-    if (!user) throw new Error();
-    // TODO: sanitize inputs
-    const newSamplePack = await createSamplePack({
-      clerkId: user.id,
-      name,
-      description,
-      price,
-      imgUrl,
-      title,
-      url,
-    });
-
-    if (!newSamplePack) throw new Error();
-    const samplesCreated = await addSampleToSamplePack(
-      newSamplePack.id,
-      samples
-    );
-
-    if (!samplesCreated) throw new Error();
-  } catch (error) {
-    console.error("Error persisting data", error);
-    return null;
   }
 }

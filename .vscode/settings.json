@@ -3,6 +3,7 @@
     "clsx",
     "geist",
     "hookform",
+    "idempotency",
     "localstack",
     "lucide",
     "nextjs",
@@ -14,6 +15,7 @@
     "tailwindcss",
     "tanstack",
     "trpc",
+    "uuidv",
     "wavesurfer"
   ]
 }
