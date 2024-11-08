@@ -1,3 +1,5 @@
+"use server";
+
 import "server-only";
 import { createConnectedAccount } from "@/lib/stripe";
 import { createUser, updateUser, deleteUser } from "@/lib/db/mod";

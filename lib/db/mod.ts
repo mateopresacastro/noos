@@ -1,5 +1,6 @@
 import "server-only";
 import prisma from "@/lib/db/client";
+import { createSamplePackName } from "@/lib/utils";
 
 type User = {
   clerkId: string;
@@ -229,6 +230,109 @@ export async function addSampleToSamplePack(
     return newSamples;
   } catch (error) {
     console.error("Error adding sample to sample pack", error);
+    return null;
+  }
+}
+
+export async function deleteSamplePack({
+  samplePackName,
+  userName,
+}: {
+  samplePackName: string;
+  userName: string;
+}) {
+  try {
+    const user = await prisma.user.findUnique({
+      where: { userName },
+      select: { id: true },
+    });
+
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    const samplePack = await prisma.samplePack.findFirst({
+      where: {
+        creatorId: user.id,
+        name: samplePackName,
+      },
+    });
+
+    if (!samplePack) {
+      throw new Error("Sample pack not found");
+    }
+
+    const deleteSamples = prisma.sample.deleteMany({
+      where: {
+        samplePackId: samplePack.id,
+      },
+    });
+
+    const deleteSamplePack = prisma.samplePack.delete({
+      where: {
+        id: samplePack.id,
+      },
+    });
+
+    await prisma.$transaction([deleteSamples, deleteSamplePack]);
+
+    return true;
+  } catch (error) {
+    console.error("Error deleting sample pack", {
+      error,
+      samplePackName,
+      userName,
+    });
+    return null;
+  }
+}
+
+export async function updateSamplePack({
+  samplePackName,
+  userName,
+  title,
+  description,
+  price,
+  userId,
+}: {
+  samplePackName: string;
+  userName: string;
+  title: string;
+  description?: string;
+  price: number;
+  userId: number;
+}) {
+  try {
+    const samplePack = await prisma.samplePack.findFirst({
+      where: {
+        creatorId: userId,
+        name: samplePackName,
+      },
+    });
+
+    if (!samplePack) {
+      throw new Error("Sample pack not found");
+    }
+
+    const updatedPack = await prisma.samplePack.update({
+      where: {
+        id: samplePack.id,
+      },
+      data: {
+        title,
+        description,
+        price,
+        name: createSamplePackName(title),
+      },
+    });
+
+    return updatedPack;
+  } catch (error) {
+    console.error("Error updating sample pack", {
+      error,
+      samplePackName,
+      userName,
+    });
     return null;
   }
 }

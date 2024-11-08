@@ -9,13 +9,24 @@ export const isDev = process.env.NODE_ENV === "development";
 export const isTest = process.env.NODE_ENV === "test";
 
 export function createSamplePackName(str: string) {
-  return str
-    .split(" ")
-    .map((word) =>
-      word
-        .split("")
-        .map((char) => char.toLowerCase())
-        .join("")
-    )
-    .join("-");
+  return encodeURIComponent(
+    str
+      .split(" ")
+      .map((word) =>
+        word
+          .split("")
+          .map((char) => char.toLowerCase())
+          .join("")
+      )
+      .join("-")
+  );
+}
+
+export function urlNameToTitle(str: string): string {
+  return decodeURIComponent(
+    str
+      .split("-")
+      .map((word) => word.charAt(0).toUpperCase().concat(word.slice(1)))
+      .join(" ")
+  );
 }

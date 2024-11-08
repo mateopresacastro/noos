@@ -35,13 +35,6 @@ export default function Clerk() {
       <SignedIn>
         <UserButton>
           <UserButton.UserProfilePage label="account" />
-          {username ? (
-            <UserButton.UserProfileLink
-              label="Your store"
-              url={`/${username}`}
-              labelIcon={<SquareArrowOutUpRight className="w-4 h-4" />}
-            />
-          ) : null}
           <UserButton.UserProfilePage
             label="Stripe"
             url="stripe"
@@ -50,6 +43,13 @@ export default function Clerk() {
             <Stripe />
           </UserButton.UserProfilePage>
           <UserButton.UserProfilePage label="security" />
+          {username ? (
+            <UserButton.UserProfileLink
+              label="Your store"
+              url={`/${username}`}
+              labelIcon={<SquareArrowOutUpRight className="w-4 h-4" />}
+            />
+          ) : null}
         </UserButton>
       </SignedIn>
     </>
