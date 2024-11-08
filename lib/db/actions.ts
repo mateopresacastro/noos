@@ -3,6 +3,7 @@
 import "server-only";
 import { z } from "zod";
 import { auth, currentUser } from "@clerk/nextjs/server";
+import { createPaymentLink, createProduct } from "@/lib/stripe/queries/mod";
 import {
   addSampleToSamplePack,
   createSamplePack,
@@ -10,8 +11,6 @@ import {
   readUser,
   updateSamplePack,
 } from "@/lib/db/queries/mod";
-import { createProduct } from "@/lib/stripe/queries/products";
-import { createPaymentLink } from "@/lib/stripe/queries/links";
 
 const deleteSamplePackActionSchema = z.object({
   samplePackName: z.string(),
@@ -57,7 +56,7 @@ export async function deleteSamplePackAction({
       samplePackName,
     });
 
-    // I throw here becase this action will be consumed by TanStack Query
+    // The action will be consumed by TanStack Query
     // No message for security
     throw new Error();
   }
@@ -76,7 +75,7 @@ type UpdateSamplePackActionSchema = z.infer<
 >;
 
 export async function updateSamplePackAction(
-  args: UpdateSamplePackActionSchema
+  updateSamplePackData: UpdateSamplePackActionSchema
 ) {
   try {
     const { userId } = await auth();
@@ -84,18 +83,21 @@ export async function updateSamplePackAction(
       throw new Error("User not signed in");
     }
 
-    updateSamplePackActionSchema.parse(args);
+    updateSamplePackActionSchema.parse(updateSamplePackData);
 
     const user = await readUser({ clerkId: userId });
     if (!user) {
       throw new Error("User not found");
     }
 
-    if (user.userName !== args.userName) {
+    if (user.userName !== updateSamplePackData.userName) {
       throw new Error("User not authorized");
     }
 
-    const updatedPack = await updateSamplePack({ ...args, userId: user.id });
+    const updatedPack = await updateSamplePack({
+      ...updateSamplePackData,
+      userId: user.id,
+    });
 
     if (!updatedPack) {
       throw new Error("Error updating sample pack");
@@ -105,47 +107,49 @@ export async function updateSamplePackAction(
   } catch (error) {
     console.error("Error updating sample pack", {
       error,
-      args,
+      updateSamplePackData,
     });
 
-    // I throw here becase this action will be consumed by TanStack Query
+    // The action will be consumed by TanStack Query
     // No message for security
     throw new Error();
   }
 }
 
-type SamplePack = {
-  name: string;
-  description?: string;
-  price: number;
-  imgUrl: string;
-  title: string;
-  url: string;
-};
+const persistSamplePackDataActionSchema = z.object({
+  samplePack: z.object({
+    name: z.string(),
+    description: z.string().optional(),
+    price: z.number(),
+    imgUrl: z.string(),
+    title: z.string(),
+    url: z.string(),
+  }),
+  samples: z.array(z.object({ url: z.string() })),
+});
 
-type Sample = {
-  url: string;
-};
+type SamplePackData = z.infer<typeof persistSamplePackDataActionSchema>;
 
-export async function persistSamplePackDataAction({
-  samplePack: { name, description, price, imgUrl, title, url },
-  samples,
-}: {
-  samplePack: SamplePack;
-  samples: Sample[];
-}) {
+export async function persistSamplePackDataAction(
+  samplePackData: SamplePackData
+) {
   try {
     const user = await currentUser();
     if (!user || !user.username) {
       throw new Error("User not found or username not set");
     }
 
+    persistSamplePackDataActionSchema.parse(samplePackData);
+    const {
+      samplePack: { name, description, price, imgUrl, title, url },
+      samples,
+    } = samplePackData;
+
     const userData = await readUser({ clerkId: user.id });
     if (!userData || !userData.stripeId) {
       throw new Error("User not found or stripeId not set");
     }
 
-    // TODO: sanitize inputs
     const stripeProduct = await createProduct({
       title,
       description,
