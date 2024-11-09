@@ -1,6 +1,6 @@
 import "server-only";
 import Stripe from "stripe";
-import { getSamplePack } from "@/lib/db/queries/mod";
+import { getSamplePack } from "@/lib/db/queries";
 import { HOST_URL, STRIPE_SECRET_KEY } from "@/cfg";
 import { v4 as uuidv4 } from "uuid";
 
@@ -115,7 +115,6 @@ export async function createProduct({
       }
     );
 
-    if (!product) throw new Error("The call to create a product failed");
     const { default_price: priceId } = product;
     if (!priceId) throw new Error("Default priceId not found");
     if (typeof priceId !== "string") {

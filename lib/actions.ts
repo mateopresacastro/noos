@@ -4,20 +4,16 @@ import "server-only";
 import { z } from "zod";
 import { auth, currentUser } from "@clerk/nextjs/server";
 import { AWS_PRIVATE_BUCKET_NAME, AWS_PUBLIC_BUCKET_NAME } from "@/cfg";
-import { createOnboardingLink, stripe } from "@/lib/stripe/mod";
+import { createOnboardingLink, stripe } from "@/lib/stripe";
 import { createPresignedUrl } from "@/lib/aws/mod";
-import {
-  createPaymentLink,
-  createProduct,
-  updateProduct,
-} from "@/lib/stripe/mod";
+import { createPaymentLink, createProduct, updateProduct } from "@/lib/stripe";
 import {
   addSampleToSamplePack,
   createSamplePack,
   deleteSamplePack,
   readUser,
   updateSamplePack,
-} from "@/lib/db/queries/mod";
+} from "@/lib/db/queries";
 
 export async function createStripeAccountLinkAction() {
   try {

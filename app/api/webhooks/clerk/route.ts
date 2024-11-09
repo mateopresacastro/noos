@@ -1,8 +1,8 @@
 import { Webhook } from "svix";
 import { headers } from "next/headers";
 import { CLERK_WEBHOOK_SECRET } from "@/cfg";
-import { createUser, deleteUser, updateUser } from "@/lib/db/queries/mod";
-import { createConnectedAccount } from "@/lib/stripe/mod";
+import { createUser, deleteUser, updateUser } from "@/lib/db/queries";
+import { createConnectedAccount } from "@/lib/stripe";
 import type {
   WebhookEvent,
   UserJSON,

@@ -3,7 +3,7 @@ import Link from "next/link";
 import UploadButton from "@/components/upload-button";
 import { notFound } from "next/navigation";
 import { DotIcon } from "lucide-react";
-import { getData } from "@/lib/db/queries/mod";
+import { getData } from "@/lib/db/queries";
 
 export default async function Page({
   params,
