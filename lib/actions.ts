@@ -205,7 +205,8 @@ export async function persistSamplePackDataAction(
     if (!stripeProduct) throw new Error("Error creating product");
     const stripePaymentLink = await createPaymentLink(
       stripeProduct.priceId,
-      userData.stripeId
+      userData.stripeId,
+      user.username
     );
 
     if (!stripePaymentLink) throw new Error("Error creating payment link");

@@ -9,6 +9,7 @@ export const AWS_PRIVATE_BUCKET_ARN = getEnvVar("AWS_PRIVATE_BUCKET_ARN");
 export const AWS_PRIVATE_BUCKET_NAME = getEnvVar("AWS_PRIVATE_BUCKET_NAME");
 export const AWS_PUBLIC_BUCKET_ARN = getEnvVar("AWS_PUBLIC_BUCKET_ARN");
 export const AWS_PUBLIC_BUCKET_NAME = getEnvVar("AWS_PUBLIC_BUCKET_NAME");
+export const STRIPE_WEBHOOK_SECRET = getEnvVar("STRIPE_WEBHOOK_SECRET");
 export const AWS_PUBLIC_BUCKET_URL = getEnvVar("AWS_PUBLIC_BUCKET_URL");
 export const HOST_URL =
   process.env.NODE_ENV === "development"

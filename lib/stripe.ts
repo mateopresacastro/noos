@@ -8,7 +8,8 @@ export const stripe = new Stripe(STRIPE_SECRET_KEY);
 
 export async function createPaymentLink(
   priceId: string,
-  stripeConnectedAccountId: string
+  stripeConnectedAccountId: string,
+  userName: string
 ) {
   try {
     const { url } = await stripe.paymentLinks.create(
@@ -20,6 +21,10 @@ export async function createPaymentLink(
           },
         ],
         application_fee_amount: 300,
+        after_completion: {
+          type: "redirect",
+          redirect: { url: `${HOST_URL}/payment-success/${userName}` },
+        },
       },
       {
         stripeAccount: stripeConnectedAccountId,
@@ -214,7 +219,8 @@ export async function updateProduct({
       if (!newPrice) throw new Error("Error creating price");
       newPaymentLink = await createPaymentLink(
         newPrice.id,
-        stripeConnectedAccountId
+        stripeConnectedAccountId,
+        userName
       );
 
       if (!newPaymentLink) throw new Error("Error creating payment link");
@@ -257,6 +263,45 @@ async function createPrice({
     );
   } catch (error) {
     console.error("Error creating price", error);
+    return null;
+  }
+}
+
+export async function getCustomerData(
+  paymentIntentId: string,
+  stripeConnectedAccountId: string
+) {
+  try {
+    const paymentIntent = await stripe.paymentIntents.retrieve(
+      paymentIntentId,
+      {
+        expand: ["charges.data", "latest_charge"],
+      },
+      {
+        stripeAccount: stripeConnectedAccountId,
+      }
+    );
+
+    if (!paymentIntent) {
+      throw new Error("Payment intent not found");
+    }
+
+    if (!paymentIntent.latest_charge) {
+      throw new Error("No charge found");
+    }
+
+    if (typeof paymentIntent.latest_charge === "string") {
+      throw new Error("Charge is not an object");
+    }
+
+    return { ...paymentIntent.latest_charge.billing_details };
+  } catch (error) {
+    console.error(
+      "Error retrieving payment intent:",
+      error,
+      paymentIntentId,
+      stripeConnectedAccountId
+    );
     return null;
   }
 }
