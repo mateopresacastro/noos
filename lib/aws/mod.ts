@@ -14,6 +14,9 @@ import {
 } from "@aws-sdk/client-s3";
 import "server-only";
 
+const FIVE_MIN_IN_SECONDS = 5 * 60;
+const ONE_DAY_IN_SECONDS = 24 * 60 * 60;
+
 (async () => {
   if (!isDev) return;
   await createLocalStackBuckets();
@@ -46,8 +49,6 @@ export async function listBuckets() {
     return null;
   }
 }
-
-const FIVE_MIN_IN_SECONDS = 5 * 60;
 
 export async function createPresignedUrl({
   bucketName,
@@ -124,6 +125,24 @@ export async function deleteObject({
     return data;
   } catch (error) {
     console.error("Error deleting object:", error);
+    return null;
+  }
+}
+
+export async function createSamplePackDownloadUrl(key: string) {
+  try {
+    const command = new GetObjectCommand({
+      Bucket: AWS_PRIVATE_BUCKET_NAME,
+      Key: key,
+    });
+
+    const url = await getSignedUrl(s3, command, {
+      expiresIn: ONE_DAY_IN_SECONDS,
+    });
+
+    return url;
+  } catch (error) {
+    console.error("Error creating presigned URL:", error);
     return null;
   }
 }

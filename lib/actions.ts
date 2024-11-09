@@ -165,6 +165,7 @@ const persistSamplePackDataActionSchema = z.object({
     imgUrl: z.string(),
     title: z.string(),
     url: z.string(),
+    key: z.string(),
   }),
   samples: z.array(z.object({ url: z.string() })),
 });
@@ -182,7 +183,7 @@ export async function persistSamplePackDataAction(
 
     persistSamplePackDataActionSchema.parse(samplePackData);
     const {
-      samplePack: { name, description, price, imgUrl, title, url },
+      samplePack: { name, description, price, imgUrl, title, url, key },
       samples,
     } = samplePackData;
 
@@ -200,14 +201,17 @@ export async function persistSamplePackDataAction(
       userName: user.username,
       clerkId: user.id,
       stripeConnectedAccountId: userData.stripeId,
+      key,
     });
 
     if (!stripeProduct) throw new Error("Error creating product");
-    const stripePaymentLink = await createPaymentLink(
-      stripeProduct.priceId,
-      userData.stripeId,
-      user.username
-    );
+    const stripePaymentLink = await createPaymentLink({
+      priceId: stripeProduct.priceId,
+      stripeConnectedAccountId: userData.stripeId,
+      productId: stripeProduct.product.id,
+      userName: user.username,
+      key,
+    });
 
     if (!stripePaymentLink) throw new Error("Error creating payment link");
     const newSamplePack = await createSamplePack({

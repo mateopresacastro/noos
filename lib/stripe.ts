@@ -6,12 +6,32 @@ import { v4 as uuidv4 } from "uuid";
 
 export const stripe = new Stripe(STRIPE_SECRET_KEY);
 
-export async function createPaymentLink(
-  priceId: string,
-  stripeConnectedAccountId: string,
-  userName: string
-) {
+export async function createPaymentLink({
+  priceId,
+  stripeConnectedAccountId,
+  userName,
+  productId,
+  key,
+}: {
+  priceId: string;
+  stripeConnectedAccountId: string;
+  userName: string;
+  productId: string;
+  key?: string;
+}) {
   try {
+    const metadata: {
+      ownerUserName: string;
+      productId: string;
+      s3Key?: string;
+    } = {
+      ownerUserName: userName,
+      productId,
+    };
+
+    // To not reset it when updating the pack
+    if (key) metadata.s3Key = key;
+
     const { url } = await stripe.paymentLinks.create(
       {
         line_items: [
@@ -20,6 +40,10 @@ export async function createPaymentLink(
             quantity: 1,
           },
         ],
+        metadata,
+        payment_intent_data: {
+          metadata,
+        },
         application_fee_amount: 300,
         after_completion: {
           type: "redirect",
@@ -88,6 +112,7 @@ type Product = {
   userName: string;
   samplePackName: string;
   stripeConnectedAccountId: string;
+  key: string;
 };
 
 export async function createProduct({
@@ -99,13 +124,14 @@ export async function createProduct({
   userName,
   samplePackName,
   stripeConnectedAccountId,
+  key,
 }: Product) {
   try {
     const product = await stripe.products.create(
       {
         name: title,
         description,
-        metadata: { ownerClerkId: clerkId },
+        metadata: { ownerClerkId: clerkId, s3Key: key },
         default_price_data: {
           currency: "usd",
           unit_amount: price * 100,
@@ -217,11 +243,12 @@ export async function updateProduct({
       });
 
       if (!newPrice) throw new Error("Error creating price");
-      newPaymentLink = await createPaymentLink(
-        newPrice.id,
+      newPaymentLink = await createPaymentLink({
+        priceId: newPrice.id,
+        productId: stripeProductId,
         stripeConnectedAccountId,
-        userName
-      );
+        userName,
+      });
 
       if (!newPaymentLink) throw new Error("Error creating payment link");
       productUpdateData.default_price = newPrice.id;
@@ -281,6 +308,8 @@ export async function getCustomerData(
         stripeAccount: stripeConnectedAccountId,
       }
     );
+
+    console.dir({ paymentIntent }, { depth: null });
 
     if (!paymentIntent) {
       throw new Error("Payment intent not found");

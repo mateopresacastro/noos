@@ -1,4 +1,5 @@
 import { STRIPE_WEBHOOK_SECRET } from "@/cfg";
+import { createSamplePackDownloadUrl } from "@/lib/aws/mod";
 import { getCustomerData, stripe } from "@/lib/stripe";
 import { headers } from "next/headers";
 import type Stripe from "stripe";
@@ -6,6 +7,10 @@ import type Stripe from "stripe";
 async function handleSuccessfulPaymentIntent(
   event: Stripe.PaymentIntentSucceededEvent
 ) {
+  const metadata = event.data.object.metadata;
+  if (!metadata || !metadata.s3Key) {
+    throw new Error("Metadata not found. Cannot retrieve sample pack");
+  }
   const paymentIntentId = event.data.object.id;
   const connectedAccountId = event.account;
   if (!paymentIntentId || !connectedAccountId) {
@@ -20,11 +25,18 @@ async function handleSuccessfulPaymentIntent(
   if (!customerData) throw new Error("Payment intent not found");
   const { email, name } = customerData;
 
+  const downloadUrl = await createSamplePackDownloadUrl(metadata.s3Key);
+
+  if (!downloadUrl) throw new Error("Error creating download url");
+
+  // TODO: send email
   console.log("Successful payment intent:", {
     paymentIntentId,
     connectedAccountId,
     email,
     name,
+    s3Key: metadata.s3Key,
+    downloadUrl,
   });
 }
 

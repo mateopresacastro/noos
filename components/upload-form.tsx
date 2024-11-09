@@ -92,6 +92,7 @@ export default function UploadForm() {
         name,
         imgUrl,
         url,
+        key: zipFileSignedUrl.key,
       },
       samples,
     };
