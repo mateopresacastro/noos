@@ -191,18 +191,13 @@ export async function updateProduct({
     let newPaymentLink;
     // Create new price if price has changed
     if (currentSamplePack.price !== price) {
-      const newPrice = await stripe.prices.create(
-        {
-          unit_amount: price * 100,
-          currency: "usd",
-          product: stripeProductId,
-        },
-        {
-          stripeAccount: stripeConnectedAccountId,
-          idempotencyKey: uuidv4(),
-        }
-      );
+      const newPrice = await createPrice({
+        price,
+        stripeProductId,
+        stripeConnectedAccountId,
+      });
 
+      if (!newPrice) throw new Error("Error creating price");
       newPaymentLink = await createPaymentLink(
         newPrice.id,
         stripeConnectedAccountId
@@ -221,6 +216,33 @@ export async function updateProduct({
     return { product, newPaymentLink };
   } catch (error) {
     console.error("Error updating product", error);
+    return null;
+  }
+}
+
+async function createPrice({
+  price,
+  stripeProductId,
+  stripeConnectedAccountId,
+}: {
+  price: number;
+  stripeProductId: string;
+  stripeConnectedAccountId: string;
+}) {
+  try {
+    return await stripe.prices.create(
+      {
+        unit_amount: price * 100,
+        currency: "usd",
+        product: stripeProductId,
+      },
+      {
+        stripeAccount: stripeConnectedAccountId,
+        idempotencyKey: uuidv4(),
+      }
+    );
+  } catch (error) {
+    console.error("Error creating price", error);
     return null;
   }
 }
