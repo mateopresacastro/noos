@@ -7,7 +7,7 @@ import {
   createPaymentLink,
   createProduct,
   updateProduct,
-} from "@/lib/stripe/queries/mod";
+} from "@/lib/stripe/mod";
 import {
   addSampleToSamplePack,
   createSamplePack,

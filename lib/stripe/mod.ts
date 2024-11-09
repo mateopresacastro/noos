@@ -1,10 +1,67 @@
 import "server-only";
-import stripe from "@/lib/stripe/client";
-import { HOST_URL } from "@/cfg";
-import { v4 as uuidv4 } from "uuid";
+import Stripe from "stripe";
 import { getSamplePack } from "@/lib/db/queries/mod";
-import { createPaymentLink } from "@/lib/stripe/queries/mod";
-import type Stripe from "stripe";
+import { HOST_URL, STRIPE_SECRET_KEY } from "@/cfg";
+import { v4 as uuidv4 } from "uuid";
+
+export const stripe = new Stripe(STRIPE_SECRET_KEY);
+
+export async function createPaymentLink(
+  priceId: string,
+  stripeConnectedAccountId: string
+) {
+  try {
+    const { url } = await stripe.paymentLinks.create(
+      {
+        line_items: [
+          {
+            price: priceId,
+            quantity: 1,
+          },
+        ],
+        application_fee_amount: 300,
+      },
+      {
+        stripeAccount: stripeConnectedAccountId,
+      }
+    );
+
+    if (!url) throw new Error("Error creating payment link");
+    return url;
+  } catch (error) {
+    console.error("Error creating payment link", error);
+    return null;
+  }
+}
+
+export async function createOnboardingLink(stripeId: string) {
+  try {
+    const { url } = await stripe.accountLinks.create({
+      account: stripeId,
+      refresh_url: `${HOST_URL}`, // TODO: redirect url
+      return_url: `${HOST_URL}`,
+      type: "account_onboarding",
+    });
+
+    return url;
+  } catch (error) {
+    console.error("Error creating onboarding link", error);
+    return null;
+  }
+}
+
+export async function createConnectedAccount(clerkId: string) {
+  try {
+    const account = await stripe.accounts.create({
+      metadata: { clerkId },
+    });
+
+    return account.id;
+  } catch (error) {
+    console.error("Error creating connected account:", error);
+    return null;
+  }
+}
 
 type Product = {
   title: string;
@@ -85,7 +142,7 @@ export async function getProduct(productId: string) {
     const { default_price: price } = product;
     if (!price) throw new Error("Default price not found");
     if (typeof price === "string") {
-      throw new Error(" Default price is not an object");
+      throw new Error("Default price is not an object");
     }
 
     return { product, price };
@@ -110,7 +167,6 @@ export async function updateProduct({
   title,
   description,
   price,
-  imgUrl,
   userName,
   samplePackName,
   stripeConnectedAccountId,

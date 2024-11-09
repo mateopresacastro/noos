@@ -1,10 +1,9 @@
 "use server";
 
 import "server-only";
-import stripe from "@/lib/stripe/client";
 import { auth } from "@clerk/nextjs/server";
 import { readUser } from "@/lib/db/queries/mod";
-import { createOnboardingLink } from "@/lib/stripe/queries/mod";
+import { createOnboardingLink, stripe } from "@/lib/stripe/mod";
 
 export async function createStripeAccountLinkAction() {
   try {

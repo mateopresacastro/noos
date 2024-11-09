@@ -2,7 +2,7 @@ import "server-only";
 
 import type { UserJSON, DeletedObjectJSON } from "@clerk/nextjs/server";
 import { createUser, deleteUser, updateUser } from "@/lib/db/queries/mod";
-import { createConnectedAccount } from "@/lib/stripe/queries/mod";
+import { createConnectedAccount } from "@/lib/stripe/mod";
 
 export async function handleCreateUser(user: UserJSON) {
   const stripeId = await createConnectedAccount(user.id);
@@ -29,9 +29,7 @@ export async function handleDeleteUser(deletedObject: DeletedObjectJSON) {
     return null;
   }
 
-  return deleteUser({
-    clerkId: deletedObject.id,
-  });
+  return deleteUser(deletedObject.id);
 }
 
 function clean(user: UserJSON) {

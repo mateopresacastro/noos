@@ -129,6 +129,7 @@ describe("DB Queries", () => {
     url: "http://example.com/samplepack.zip",
     clerkId: testUser.clerkId,
     stripePaymentLink: "http://example.com/stripe-payment-link",
+    stripeProductId: "test-stripe-product-id",
   };
 
   describe("Sample pack", () => {
