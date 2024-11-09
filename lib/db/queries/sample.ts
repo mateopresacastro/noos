@@ -9,8 +9,8 @@ export async function addSampleToSamplePack(
     const newSamples = await prisma.sample.createMany({
       data: samples.map(({ url }) => ({ url, samplePackId })),
     });
-    if (!newSamples || newSamples.count === 0)
-      throw new Error("No samples created");
+
+    if (newSamples.count === 0) throw new Error("No samples created");
     return newSamples;
   } catch (error) {
     console.error("Error adding sample to sample pack:", error);

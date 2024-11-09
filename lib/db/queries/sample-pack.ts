@@ -27,21 +27,7 @@ export async function createSamplePack({
       select: { id: true },
     });
 
-    if (!user) {
-      throw new Error("User not found");
-    }
-
-    console.log("creating sample pack", {
-      clerkId,
-      name,
-      description,
-      price,
-      imgUrl,
-      title,
-      url,
-      stripePaymentLink,
-    });
-
+    if (!user) throw new Error("User not found");
     const samplePack = await prisma.samplePack.create({
       data: {
         creatorId: user.id,
@@ -75,10 +61,7 @@ export async function getSamplePack({
       select: { id: true },
     });
 
-    if (!user) {
-      throw new Error("User not found");
-    }
-
+    if (!user) throw new Error("User not found");
     const data = await prisma.samplePack.findFirst({
       where: {
         creatorId: user.id,
@@ -126,10 +109,7 @@ export async function updateSamplePack({
       },
     });
 
-    if (!samplePack) {
-      throw new Error("Sample pack not found");
-    }
-
+    if (!samplePack) throw new Error("Sample pack not found");
     const updatedPack = await prisma.samplePack.update({
       where: {
         id: samplePack.id,
@@ -167,10 +147,7 @@ export async function deleteSamplePack({
       select: { id: true },
     });
 
-    if (!user) {
-      throw new Error("User not found");
-    }
-
+    if (!user) throw new Error("User not found");
     const samplePack = await prisma.samplePack.findFirst({
       where: {
         creatorId: user.id,
@@ -178,10 +155,7 @@ export async function deleteSamplePack({
       },
     });
 
-    if (!samplePack) {
-      throw new Error("Sample pack not found");
-    }
-
+    if (!samplePack) throw new Error("Sample pack not found");
     const deleteSamples = prisma.sample.deleteMany({
       where: {
         samplePackId: samplePack.id,

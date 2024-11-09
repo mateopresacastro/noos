@@ -26,29 +26,18 @@ export async function deleteSamplePackAction({
   userName,
 }: DeleteSamplePackActionSchema) {
   try {
-    const { userId } = await auth();
-    if (!userId) {
-      throw new Error("User not signed in");
-    }
+    const { userId: clerkId } = await auth();
+    if (!clerkId) throw new Error("User not signed in");
     deleteSamplePackActionSchema.parse({ samplePackName, userName });
-
-    const user = await readUser({ clerkId: userId });
-    if (!user) {
-      throw new Error("User not found");
-    }
-
-    if (user.userName !== userName) {
-      throw new Error("User not authorized");
-    }
-
+    const user = await readUser({ clerkId });
+    if (!user) throw new Error("User not found");
+    if (user.userName !== userName) throw new Error("User not authorized");
     const deletedPack = await deleteSamplePack({
       samplePackName,
       userName,
     });
 
-    if (!deletedPack) {
-      throw new Error("Error deleting sample pack");
-    }
+    if (!deletedPack) throw new Error("Error deleting sample pack");
   } catch (error) {
     console.error("Error updating sample pack", {
       error,
@@ -78,18 +67,11 @@ export async function updateSamplePackAction(
   updateSamplePackData: UpdateSamplePackActionSchema
 ) {
   try {
-    const { userId } = await auth();
-    if (!userId) {
-      throw new Error("User not signed in");
-    }
-
+    const { userId: clerkId } = await auth();
+    if (!clerkId) throw new Error("User not signed in");
     updateSamplePackActionSchema.parse(updateSamplePackData);
-
-    const user = await readUser({ clerkId: userId });
-    if (!user) {
-      throw new Error("User not found");
-    }
-
+    const user = await readUser({ clerkId });
+    if (!user) throw new Error("User not found");
     if (user.userName !== updateSamplePackData.userName) {
       throw new Error("User not authorized");
     }
@@ -99,10 +81,7 @@ export async function updateSamplePackAction(
       userId: user.id,
     });
 
-    if (!updatedPack) {
-      throw new Error("Error updating sample pack");
-    }
-
+    if (!updatedPack) throw new Error("Error updating sample pack");
     return updatedPack.name;
   } catch (error) {
     console.error("Error updating sample pack", {
@@ -162,14 +141,12 @@ export async function persistSamplePackDataAction(
     });
 
     if (!stripeProduct) throw new Error("Error creating product");
-
     const stripePaymentLink = await createPaymentLink(
       stripeProduct.priceId,
       userData.stripeId
     );
 
     if (!stripePaymentLink) throw new Error("Error creating payment link");
-
     const newSamplePack = await createSamplePack({
       clerkId: user.id,
       name,
@@ -182,7 +159,6 @@ export async function persistSamplePackDataAction(
     });
 
     if (!newSamplePack) throw new Error("Error creating sample pack");
-
     const samplesCreated = await addSampleToSamplePack(
       newSamplePack.id,
       samples

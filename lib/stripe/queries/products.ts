@@ -45,16 +45,12 @@ export async function createProduct({
     );
 
     if (!product) throw new Error("The call to create a product failed");
-
     const { default_price: priceId } = product;
-
     if (!priceId) throw new Error("Default priceId not found");
-
     if (typeof priceId !== "string") {
       throw new Error("Default price is not an id");
     }
 
-    console.log("Created product:", product);
     return { product, priceId };
   } catch (error) {
     console.error("Error creating product:", {
@@ -84,11 +80,7 @@ export async function getProduct(productId: string) {
     }
 
     const { default_price: price } = product;
-
-    if (!price) {
-      throw new Error("Default price not found");
-    }
-
+    if (!price) throw new Error("Default price not found");
     if (typeof price === "string") {
       throw new Error(" Default price is not an object");
     }
