@@ -35,10 +35,7 @@ import {
 } from "@/components/ui/form";
 import { useRouter } from "next/navigation";
 import { useMutation } from "@tanstack/react-query";
-import {
-  deleteSamplePackAction,
-  updateSamplePackAction,
-} from "@/lib/db/actions";
+import { deleteSamplePackAction, updateSamplePackAction } from "@/lib/actions";
 import { urlNameToTitle } from "@/lib/utils";
 import { useEffect, useState } from "react";
 

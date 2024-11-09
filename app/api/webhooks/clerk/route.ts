@@ -1,14 +1,54 @@
 import { Webhook } from "svix";
 import { headers } from "next/headers";
 import { CLERK_WEBHOOK_SECRET } from "@/cfg";
-import {
-  clientErrorResponse,
-  handleCreateUser,
-  handleDeleteUser,
-  handleUpdateUser,
-  serverErrorResponse,
-} from "@/lib/clerk-webhook-handlers";
-import type { WebhookEvent } from "@clerk/nextjs/server";
+import { createUser, deleteUser, updateUser } from "@/lib/db/queries/mod";
+import { createConnectedAccount } from "@/lib/stripe/mod";
+import type {
+  WebhookEvent,
+  UserJSON,
+  DeletedObjectJSON,
+} from "@clerk/nextjs/server";
+
+async function handleCreateUser(user: UserJSON) {
+  const stripeId = await createConnectedAccount(user.id);
+  if (!stripeId) {
+    console.error("Error creating connected account");
+    return null;
+  }
+
+  const newUser = await createUser({
+    ...clean(user),
+    stripeId,
+  });
+
+  return newUser;
+}
+
+async function handleUpdateUser(user: UserJSON) {
+  return updateUser(clean(user));
+}
+
+async function handleDeleteUser(deletedObject: DeletedObjectJSON) {
+  if (!deletedObject.id) {
+    console.warn("Deleted object id is missing, skipping user deletion");
+    return null;
+  }
+
+  return deleteUser(deletedObject.id);
+}
+
+function clean(user: UserJSON) {
+  return {
+    clerkId: user.id,
+    name: user.first_name ?? "",
+    email: user.email_addresses[0].email_address,
+    userName: user.username ?? "",
+    imgUrl: user.image_url ?? "",
+  };
+}
+
+const clientErrorResponse = new Response(null, { status: 400 });
+const serverErrorResponse = new Response(null, { status: 500 });
 
 export async function POST(req: Request) {
   try {

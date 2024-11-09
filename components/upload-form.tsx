@@ -12,16 +12,16 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { useMutation } from "@tanstack/react-query";
-import { handleCreatePreSignedUrl } from "@/lib/aws/actions";
+import { createPreSignedUrlAction } from "@/lib/actions";
 import { handleUploadToS3, type UploadToS3Data } from "@/lib/aws/upload";
 import { createSamplePackName, isDev } from "@/lib/utils";
-import { persistSamplePackDataAction } from "@/lib/db/actions";
+import { persistSamplePackDataAction } from "@/lib/actions";
 import {
   type UploadFormSchema,
   uploadFormSchema,
 } from "@/components/upload-form-schema";
 
-type PreSignedUrls = Awaited<ReturnType<typeof handleCreatePreSignedUrl>>;
+type PreSignedUrls = Awaited<ReturnType<typeof createPreSignedUrlAction>>;
 
 const defaultValues = {
   title: "",
@@ -43,7 +43,7 @@ export default function UploadForm() {
     isPending: isCreatingPresignedUrls,
   } = useMutation({
     mutationFn: async () =>
-      await handleCreatePreSignedUrl(formValues.samples.length),
+      await createPreSignedUrlAction(formValues.samples.length),
     onSuccess: createSignedUrlsOnSuccess,
   });
 

@@ -7,7 +7,7 @@ import { redirect } from "next/navigation";
 import {
   createStripeAccountLinkAction,
   hasRequirementsDueAction,
-} from "@/lib/stripe/actions";
+} from "@/lib/actions";
 
 export default function Stripe() {
   return (
