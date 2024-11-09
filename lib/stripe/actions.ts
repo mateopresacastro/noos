@@ -10,7 +10,7 @@ export async function createStripeAccountLinkAction() {
   try {
     const { userId: clerkId } = await auth();
     if (!clerkId) throw new Error("User not signed in");
-    const data = await readUser({ clerkId });
+    const data = await readUser(clerkId);
     if (!data || !data.stripeId) throw new Error("User not found");
     const url = await createOnboardingLink(data.stripeId);
 
@@ -25,7 +25,7 @@ export async function hasRequirementsDueAction() {
   try {
     const { userId: clerkId } = await auth();
     if (!clerkId) throw new Error("User not signed in");
-    const data = await readUser({ clerkId });
+    const data = await readUser(clerkId);
     if (!data || !data.stripeId) throw new Error("User not found");
     const { requirements } = await stripe.accounts.retrieve(data.stripeId);
 

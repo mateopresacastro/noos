@@ -11,6 +11,7 @@ export async function createSamplePack({
   title,
   url,
   stripePaymentLink,
+  stripeProductId,
 }: {
   clerkId: string;
   name: string;
@@ -20,6 +21,7 @@ export async function createSamplePack({
   title: string;
   url: string;
   stripePaymentLink: string;
+  stripeProductId: string;
 }) {
   try {
     const user = await prisma.user.findUnique({
@@ -28,6 +30,19 @@ export async function createSamplePack({
     });
 
     if (!user) throw new Error("User not found");
+
+    console.log("creating sample pack", {
+      clerkId,
+      name,
+      description,
+      price,
+      imgUrl,
+      title,
+      url,
+      stripePaymentLink,
+      stripeProductId,
+    });
+
     const samplePack = await prisma.samplePack.create({
       data: {
         creatorId: user.id,
@@ -38,6 +53,7 @@ export async function createSamplePack({
         title,
         url,
         stripePaymentLink,
+        stripeProductId,
       },
     });
 
@@ -86,48 +102,60 @@ export async function getSamplePack({
   }
 }
 
-export async function updateSamplePack({
-  name,
-  userName,
-  title,
-  description,
-  price,
-  userId,
-}: {
+type SamplePackInput = {
   name: string;
   userName: string;
   title: string;
   description?: string;
   price: number;
   userId: number;
-}) {
+  stripePaymentLink?: string;
+};
+
+type UpdateSamplePackData = Pick<
+  SamplePackInput,
+  "title" | "description" | "price" | "name"
+> & {
+  stripePaymentLink?: string;
+};
+
+export async function updateSamplePack(input: SamplePackInput) {
   try {
     const samplePack = await prisma.samplePack.findFirst({
       where: {
-        creatorId: userId,
-        name,
+        creatorId: input.userId,
+        name: input.name,
       },
     });
 
-    if (!samplePack) throw new Error("Sample pack not found");
+    if (!samplePack) {
+      throw new Error("Sample pack not found");
+    }
+
+    const data: UpdateSamplePackData = {
+      title: input.title,
+      description: input.description,
+      price: input.price,
+      name: createSamplePackName(input.title),
+    };
+
+    if (input.stripePaymentLink) {
+      data.stripePaymentLink = input.stripePaymentLink;
+    }
+
     const updatedPack = await prisma.samplePack.update({
       where: {
         id: samplePack.id,
       },
-      data: {
-        title,
-        description,
-        price,
-        name: createSamplePackName(title),
-      },
+      data,
     });
 
     return updatedPack;
   } catch (error) {
     console.error("Error updating sample pack", {
       error,
-      name,
-      userName,
+      name: input.name,
+      userName: input.userName,
     });
     return null;
   }

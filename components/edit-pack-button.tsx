@@ -90,17 +90,15 @@ export default function EditPackButton({
   });
 
   const { mutate: updateSamplePack, data: newSamplePackName } = useMutation({
-    mutationFn: async () => {
-      const res = await updateSamplePackAction({
+    mutationFn: async () =>
+      await updateSamplePackAction({
         name,
         userName,
         title: newTitle,
         description: newDescription,
         price: newPrice,
-      });
-      console.log("res", res);
-      return res;
-    },
+        samplePackName: name,
+      }),
   });
 
   useEffect(() => {
@@ -109,7 +107,7 @@ export default function EditPackButton({
     }
 
     router.push(`/${userName}/${newSamplePackName}`);
-  }, [newSamplePackName, router, name, userName]);
+  }, [newSamplePackName, router, userName]);
 
   function onSubmit() {
     // TODO check that user actually changed values

@@ -78,12 +78,12 @@ describe("DB Queries", () => {
 
     describe("Read", () => {
       it("should read a user", async () => {
-        const user = await readUser({ clerkId: testUser.clerkId });
+        const user = await readUser(testUser.clerkId);
         expect(user).toMatchObject(testUser);
       });
 
       it("should return null for non-existent user", async () => {
-        const user = await readUser({ clerkId: "non-existent-clerk-id" });
+        const user = await readUser("non-existent-clerk-id");
         expect(user).toBeNull();
       });
     });
@@ -109,12 +109,12 @@ describe("DB Queries", () => {
 
     describe("Delete", () => {
       it("should delete a user", async () => {
-        const deletedUser = await deleteUser({ clerkId: testUser.clerkId });
+        const deletedUser = await deleteUser(testUser.clerkId);
         expect(deletedUser?.clerkId).toBe(testUser.clerkId);
       });
 
       it("should return null for non existing user", async () => {
-        const user = await readUser({ clerkId: testUser.clerkId });
+        const user = await readUser(testUser.clerkId);
         expect(user).toBeNull();
       });
     });
@@ -142,7 +142,7 @@ describe("DB Queries", () => {
           samplePackName: samplePackData.name,
           userName: testUser.userName,
         });
-        await deleteUser({ clerkId: testUser.clerkId });
+        await deleteUser(testUser.clerkId);
       });
 
       it("should create a sample pack", async () => {
@@ -169,7 +169,7 @@ describe("DB Queries", () => {
           samplePackName: samplePackData.name,
           userName: testUser.userName,
         });
-        await deleteUser({ clerkId: testUser.clerkId });
+        await deleteUser(testUser.clerkId);
       });
 
       it("should read a sample pack", async () => {
@@ -224,7 +224,7 @@ describe("DB Queries", () => {
           samplePackName: updatedSamplePack.name,
           userName: testUser.userName,
         });
-        await deleteUser({ clerkId: testUser.clerkId });
+        await deleteUser(testUser.clerkId);
       });
 
       it("should return null for updating a non-existent sample pack", async () => {
@@ -248,7 +248,7 @@ describe("DB Queries", () => {
           samplePackName: samplePackData.name,
           userName: testUser.userName,
         });
-        await deleteUser({ clerkId: testUser.clerkId });
+        await deleteUser(testUser.clerkId);
       });
     });
 

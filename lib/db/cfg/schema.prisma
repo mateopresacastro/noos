@@ -27,6 +27,7 @@ model SamplePack {
   imgUrl            String
   name              String
   stripePaymentLink String        @default("")
+  stripeProductId   String        @default("")
   url               String
   description       String?
   price             Float?

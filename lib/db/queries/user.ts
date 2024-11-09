@@ -36,11 +36,7 @@ export async function createUser({
   }
 }
 
-type User = {
-  clerkId: string;
-};
-
-export async function readUser({ clerkId }: User) {
+export async function readUser(clerkId: string) {
   try {
     const user = await prisma.user.findUnique({
       where: {
@@ -88,7 +84,7 @@ export async function updateUser({
   }
 }
 
-export async function deleteUser({ clerkId }: User) {
+export async function deleteUser(clerkId: string) {
   try {
     const deletedUser = await prisma.user.delete({
       where: {

@@ -3,7 +3,11 @@
 import "server-only";
 import { z } from "zod";
 import { auth, currentUser } from "@clerk/nextjs/server";
-import { createPaymentLink, createProduct } from "@/lib/stripe/queries/mod";
+import {
+  createPaymentLink,
+  createProduct,
+  updateProduct,
+} from "@/lib/stripe/queries/mod";
 import {
   addSampleToSamplePack,
   createSamplePack,
@@ -26,10 +30,10 @@ export async function deleteSamplePackAction({
   userName,
 }: DeleteSamplePackActionSchema) {
   try {
-    const { userId: clerkId } = await auth();
-    if (!clerkId) throw new Error("User not signed in");
+    const { userId } = await auth();
+    if (!userId) throw new Error("User not signed in");
     deleteSamplePackActionSchema.parse({ samplePackName, userName });
-    const user = await readUser({ clerkId });
+    const user = await readUser(userId);
     if (!user) throw new Error("User not found");
     if (user.userName !== userName) throw new Error("User not authorized");
     const deletedPack = await deleteSamplePack({
@@ -57,6 +61,8 @@ const updateSamplePackActionSchema = z.object({
   title: z.string().min(5).max(50),
   description: z.string().min(5).max(100).optional(),
   price: z.number().min(0),
+  imgUrl: z.string().url().optional(),
+  samplePackName: z.string(),
 });
 
 type UpdateSamplePackActionSchema = z.infer<
@@ -64,29 +70,47 @@ type UpdateSamplePackActionSchema = z.infer<
 >;
 
 export async function updateSamplePackAction(
-  updateSamplePackData: UpdateSamplePackActionSchema
+  updateData: UpdateSamplePackActionSchema
 ) {
   try {
-    const { userId: clerkId } = await auth();
-    if (!clerkId) throw new Error("User not signed in");
-    updateSamplePackActionSchema.parse(updateSamplePackData);
-    const user = await readUser({ clerkId });
+    const { userId } = await auth();
+    if (!userId) throw new Error("User not signed in");
+    updateSamplePackActionSchema.parse(updateData);
+    const user = await readUser(userId);
     if (!user) throw new Error("User not found");
-    if (user.userName !== updateSamplePackData.userName) {
+    if (user.userName !== updateData.userName) {
       throw new Error("User not authorized");
     }
 
+    if (user.stripeId === null) {
+      throw new Error("No stripe account linked");
+    }
+
+    const updatedProduct = await updateProduct({
+      title: updateData.title,
+      description: updateData.description,
+      price: updateData.price,
+      imgUrl: updateData.imgUrl,
+      userName: updateData.userName,
+      samplePackName: updateData.samplePackName,
+      stripeConnectedAccountId: user.stripeId,
+      clerkId: userId,
+    });
+
+    if (!updatedProduct) throw new Error("Error updating stirpe product");
+
     const updatedPack = await updateSamplePack({
-      ...updateSamplePackData,
+      ...updateData,
+      stripePaymentLink: updatedProduct.newPaymentLink,
       userId: user.id,
     });
 
-    if (!updatedPack) throw new Error("Error updating sample pack");
+    if (!updatedPack) throw new Error("Error updating sample pack on our db");
     return updatedPack.name;
   } catch (error) {
     console.error("Error updating sample pack", {
       error,
-      updateSamplePackData,
+      updateData,
     });
 
     // The action will be consumed by TanStack Query
@@ -124,7 +148,7 @@ export async function persistSamplePackDataAction(
       samples,
     } = samplePackData;
 
-    const userData = await readUser({ clerkId: user.id });
+    const userData = await readUser(user.id);
     if (!userData || !userData.stripeId) {
       throw new Error("User not found or stripeId not set");
     }
@@ -156,6 +180,7 @@ export async function persistSamplePackDataAction(
       title,
       url,
       stripePaymentLink,
+      stripeProductId: stripeProduct.product.id,
     });
 
     if (!newSamplePack) throw new Error("Error creating sample pack");
