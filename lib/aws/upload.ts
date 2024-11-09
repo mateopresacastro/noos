@@ -1,3 +1,5 @@
+"use client";
+
 export type UploadToS3Data = {
   zipFileSignedUrl: string;
   zipFile: File;
@@ -16,14 +18,16 @@ export async function handleUploadToS3({
   samples,
 }: UploadToS3Data) {
   try {
-    await uploadFile(zipFileSignedUrl, zipFile);
-    await uploadFile(imageSignedUrl, image);
+    const zipPromise = uploadFile(zipFileSignedUrl, zipFile);
+    const imgPromise = uploadFile(imageSignedUrl, image);
+    const promises = [zipPromise, imgPromise];
     for (let i = 0; i < samples.length; i++) {
       const sample = samples[i];
       const sampleUrl = samplesSignedUrls[i];
-      await uploadFile(sampleUrl, sample);
+      promises.push(uploadFile(sampleUrl, sample));
     }
 
+    await Promise.all(promises);
     console.log("All files uploaded successfully.");
   } catch (error) {
     console.error("Error uploading to S3:", error);
