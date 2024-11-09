@@ -23,6 +23,7 @@ export async function createPaymentLink(
       },
       {
         stripeAccount: stripeConnectedAccountId,
+        idempotencyKey: uuidv4(),
       }
     );
 
@@ -36,12 +37,17 @@ export async function createPaymentLink(
 
 export async function createOnboardingLink(stripeId: string) {
   try {
-    const { url } = await stripe.accountLinks.create({
-      account: stripeId,
-      refresh_url: `${HOST_URL}`, // TODO: redirect url
-      return_url: `${HOST_URL}`,
-      type: "account_onboarding",
-    });
+    const { url } = await stripe.accountLinks.create(
+      {
+        account: stripeId,
+        refresh_url: `${HOST_URL}`, // TODO: redirect url
+        return_url: `${HOST_URL}`,
+        type: "account_onboarding",
+      },
+      {
+        idempotencyKey: uuidv4(),
+      }
+    );
 
     return url;
   } catch (error) {
@@ -52,9 +58,14 @@ export async function createOnboardingLink(stripeId: string) {
 
 export async function createConnectedAccount(clerkId: string) {
   try {
-    const account = await stripe.accounts.create({
-      metadata: { clerkId },
-    });
+    const account = await stripe.accounts.create(
+      {
+        metadata: { clerkId },
+      },
+      {
+        idempotencyKey: uuidv4(),
+      }
+    );
 
     return account.id;
   } catch (error) {
@@ -131,9 +142,13 @@ export async function createProduct({
 
 export async function getProduct(productId: string) {
   try {
-    const product = await stripe.products.retrieve(productId, {
-      expand: ["default_price"],
-    });
+    const product = await stripe.products.retrieve(
+      productId,
+      {
+        expand: ["default_price"],
+      },
+      { idempotencyKey: uuidv4() }
+    );
 
     if (!product) {
       throw new Error("Product not found or default price not found");
