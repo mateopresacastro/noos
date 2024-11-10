@@ -83,12 +83,22 @@ export async function getSamplePack({
         creatorId: user.id,
         name: samplePackName,
       },
-      include: {
-        samples: true,
+      select: {
+        title: true,
+        imgUrl: true,
+        name: true,
+        stripePaymentLink: true,
+        description: true,
+        price: true,
+        stripeProductId: true,
+        samples: {
+          select: {
+            url: true,
+          },
+        },
         creator: {
           select: {
             userName: true,
-            imgUrl: true,
           },
         },
       },
@@ -101,6 +111,8 @@ export async function getSamplePack({
     return null;
   }
 }
+
+export type SamplePack = Awaited<ReturnType<typeof getSamplePack>>;
 
 type SamplePackInput = {
   name: string;

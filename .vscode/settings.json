@@ -16,6 +16,7 @@
     "tanstack",
     "trpc",
     "uuidv",
-    "wavesurfer"
+    "wavesurfer",
+    "zustand"
   ]
 }
