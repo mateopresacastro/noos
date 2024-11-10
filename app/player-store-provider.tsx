@@ -1,7 +1,7 @@
 "use client";
 
 import { createContext, ReactNode, useRef } from "react";
-import { createCounterStore, initCounterStore } from "@/lib/player-store";
+import { createCounterStore } from "@/lib/player-store";
 
 export type PlayerStoreApi = ReturnType<typeof createCounterStore>;
 
@@ -16,7 +16,7 @@ interface PlayerStoreProviderProps {
 export const PlayerStoreProvider = ({ children }: PlayerStoreProviderProps) => {
   const storeRef = useRef<PlayerStoreApi>();
   if (!storeRef.current) {
-    storeRef.current = createCounterStore(initCounterStore());
+    storeRef.current = createCounterStore();
   }
 
   return (

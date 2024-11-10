@@ -27,17 +27,6 @@ export type PlayerActions = {
 
 export type PlayerStore = PlayerState & PlayerActions;
 
-export const initCounterStore = (): PlayerState => {
-  return {
-    samplePack: null,
-    isPlaying: false,
-    playingSampleUrl: null,
-    samples: null,
-    waveSurfer: null,
-    waveSurferMap: new Map(),
-  };
-};
-
 export const defaultInitState: PlayerState = {
   samplePack: null,
   isPlaying: false,
