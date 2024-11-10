@@ -293,12 +293,6 @@ export async function createPreSignedUrlAction(numOfSamples: number) {
       )
       .map((result) => result.value);
 
-    console.log("Signed URLs:", {
-      zipFileSignedUrl,
-      imageSignedUrl,
-      samplesSignedUrls,
-    });
-
     return {
       zipFileSignedUrl,
       imageSignedUrl,

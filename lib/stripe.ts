@@ -41,9 +41,6 @@ export async function createPaymentLink({
           },
         ],
         metadata,
-        payment_intent_data: {
-          metadata,
-        },
         application_fee_amount: 300,
         after_completion: {
           type: "redirect",
@@ -234,7 +231,7 @@ export async function updateProduct({
     };
 
     let newPaymentLink;
-    // Create new price if price has changed
+    // Create new price and payment link if the price has changed
     if (currentSamplePack.price !== price) {
       const newPrice = await createPrice({
         price,

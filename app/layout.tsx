@@ -4,7 +4,9 @@ import { Inter } from "next/font/google";
 import { ClerkProvider } from "@clerk/nextjs";
 import { dark } from "@clerk/themes";
 import Header from "@/components/header";
+import Player from "@/components/player";
 import Providers from "@/app/providers";
+
 import resolveConfig from "tailwindcss/resolveConfig";
 import tailwindConfig from "../tailwind.config";
 import colors from "tailwindcss/colors";
@@ -64,14 +66,15 @@ export default function RootLayout({
     >
       <html lang="en">
         <body className="bg-neutral-950 text-neutral-50 dark">
-          <div
-            className={`${inter.className} antialiased max-w-6xl px-6 mx-auto `}
-          >
-            <Providers>
+          <Providers>
+            <div
+              className={`${inter.className} antialiased max-w-6xl px-6 mx-auto `}
+            >
               <Header />
               {children}
-            </Providers>
-          </div>
+            </div>
+            <Player />
+          </Providers>
         </body>
       </html>
     </ClerkProvider>
