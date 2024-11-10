@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { Play, Pause, SkipBack, SkipForward, Volume2 } from "lucide-react";
-import { usePlayerStore } from "@/lib/player-store";
+import { usePlayerStore } from "@/lib/store";
 
 export default function Player() {
   const {
@@ -10,8 +10,6 @@ export default function Player() {
     playNext,
     playPrevious,
     playingSampleUrl,
-    waveSurfer,
-    play,
     stop,
     isPlaying,
   } = usePlayerStore((state) => state);
@@ -19,16 +17,13 @@ export default function Player() {
 
   function handleClick() {
     if (isPlaying) {
-      console.log("Stopping");
       stop();
       return;
     }
-    console.log("Playing", { playingSampleUrl, waveSurfer });
-    if (!playingSampleUrl || !waveSurfer) return;
-    play(playingSampleUrl, waveSurfer);
+    if (!playingSampleUrl) return;
   }
 
-  return waveSurfer ? (
+  return (
     <div className="fixed bottom-0 left-0 right-0 h-20 bg-neutral-900 border-t border-neutral-800 z-10">
       <div className="max-w-6xl mx-auto h-full px-4">
         <div className="flex items-center justify-between h-full">
@@ -82,5 +77,5 @@ export default function Player() {
         </div>
       </div>
     </div>
-  ) : null;
+  );
 }

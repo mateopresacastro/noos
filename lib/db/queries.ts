@@ -99,6 +99,7 @@ export async function getSamplePack({
         creator: {
           select: {
             userName: true,
+            imgUrl: true,
           },
         },
       },

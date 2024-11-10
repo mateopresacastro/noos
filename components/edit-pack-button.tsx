@@ -114,7 +114,7 @@ export default function EditPackButton({
   return isOwner ? (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button className="font-medium w-full" variant="secondary" size="lg">
+        <Button className="font-medium w-full mt-4 " variant="secondary" size="lg">
           Edit
         </Button>
       </DialogTrigger>
