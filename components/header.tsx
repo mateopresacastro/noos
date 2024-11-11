@@ -3,8 +3,8 @@ import Clerk from "@/components/clerk";
 
 export default function Header() {
   return (
-    <header className="fixed w-full max-w-6xl inset-0 px-6 mx-auto h-fit flex items-center justify-center z-10">
-      <div className="flex items-center justify-between py-2 border bg-neutral-900/50 border-neutral-800 rounded-xl px-5 w-full mt-3 backdrop-blur-lg">
+    <header className="fixed w-full max-w-8xl inset-0 px-6 mx-auto h-fit flex items-center justify-center z-10">
+      <div className="flex items-center justify-between py-2 border bg-neutral-900/50 border-neutral-800 rounded-lg px-5 w-full mt-3 backdrop-blur-lg">
         <div className="flex items-center justify-center space-x-10 text-sm tracking-wide">
           <Link href="/" prefetch={true}>
             <h1 className="text-xl tracking-normal">noos</h1>

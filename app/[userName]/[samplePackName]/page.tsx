@@ -30,7 +30,7 @@ export default async function Page({
   return (
     <>
       <LoadPackToState samplePack={samplePack} />
-      <div className="flex items-start justify-center min-h-screen py-20 sm:py-32">
+      <div className="flex items-start justify-center min-h-screen py-24">
         <div className="flex items-start flex-col w-full">
           <div className="w-full flex flex-col sm:flex-row">
             <div className="w-64 flex items-center justify-center self-center">
@@ -45,7 +45,7 @@ export default async function Page({
             </div>
             <div className="flex justify-between items-end pb-2 w-full">
               <div className="sm:pl-5 flex flex-col items-start">
-                <span className="block text-2xl font-bold sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl">
+                <span className="block text-3xl font-bold sm:text-4xl md:text-5xl lg:text-6xl xl:text-8xl 2xl:text-9xl">
                   {samplePack.title}
                 </span>
                 <Link
@@ -92,7 +92,7 @@ export default async function Page({
             />
           </div>
           <div className="mt-10 w-full hidden sm:block">
-            <span className="ml-5 text-neutral-400 mb-3 text-sm">Title</span>
+            <span className="ml-10 text-neutral-400 mb-3 text-sm">Title</span>
             <Separator className="mb-3 mt-2" />
           </div>
           <div className="w-full flex flex-col pt-10 sm:pt-0">

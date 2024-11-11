@@ -1,10 +1,10 @@
 "use client";
 
 import { usePlayerStore } from "@/lib/zustand/store";
-import { Play } from "lucide-react";
+import { FaPlay } from "react-icons/fa";
 import { AnimatePresence, motion } from "framer-motion";
-import MusicBars from "@/components/music-bars";
 import { cn } from "@/lib/utils";
+import MusicBars from "@/components/music-bars";
 
 export default function Sample({
   url,
@@ -52,15 +52,16 @@ export default function Sample({
   return (
     <div
       className={cn(
-        "flex w-[100%+3rem] cursor-pointer items-center justify-between rounded-xl transition-colors duration-150 ease-in-out hover:bg-neutral-800 h-16 pl-3 -ml-3 active:text-neutral-400",
-        isThisSampleSelected && "bg-neutral-700 hover:bg-neutral-700"
+        "flex w-[100%+6rem] cursor-pointer items-center justify-between rounded-lg transition-colors duration-150 ease-in-out hover:bg-neutral-900 h-16 pl-3 -ml-3 sm:-ml-0",
+        isThisSampleSelected &&
+          "bg-neutral-800 hover:bg-neutral-800 active:text-neutral-400"
       )}
       onClick={handleClick}
       onDoubleClick={handleDoubleClick}
     >
-      <div className=" flex items-center justify-start">
+      <div className="flex items-center justify-start">
         <div
-          className="flex items-baseline justify-start w-5 text-neutral-400 hover:scale-110 active:scale-100 active:text-neutral-300 hover:text-neutral-50"
+          className="flex items-baseline justify-start w-5 sm:w-10 sm:pl-2 text-neutral-400 hover:scale-110 active:scale-100 active:text-neutral-300 hover:text-neutral-50 transition-all duration-150"
           onClick={handlePlay}
         >
           <AnimatePresence initial={false} mode="popLayout">
@@ -70,7 +71,7 @@ export default function Sample({
               </Fade>
             ) : (
               <Fade id="play">
-                <Play size={17} />
+                <FaPlay size={12} />
               </Fade>
             )}
           </AnimatePresence>
@@ -80,7 +81,7 @@ export default function Sample({
           <span
             className={cn(
               "block text-xs pl-1 text-neutral-400 transition-colors",
-              isThisSampleSelected && "text-neutral-50"
+              isThisSampleSelected && "text-neutral-200"
             )}
           >
             @{userName}
