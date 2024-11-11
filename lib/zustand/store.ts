@@ -17,6 +17,7 @@ type PlayerState = {
   samplePack: NNSamplePack | null;
   isPlaying: boolean;
   playingSampleUrl: string | null;
+  selectedSampleUrl: string | null;
   samples: string[] | null;
   audioInstance: AudioInstance | null;
 };
@@ -28,6 +29,7 @@ type PlayerActions = {
   playNext: () => void;
   playPrevious: () => void;
   unloadSamplePack: () => void;
+  setSelectedSampleUrl: (selectedSampleUrl: string) => void;
 };
 
 type PlayerStore = PlayerState & PlayerActions;
@@ -36,6 +38,7 @@ const defaultInitState: PlayerState = {
   samplePack: null,
   isPlaying: false,
   playingSampleUrl: null,
+  selectedSampleUrl: null,
   samples: null,
   audioInstance: null,
 };
@@ -163,6 +166,9 @@ export function createPlayerStore(initState: PlayerState = defaultInitState) {
         }
         return defaultInitState;
       }),
+
+    setSelectedSampleUrl: (selectedSampleUrl: string) =>
+      set(() => ({ selectedSampleUrl })),
   }));
 }
 

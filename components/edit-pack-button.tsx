@@ -38,6 +38,7 @@ import { useMutation } from "@tanstack/react-query";
 import { deleteSamplePackAction, updateSamplePackAction } from "@/lib/actions";
 import { urlNameToTitle } from "@/lib/utils";
 import { useEffect, useState } from "react";
+import { EllipsisVertical } from "lucide-react";
 
 // TODO: handle image upload
 const editPackSchema = z.object({
@@ -113,10 +114,11 @@ export default function EditPackButton({
 
   return isOwner ? (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button className="font-medium w-full mt-4 " variant="secondary" size="lg">
-          Edit
-        </Button>
+      <DialogTrigger
+        asChild
+        className="cursor-pointer hover:scale-110 active:scale-90 active:text-neutral-300"
+      >
+        <EllipsisVertical size={20} />
       </DialogTrigger>
       <DialogContent>
         <DialogHeader className="p-1">
@@ -177,13 +179,17 @@ export default function EditPackButton({
                 </FormItem>
               )}
             />
-            <div className="flex justify-between items-center pt-8">
-              <Button type="submit">Submit</Button>
+            <div className="flex justify-between items-center pt-8 flex-col w-full gap-2">
+              <Button type="submit" className="w-full">
+                Submit
+              </Button>
               <AlertDialog>
                 <AlertDialogTrigger
-                  className={buttonVariants({ variant: "destructive" })}
+                  className={
+                    buttonVariants({ variant: "destructive" }) + " w-full"
+                  }
                 >
-                  Delete Sample Pack
+                  Delete
                 </AlertDialogTrigger>
                 <AlertDialogContent>
                   <AlertDialogHeader>

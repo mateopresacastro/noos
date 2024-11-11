@@ -1,12 +1,13 @@
 import Image from "next/image";
 import Link from "next/link";
-import { notFound } from "next/navigation";
-import { Button } from "@/components/ui/button";
-import { getSamplePack } from "@/lib/db/queries";
 import Sample from "@/components/sample";
 import EditPackButton from "@/components/edit-pack-button";
 import NumberFlow from "@number-flow/react";
 import LoadPackToState from "@/components/load-pack-to-state";
+import { notFound } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import { getSamplePack } from "@/lib/db/queries";
+import { Separator } from "@/components/ui/separator";
 
 export default async function Page({
   params,
@@ -29,59 +30,80 @@ export default async function Page({
   return (
     <>
       <LoadPackToState samplePack={samplePack} />
-      <div className="flex flex-col items-center justify-start min-h-screen py-20 sm:py-32">
+      <div className="flex items-start justify-center min-h-screen py-20 sm:py-32">
         <div className="flex items-start flex-col w-full">
-          <div className="w-64 flex items-center justify-center self-center">
-            <div className="w-full h-full aspect-square mb-3 object-cover relative">
-              <Image
-                src={samplePack.imgUrl}
-                alt={samplePack.title}
-                fill
-                className="w-full h-full object-cover"
-              />
+          <div className="w-full flex flex-col sm:flex-row">
+            <div className="w-64 flex items-center justify-center self-center">
+              <div className="w-full h-full aspect-square mb-4 object-cover relative">
+                <Image
+                  src={samplePack.imgUrl}
+                  alt={samplePack.title}
+                  fill
+                  className="w-full h-full object-cover"
+                />
+              </div>
+            </div>
+            <div className="flex justify-between items-end pb-2 w-full">
+              <div className="sm:pl-5 flex flex-col items-start">
+                <span className="block text-2xl font-bold sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl">
+                  {samplePack.title}
+                </span>
+                <Link
+                  href={`/${userName}`}
+                  prefetch={true}
+                  className="flex items-center justify-center py-1 pb-2"
+                >
+                  <Image
+                    src={creatorImgUrl}
+                    alt={samplePack.creator.userName}
+                    width={25}
+                    height={25}
+                    className="w-5 h-5 rounded-full object-cover mr-2"
+                  />
+                  <span className="block pt-1 font-bold text-xs sm:text-sm">
+                    @{userName}
+                  </span>
+                </Link>
+                <span className="block text-neutral-400 text-xs pb-1 sm:text-sm">
+                  {samplePack.description}
+                </span>
+              </div>
+              <div className="self-start pt-2">
+                <EditPackButton
+                  userName={userName}
+                  samplePackName={samplePack.name}
+                  description={samplePack.description ?? undefined}
+                  price={samplePack.price}
+                />
+              </div>
             </div>
           </div>
-          <span className="block text-2xl font-bold">{samplePack.title}</span>
-
-          <Link
-            href={`/${userName}`}
-            prefetch={true}
-            className="flex items-center justify-center py-1 pb-2"
-          >
-            <Image
-              src={creatorImgUrl}
-              alt={samplePack.creator.userName}
-              width={25}
-              height={25}
-              className="w-5 h-5 rounded-full object-cover mr-2"
-            />
-            <span className="block pt-1 font-bold text-xs">@{userName}</span>
-          </Link>
-          <span className="block text-neutral-400 text-xs pb-1">
-            {samplePack.description}
-          </span>
-          <div className="flex items-baseline justify-between w-full pt-2">
-            <NumberFlow
-              value={Number(samplePack.price.toFixed(2))}
-              format={{ style: "currency", currency: "USD" }}
-              locales="en-US"
-              className="text-neutral-200"
-            />
+          <div className="flex items-baseline justify-between w-full pt-4 sm:justify-start">
             <Link href={samplePack.stripePaymentLink}>
               <Button className="font-medium w-full text-base px-10">
                 Buy
               </Button>
             </Link>
+            <NumberFlow
+              value={Number(samplePack.price.toFixed(2))}
+              format={{ style: "currency", currency: "USD" }}
+              locales="en-US"
+              className="text-neutral-50 sm:pl-5 font-bold text-xl"
+            />
           </div>
-          <EditPackButton
-            userName={userName}
-            samplePackName={samplePack.name}
-            description={samplePack.description ?? undefined}
-            price={samplePack.price}
-          />
-          <div className="w-full max-w-96 flex flex-col pt-16">
-            {samplePack.samples.map(({ url, title }) => (
-              <Sample url={url} key={url} title={title} userName={userName} />
+          <div className="mt-10 w-full hidden sm:block">
+            <span className="ml-5 text-neutral-400 mb-3 text-sm">Title</span>
+            <Separator className="mb-3 mt-2" />
+          </div>
+          <div className="w-full flex flex-col pt-10 sm:pt-0">
+            {samplePack.samples.map(({ url, title }, index) => (
+              <Sample
+                url={url}
+                key={url}
+                title={title}
+                userName={userName}
+                num={index + 1}
+              />
             ))}
           </div>
         </div>
