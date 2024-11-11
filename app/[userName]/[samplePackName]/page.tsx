@@ -80,8 +80,8 @@ export default async function Page({
             price={samplePack.price}
           />
           <div className="w-full max-w-96 flex flex-col pt-16">
-            {samplePack.samples.map(({ url }) => (
-              <Sample url={url} key={url} />
+            {samplePack.samples.map(({ url, title }) => (
+              <Sample url={url} key={url} title={title} userName={userName} />
             ))}
           </div>
         </div>

@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { Play, Pause, SkipBack, SkipForward, Volume2 } from "lucide-react";
-import { usePlayerStore } from "@/lib/store";
+import { usePlayerStore } from "@/lib/zustand/store";
 
 export default function Player() {
   const {

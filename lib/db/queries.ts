@@ -1,6 +1,7 @@
+import "server-only";
 import prisma from "@/lib/db/cfg/client";
 import { createSamplePackName } from "@/lib/utils";
-import "server-only";
+import { faker } from "@faker-js/faker";
 
 export async function createSamplePack({
   clerkId,
@@ -30,19 +31,6 @@ export async function createSamplePack({
     });
 
     if (!user) throw new Error("User not found");
-
-    console.log("creating sample pack", {
-      clerkId,
-      name,
-      description,
-      price,
-      imgUrl,
-      title,
-      url,
-      stripePaymentLink,
-      stripeProductId,
-    });
-
     const samplePack = await prisma.samplePack.create({
       data: {
         creatorId: user.id,
@@ -56,6 +44,8 @@ export async function createSamplePack({
         stripeProductId,
       },
     });
+
+    console.log("sample pack created", samplePack);
 
     return samplePack;
   } catch (error) {
@@ -94,6 +84,7 @@ export async function getSamplePack({
         samples: {
           select: {
             url: true,
+            title: true,
           },
         },
         creator: {
@@ -228,9 +219,13 @@ export async function addSampleToSamplePack(
 ) {
   try {
     const newSamples = await prisma.sample.createMany({
-      data: samples.map(({ url }) => ({ url, samplePackId })),
+      data: samples.map(({ url }) => ({
+        url,
+        samplePackId,
+        title: faker.lorem.words({ min: 1, max: 3 }), // TODO: add real name
+      })),
     });
-
+    console.log("samples created", newSamples);
     if (newSamples.count === 0) throw new Error("No samples created");
     return newSamples;
   } catch (error) {

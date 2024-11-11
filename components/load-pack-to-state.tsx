@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { usePlayerStore } from "@/lib/store";
+import { usePlayerStore } from "@/lib/zustand/store";
 import type { SamplePack } from "@/lib/db/queries";
 
 export default function LoadPackToState({

@@ -2,7 +2,7 @@
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useState } from "react";
-import { PlayerStoreProvider } from "@/app/player-store-provider";
+import { PlayerStoreProvider } from "@/lib/zustand/provider";
 
 export default function Providers({ children }: { children: React.ReactNode }) {
   const [queryClient] = useState(() => new QueryClient());

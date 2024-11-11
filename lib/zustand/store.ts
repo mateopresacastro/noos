@@ -1,5 +1,5 @@
 import { createStore } from "zustand/vanilla";
-import { PlayerStoreContext } from "@/app/player-store-provider";
+import { PlayerStoreContext } from "@/lib/zustand/provider";
 import { useContext } from "react";
 import { useStore } from "zustand";
 import type { SamplePack } from "@/lib/db/queries";
@@ -23,8 +23,8 @@ type PlayerState = {
 
 type PlayerActions = {
   setSamplePack: (samplePack: NNSamplePack) => void;
-  play: (playingSampleUrl: string) => void;
-  stop: () => void;
+  play: (playingSampleUrl: string) => Promise<void>;
+  stop: () => Promise<void>;
   playNext: () => void;
   playPrevious: () => void;
   unloadSamplePack: () => void;
@@ -40,12 +40,12 @@ const defaultInitState: PlayerState = {
   audioInstance: null,
 };
 
-function createAudioInstance(url: string): AudioInstance {
+async function createAudioInstance(url: string) {
   const audioContext = new AudioContext();
   const gainNode = audioContext.createGain();
-  const source = new Audio();
-  source.src = url;
+  const source = new Audio(url);
   source.crossOrigin = "anonymous";
+  source.load();
 
   const mediaSource = audioContext.createMediaElementSource(source);
   mediaSource.connect(gainNode);
@@ -59,15 +59,18 @@ function createAudioInstance(url: string): AudioInstance {
   };
 }
 
-function playAudio(url: string, previousInstance: AudioInstance | null) {
+async function playAudio(url: string, previousInstance: AudioInstance | null) {
   if (previousInstance) {
+    await fadeOut(previousInstance);
     previousInstance.source.pause();
     previousInstance.source.currentTime = 0;
-    previousInstance.audioContext.close();
+    await previousInstance.audioContext.close();
   }
 
-  const audioInstance = createAudioInstance(url);
-  audioInstance.source.play();
+  const audioInstance = await createAudioInstance(url);
+  audioInstance.gainNode.gain.value = 0;
+  await audioInstance.source.play();
+  await fadeIn(audioInstance);
 
   return {
     isPlaying: true,
@@ -76,13 +79,22 @@ function playAudio(url: string, previousInstance: AudioInstance | null) {
   };
 }
 
-function fadeOutAudio(audioInstance: AudioInstance) {
+function fadeOut(audioInstance: AudioInstance) {
   return new Promise<void>((resolve) => {
     const { audioContext, gainNode } = audioInstance;
     const now = audioContext.currentTime;
     gainNode.gain.setValueAtTime(gainNode.gain.value, now);
     gainNode.gain.linearRampToValueAtTime(0, now + 0.1);
+    setTimeout(() => resolve(), 150);
+  });
+}
 
+function fadeIn(audioInstance: AudioInstance) {
+  return new Promise<void>((resolve) => {
+    const { audioContext, gainNode } = audioInstance;
+    const now = audioContext.currentTime;
+    gainNode.gain.setValueAtTime(0, now);
+    gainNode.gain.linearRampToValueAtTime(1, now + 0.05);
     setTimeout(() => resolve(), 100);
   });
 }
@@ -97,26 +109,21 @@ export function createPlayerStore(initState: PlayerState = defaultInitState) {
         samples: samplePack.samples.map((sample) => sample.url),
       })),
 
-    play: (playingSampleUrl: string) =>
-      set((state) => playAudio(playingSampleUrl, state.audioInstance)),
+    play: async (url: string) => {
+      const state = get();
+      const newState = await playAudio(url, state.audioInstance);
+      set(newState);
+    },
 
-    stop: () =>
-      set((state) => {
-        if (!state.audioInstance) return {};
-
-        const {
-          audioInstance: { audioContext, gainNode },
-        } = state;
-
-        const now = audioContext.currentTime;
-        gainNode.gain.setValueAtTime(gainNode.gain.value, now);
-        gainNode.gain.linearRampToValueAtTime(0, now + 0.1);
-
-        return {
-          isPlaying: false,
-          audioInstance: null,
-        };
-      }),
+    stop: async () => {
+      const state = get();
+      if (!state.audioInstance) return;
+      await fadeOut(state.audioInstance);
+      set({
+        isPlaying: false,
+        audioInstance: null,
+      });
+    },
     playNext: async () => {
       const state = get();
       if (!state.samples || !state.playingSampleUrl) return;
@@ -127,11 +134,8 @@ export function createPlayerStore(initState: PlayerState = defaultInitState) {
       const nextIndex = (currentIndex + 1) % state.samples.length;
       const nextUrl = state.samples[nextIndex];
 
-      if (state.audioInstance) {
-        await fadeOutAudio(state.audioInstance);
-      }
-
-      set(playAudio(nextUrl, state.audioInstance));
+      const newState = await playAudio(nextUrl, state.audioInstance);
+      set(newState);
     },
 
     playPrevious: async () => {
@@ -145,11 +149,9 @@ export function createPlayerStore(initState: PlayerState = defaultInitState) {
         (currentIndex - 1 + state.samples.length) % state.samples.length;
       const prevUrl = state.samples[prevIndex];
 
-      if (state.audioInstance) {
-        await fadeOutAudio(state.audioInstance);
-      }
+      const newState = await playAudio(prevUrl, state.audioInstance);
 
-      set(playAudio(prevUrl, state.audioInstance));
+      set(newState);
     },
 
     unloadSamplePack: () =>

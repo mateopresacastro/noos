@@ -1,7 +1,7 @@
 "use client";
 
 import { createContext, ReactNode, useRef } from "react";
-import { createPlayerStore } from "@/lib/store";
+import { createPlayerStore } from "@/lib/zustand/store";
 
 export type PlayerStoreApi = ReturnType<typeof createPlayerStore>;
 

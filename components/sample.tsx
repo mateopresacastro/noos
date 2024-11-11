@@ -1,35 +1,47 @@
 "use client";
 
-import { usePlayerStore } from "@/lib/store";
+import { usePlayerStore } from "@/lib/zustand/store";
 import { Play } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 import MusicBars from "@/components/music-bars";
 import { cn } from "@/lib/utils";
 
-export default function Sample({ url }: { url: string }) {
+export default function Sample({
+  url,
+  title,
+  userName,
+}: {
+  url: string;
+  title: string;
+  userName: string;
+}) {
   const { playingSampleUrl, isPlaying, play, stop } = usePlayerStore(
     (state) => state
   );
 
   const isThisSamplePlaying = playingSampleUrl === url && isPlaying;
 
-  function handleClick() {
-    if (isThisSamplePlaying) {
-      stop();
-      return;
+  async function handleClick() {
+    try {
+      if (isThisSamplePlaying) {
+        await stop();
+        return;
+      }
+      await play(url);
+    } catch (error) {
+      console.error("Failed to handle audio playback:", error);
     }
-    play(url);
   }
 
   return (
     <div
       className={cn(
-        "flex w-full cursor-pointer items-center justify-between rounded-xl transition-colors duration-150 ease-in-out hover:bg-neutral-900 h-14",
+        "flex w-full cursor-pointer items-center justify-between rounded-xl transition-colors duration-150 ease-in-out hover:bg-neutral-900 h-20 -ml-3 pl-3",
         isThisSamplePlaying && "bg-neutral-800 hover:bg-neutral-800"
       )}
       onClick={handleClick}
     >
-      <div className="py-5 pl-4">
+      <div className="py-5 flex items-center justify-start">
         <div className="flex items-baseline justify-start">
           <AnimatePresence initial={false} mode="popLayout">
             {isThisSamplePlaying ? (
@@ -77,6 +89,12 @@ export default function Sample({ url }: { url: string }) {
               </motion.div>
             )}
           </AnimatePresence>
+        </div>
+        <div>
+          <span className="block text-sm pl-1">{title}</span>
+          <span className="block text-xs pl-1 text-neutral-400">
+            @{userName}
+          </span>
         </div>
       </div>
     </div>

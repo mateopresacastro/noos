@@ -30,7 +30,7 @@ model SamplePack {
   stripeProductId   String        @default("")
   url               String
   description       String?
-  price             Float?
+  price             Float         @default(0.0)
   samples           Sample[]
   creator           User          @relation(fields: [creatorId], references: [id])
   creatorId         Int
@@ -42,7 +42,7 @@ model SamplePack {
 
 model Sample {
   id           Int        @id @default(autoincrement())
-  title        String?
+  title        String
   url          String
   samplePack   SamplePack @relation(fields: [samplePackId], references: [id])
   samplePackId Int
