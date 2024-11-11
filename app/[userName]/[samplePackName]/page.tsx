@@ -30,7 +30,7 @@ export default async function Page({
     <>
       <LoadPackToState samplePack={samplePack} />
       <div className="flex flex-col items-center justify-start min-h-screen py-20 sm:py-32">
-        <div className="flex items-start flex-col w-full max-w-96">
+        <div className="flex items-start flex-col w-full">
           <div className="w-64 flex items-center justify-center self-center">
             <div className="w-full h-full aspect-square mb-3 object-cover relative">
               <Image
@@ -41,12 +41,12 @@ export default async function Page({
               />
             </div>
           </div>
-          <span className="block text-3xl font-bold">{samplePack.title}</span>
+          <span className="block text-2xl font-bold">{samplePack.title}</span>
 
           <Link
             href={`/${userName}`}
             prefetch={true}
-            className="flex items-center justify-center py-1"
+            className="flex items-center justify-center py-1 pb-2"
           >
             <Image
               src={creatorImgUrl}
@@ -60,12 +60,12 @@ export default async function Page({
           <span className="block text-neutral-400 text-xs pb-1">
             {samplePack.description}
           </span>
-          <div className="flex items-baseline justify-between w-full">
+          <div className="flex items-baseline justify-between w-full pt-2">
             <NumberFlow
               value={Number(samplePack.price.toFixed(2))}
               format={{ style: "currency", currency: "USD" }}
               locales="en-US"
-              className="text-neutral-300"
+              className="text-neutral-200"
             />
             <Link href={samplePack.stripePaymentLink}>
               <Button className="font-medium w-full text-base px-10">

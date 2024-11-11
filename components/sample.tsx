@@ -36,13 +36,13 @@ export default function Sample({
   return (
     <div
       className={cn(
-        "flex w-full cursor-pointer items-center justify-between rounded-xl transition-colors duration-150 ease-in-out hover:bg-neutral-900 h-20 -ml-3 pl-3",
+        "flex w-[100%+3rem] cursor-pointer items-center justify-between rounded-xl transition-colors duration-150 ease-in-out hover:bg-neutral-900 h-16 pl-3 -ml-3",
         isThisSamplePlaying && "bg-neutral-800 hover:bg-neutral-800"
       )}
       onClick={handleClick}
     >
-      <div className="py-5 flex items-center justify-start">
-        <div className="flex items-baseline justify-start">
+      <div className=" flex items-center justify-start">
+        <div className="flex items-baseline justify-start w-5">
           <AnimatePresence initial={false} mode="popLayout">
             {isThisSamplePlaying ? (
               <motion.div
@@ -91,7 +91,7 @@ export default function Sample({
           </AnimatePresence>
         </div>
         <div>
-          <span className="block text-sm pl-1">{title}</span>
+          <span className="block pl-1">{title}</span>
           <span className="block text-xs pl-1 text-neutral-400">
             @{userName}
           </span>

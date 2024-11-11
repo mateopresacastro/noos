@@ -11,35 +11,41 @@ export default function Player() {
     playPrevious,
     playingSampleUrl,
     stop,
+    play,
     isPlaying,
   } = usePlayerStore((state) => state);
   if (!samplePack) return null;
 
-  function handleClick() {
+  async function handleClick() {
     if (isPlaying) {
       stop();
       return;
     }
     if (!playingSampleUrl) return;
+    await play(playingSampleUrl);
   }
 
+  const sampleName =
+    samplePack.samples.find((sample) => sample.url === playingSampleUrl)
+      ?.title ?? "Unknown";
+
   return (
-    <div className="fixed bottom-0 left-0 right-0 h-20 bg-neutral-900 border-t border-neutral-800 z-10">
+    <div className="fixed bottom-0 left-0 right-0 h-14 bg-neutral-900 border-t border-neutral-800 z-10">
       <div className="max-w-6xl mx-auto h-full px-4">
         <div className="flex items-center justify-between h-full">
-          <div className="flex items-center gap-4">
-            <div className="size-12 bg-neutral-800 rounded">
+          <div className="flex items-center gap-2">
+            <div className="size-10 rounded-lg">
               <Image
                 src={samplePack.imgUrl}
                 alt={samplePack.title}
-                height={48}
-                width={48}
-                className="size-12"
+                height={40}
+                width={40}
+                className="size-10 rounded-lg"
               />
             </div>
             <div className="flex flex-col gap-1">
               <h4 className="text-sm font-medium max-w-32 text-ellipsis overflow-hidden h-4">
-                {playingSampleUrl}
+                {sampleName}
               </h4>
               <p className="text-xs text-neutral-400">
                 @{samplePack.creator.userName}
