@@ -1,3 +1,4 @@
+import { set } from "zod";
 import { createStore } from "zustand/vanilla";
 import { PlayerStoreContext } from "@/lib/zustand/provider";
 import { useContext } from "react";
@@ -24,6 +25,8 @@ type PlayerState = {
   currentTime: number | null;
   repeat: boolean;
   shuffle: boolean;
+  muted: boolean;
+  volume: number | null;
 };
 
 type PlayerActions = {
@@ -38,6 +41,8 @@ type PlayerActions = {
   setCurrentTime: (currentTime: number) => void;
   setRepeat: (repeat: boolean) => void;
   setShuffle: (shuffle: boolean) => void;
+  setMuted: (muted: boolean) => void;
+  setVolume: (volume: number) => void;
 };
 
 type PlayerStore = PlayerState & PlayerActions;
@@ -53,6 +58,8 @@ const defaultInitState: PlayerState = {
   currentTime: null,
   repeat: false,
   shuffle: false,
+  muted: false,
+  volume: 1,
 };
 
 async function createAudioInstance(url: string) {
@@ -96,22 +103,22 @@ async function playAudio(url: string, previousInstance: AudioInstance | null) {
   };
 }
 
-function fadeOut(audioInstance: AudioInstance) {
+function fadeOut(audioInstance: AudioInstance, amount = 0) {
   return new Promise<void>((resolve) => {
     const { audioContext, gainNode } = audioInstance;
     const now = audioContext.currentTime;
     gainNode.gain.setValueAtTime(gainNode.gain.value, now);
-    gainNode.gain.linearRampToValueAtTime(0, now + 0.1);
+    gainNode.gain.linearRampToValueAtTime(amount, now + 0.1);
     setTimeout(() => resolve(), 150);
   });
 }
 
-function fadeIn(audioInstance: AudioInstance) {
+function fadeIn(audioInstance: AudioInstance, amount = 1) {
   return new Promise<void>((resolve) => {
     const { audioContext, gainNode } = audioInstance;
     const now = audioContext.currentTime;
     gainNode.gain.setValueAtTime(0, now);
-    gainNode.gain.linearRampToValueAtTime(1, now + 0.05);
+    gainNode.gain.linearRampToValueAtTime(amount, now + 0.05);
     setTimeout(() => resolve(), 100);
   });
 }
@@ -192,7 +199,7 @@ export function createPlayerStore(initState: PlayerState = defaultInitState) {
     setSelectedSampleUrl: (selectedSampleUrl: string) =>
       set(() => ({ selectedSampleUrl })),
 
-    seek: async (time: number) => {
+    seek: (time: number) => {
       const state = get();
       if (!state.audioInstance) return;
       state.audioInstance.source.currentTime = time;
@@ -206,6 +213,28 @@ export function createPlayerStore(initState: PlayerState = defaultInitState) {
 
     setShuffle: (shuffle: boolean) =>
       set((state) => ({ shuffle, repeat: shuffle ? false : state.repeat })),
+
+    setMuted: (muted: boolean) => {
+      set(() => ({ muted }));
+      const state = get();
+      if (!state.audioInstance) return;
+      if (muted) {
+        fadeOut(state.audioInstance, 0);
+      } else {
+        fadeIn(state.audioInstance, state.volume ?? 1);
+      }
+    },
+
+    setVolume: (volume: number) => {
+      set(() => ({ volume }));
+      const state = get();
+      if (!state.audioInstance) return;
+      const now = state.audioInstance.audioContext.currentTime;
+      state.audioInstance.gainNode.gain.setValueAtTime(
+        state.muted ? 0 : volume,
+        now
+      );
+    },
   }));
 }
 

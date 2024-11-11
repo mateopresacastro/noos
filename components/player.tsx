@@ -1,18 +1,20 @@
 "use client";
 
 import Image from "next/image";
+import { cn } from "@/lib/utils";
+import { useEffect } from "react";
 import { Volume2 } from "lucide-react";
 import { usePlayerStore } from "@/lib/zustand/store";
 import { AnimatePresence, motion } from "framer-motion";
-import { FaPlay, FaPause } from "react-icons/fa";
+import { FaPlay, FaStop } from "react-icons/fa";
 import { LuRepeat1 } from "react-icons/lu";
 import { LuDot } from "react-icons/lu";
 import { PiShuffleBold } from "react-icons/pi";
-
+import { AiFillMuted } from "react-icons/ai";
 import { BsFillSkipEndFill, BsFillSkipStartFill } from "react-icons/bs";
 import ProgressBar from "@/components/progress-bar";
-import { useEffect } from "react";
-import { cn } from "@/lib/utils";
+import Link from "next/link";
+import VolumeBar from "@/components/volume-bar";
 
 export default function Player() {
   const {
@@ -31,6 +33,8 @@ export default function Player() {
     setRepeat,
     shuffle,
     setShuffle,
+    muted,
+    setMuted,
   } = usePlayerStore((state) => state);
 
   useEffect(() => {
@@ -82,7 +86,7 @@ export default function Player() {
 
   return (
     <AnimatePresence mode="popLayout">
-      {!samplePack ? null : (
+      {!playingSampleUrl || !samplePack ? null : (
         <motion.div
           className="fixed bottom-0 left-0 right-0 h-14 bg-neutral-900 border-t border-neutral-800 z-10 sm:h-24"
           transition={{ type: "spring", duration: 0.6 }}
@@ -94,33 +98,39 @@ export default function Player() {
           <div className="max-w-8xl mx-auto h-full px-4">
             <div className="flex items-center justify-between h-full relative">
               <div className="flex items-center gap-2 sm:gap-4">
-                <div className="size-10 rounded-lg sm:size-14">
-                  <Image
-                    src={samplePack.imgUrl}
-                    alt={samplePack.title}
-                    height={56}
-                    width={56}
-                    className="size-10 rounded-lg sm:size-14"
-                  />
-                </div>
+                <Link
+                  href={`/${samplePack.creator.userName}/${samplePack.name}`}
+                >
+                  <div className="size-10 rounded-lg sm:size-14">
+                    <Image
+                      src={samplePack.imgUrl}
+                      alt={samplePack.title}
+                      height={56}
+                      width={56}
+                      className="size-10 rounded-lg sm:size-14"
+                    />
+                  </div>
+                </Link>
                 <div className="flex flex-col gap-1">
                   <span className="text-sm font-medium max-w-32 h-4 sm:text-base block">
                     {sampleName}
                   </span>
-                  <span className="text-xs text-neutral-400 sm:text-sm block">
-                    @{samplePack.creator.userName}
-                  </span>
+                  <Link href={`/${samplePack.creator.userName}`}>
+                    <span className="text-xs text-neutral-400 sm:text-sm block">
+                      @{samplePack.creator.userName}
+                    </span>
+                  </Link>
                 </div>
               </div>
 
               <button
-                className="text-neutral-400 size-8 flex items-center justify-center rounded-full hover:scale-110 transition hover:text-neutral-50 sm:hidden"
+                className="text-neutral-50 size-8 flex items-center justify-center rounded-full hover:scale-110 transition hover:text-neutral-200 sm:hidden active:scale-90 active:text-neutral-400"
                 onClick={handleClick}
               >
-                {isPlaying ? <FaPause size={20} /> : <FaPlay size={20} />}
+                {isPlaying ? <FaStop size={20} /> : <FaPlay size={20} />}
               </button>
-              <div className="items-center hidden sm:flex sm:absolute sm:right-auto sm:left-1/2 sm:-translate-x-1/2 sm:flex-col w-1/3 gap-1">
-                <div className="w-50 flex gap-6">
+              <div className="items-center hidden sm:flex sm:absolute sm:right-auto sm:left-1/2 sm:-translate-x-1/2 sm:flex-col w-1/3 gap-2">
+                <div className="w-50 flex sm:gap-4 md:gap-6">
                   <button
                     className={cn(
                       "text-neutral-400 hover:text-neutral-50 transition active:scale-90 active:text-neutral-400",
@@ -147,7 +157,7 @@ export default function Player() {
                     onClick={handleClick}
                   >
                     {isPlaying ? (
-                      <FaPause size={15} />
+                      <FaStop size={15} />
                     ) : (
                       <FaPlay size={15} className="ml-0.5" />
                     )}
@@ -185,10 +195,17 @@ export default function Player() {
                 </div>
               </div>
               <div className="items-center gap-2 hidden sm:flex">
-                <Volume2 size={20} className="text-neutral-400" />
-                <div className="w-24 h-1 bg-neutral-800 rounded-full">
-                  <div className="w-1/2 h-full bg-white rounded-full"></div>
-                </div>
+                <button
+                  className="text-neutral-400 hover:text-neutral-50 transition active:scale-90 active:text-neutral-400"
+                  onClick={() => setMuted(!muted)}
+                >
+                  {muted ? (
+                    <AiFillMuted size={20} className="text-neutral-400" />
+                  ) : (
+                    <Volume2 size={20} className="text-neutral-400" />
+                  )}
+                </button>
+                <VolumeBar />
               </div>
             </div>
           </div>

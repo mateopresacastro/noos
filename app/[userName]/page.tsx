@@ -4,6 +4,7 @@ import UploadButton from "@/components/upload-button";
 import { notFound } from "next/navigation";
 import { DotIcon } from "lucide-react";
 import { getData } from "@/lib/db/queries";
+import SamplePack from "@/components/sample-pack";
 
 export default async function Page({
   params,
@@ -45,7 +46,7 @@ export default async function Page({
   );
 }
 
-type SamplePackData = NonNullable<
+export type SamplePackData = NonNullable<
   Awaited<ReturnType<typeof getData>>
 >["samplePacks"][number];
 
@@ -66,36 +67,5 @@ function SamplePacks({
         />
       ))}
     </div>
-  );
-}
-
-function SamplePack({
-  samplePack,
-  userName,
-}: {
-  samplePack: SamplePackData;
-  userName: string;
-}) {
-  return (
-    <Link href={`/${userName}/${samplePack.name}`} prefetch={true}>
-      <div className="flex flex-col items-start justify-center rounded-2xl w-full aspect-square hover:opacity-80 transition-opacity duration-200 mb-2">
-        <Image
-          src={samplePack.imgUrl}
-          alt={samplePack.title}
-          width={160}
-          height={160}
-          className="rounded-2xl w-full h-full object-cover"
-          priority
-        />
-        <div>
-          <span className="text-sm block pt-1 truncate text-ellipsis">
-            {samplePack.title}
-          </span>
-          <span className="text-xs block text-neutral-400">
-            {samplePack.samples.length} samples
-          </span>
-        </div>
-      </div>
-    </Link>
   );
 }

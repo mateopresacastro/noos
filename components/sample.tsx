@@ -80,8 +80,8 @@ export default function Sample({
           <span className="block pl-1">{title}</span>
           <span
             className={cn(
-              "block text-xs pl-1 text-neutral-400 transition-colors",
-              isThisSampleSelected && "text-neutral-200"
+              "block text-xs sm:text-sm pl-1 text-neutral-500 transition-colors",
+              isThisSampleSelected && "text-neutral-300"
             )}
           >
             @{userName}
