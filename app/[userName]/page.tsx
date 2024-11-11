@@ -1,5 +1,4 @@
 import Image from "next/image";
-import Link from "next/link";
 import UploadButton from "@/components/upload-button";
 import { notFound } from "next/navigation";
 import { DotIcon } from "lucide-react";
