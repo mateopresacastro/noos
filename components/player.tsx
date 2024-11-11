@@ -56,7 +56,16 @@ export default function Player() {
       audioInstance.source.removeEventListener("timeupdate", onTimeUpdate);
       audioInstance.source.removeEventListener("ended", onEnded);
     };
-  }, [audioInstance?.source, repeat, playingSampleUrl]);
+  }, [
+    audioInstance?.source,
+    repeat,
+    playingSampleUrl,
+    play,
+    playNext,
+    shuffle,
+    stop,
+    setCurrentTime,
+  ]);
 
   async function handleClick() {
     if (isPlaying) {
