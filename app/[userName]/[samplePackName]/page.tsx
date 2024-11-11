@@ -92,7 +92,7 @@ export default async function Page({
             />
           </div>
           <div className="mt-10 w-full hidden sm:block">
-            <span className="ml-10 text-neutral-400 mb-3 text-sm">Title</span>
+            <span className="ml-14 text-neutral-400 mb-3 text-sm">Title</span>
             <Separator className="mb-3 mt-2" />
           </div>
           <div className="w-full flex flex-col pt-10 sm:pt-0">

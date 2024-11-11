@@ -20,6 +20,10 @@ type PlayerState = {
   selectedSampleUrl: string | null;
   samples: string[] | null;
   audioInstance: AudioInstance | null;
+  duration: number | null;
+  currentTime: number | null;
+  repeat: boolean;
+  shuffle: boolean;
 };
 
 type PlayerActions = {
@@ -30,6 +34,10 @@ type PlayerActions = {
   playPrevious: () => void;
   unloadSamplePack: () => void;
   setSelectedSampleUrl: (selectedSampleUrl: string) => void;
+  seek: (time: number) => void;
+  setCurrentTime: (currentTime: number) => void;
+  setRepeat: (repeat: boolean) => void;
+  setShuffle: (shuffle: boolean) => void;
 };
 
 type PlayerStore = PlayerState & PlayerActions;
@@ -41,6 +49,10 @@ const defaultInitState: PlayerState = {
   selectedSampleUrl: null,
   samples: null,
   audioInstance: null,
+  duration: null,
+  currentTime: null,
+  repeat: false,
+  shuffle: false,
 };
 
 async function createAudioInstance(url: string) {
@@ -66,7 +78,6 @@ async function playAudio(url: string, previousInstance: AudioInstance | null) {
   if (previousInstance) {
     await fadeOut(previousInstance);
     previousInstance.source.pause();
-    previousInstance.source.currentTime = 0;
     await previousInstance.audioContext.close();
   }
 
@@ -74,11 +85,14 @@ async function playAudio(url: string, previousInstance: AudioInstance | null) {
   audioInstance.gainNode.gain.value = 0;
   await audioInstance.source.play();
   await fadeIn(audioInstance);
+  const duration = audioInstance.source.duration;
 
   return {
     isPlaying: true,
     playingSampleUrl: url,
     audioInstance,
+    duration,
+    currentTime: 0,
   };
 }
 
@@ -127,6 +141,7 @@ export function createPlayerStore(initState: PlayerState = defaultInitState) {
         audioInstance: null,
       });
     },
+
     playNext: async () => {
       const state = get();
       if (!state.samples || !state.playingSampleUrl) return;
@@ -134,7 +149,14 @@ export function createPlayerStore(initState: PlayerState = defaultInitState) {
       const currentIndex = state.samples.indexOf(state.playingSampleUrl);
       if (currentIndex === -1) return;
 
-      const nextIndex = (currentIndex + 1) % state.samples.length;
+      let nextIndex;
+      if (state.shuffle) {
+        nextIndex = Math.floor(Math.random() * state.samples.length);
+        console.log("nextIndex", nextIndex);
+      } else {
+        nextIndex = (currentIndex + 1) % state.samples.length;
+      }
+
       const nextUrl = state.samples[nextIndex];
 
       const newState = await playAudio(nextUrl, state.audioInstance);
@@ -169,6 +191,21 @@ export function createPlayerStore(initState: PlayerState = defaultInitState) {
 
     setSelectedSampleUrl: (selectedSampleUrl: string) =>
       set(() => ({ selectedSampleUrl })),
+
+    seek: async (time: number) => {
+      const state = get();
+      if (!state.audioInstance) return;
+      state.audioInstance.source.currentTime = time;
+      set({ currentTime: time });
+    },
+
+    setCurrentTime: (currentTime: number) => set(() => ({ currentTime })),
+
+    setRepeat: (repeat: boolean) =>
+      set((state) => ({ repeat, shuffle: repeat ? false : state.shuffle })),
+
+    setShuffle: (shuffle: boolean) =>
+      set((state) => ({ shuffle, repeat: shuffle ? false : state.repeat })),
   }));
 }
 
