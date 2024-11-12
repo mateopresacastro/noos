@@ -1,8 +1,8 @@
+import sgMail from "@sendgrid/mail";
 import { STRIPE_WEBHOOK_SECRET } from "@/cfg";
 import { createSamplePackDownloadUrl } from "@/lib/aws/mod";
 import { getCustomerData, stripe } from "@/lib/stripe";
 import { headers } from "next/headers";
-import sgMail from "@sendgrid/mail";
 import type Stripe from "stripe";
 
 async function handleSuccessfulPaymentIntent(
@@ -31,17 +31,7 @@ async function handleSuccessfulPaymentIntent(
   const { email, name } = customerData;
   const downloadUrl = await createSamplePackDownloadUrl(metadata.s3Key);
   if (!downloadUrl) throw new Error("Error creating download url");
-
-  // TODO: send email
   await sendEmail(email, name, downloadUrl);
-  console.log("Successful payment intent:", {
-    paymentIntentId,
-    connectedAccountId,
-    email,
-    name,
-    s3Key: metadata.s3Key,
-    downloadUrl,
-  });
 }
 
 async function sendEmail(email: string, name: string, downloadUrl: string) {
@@ -55,8 +45,8 @@ async function sendEmail(email: string, name: string, downloadUrl: string) {
     to: email,
     from: "mateopresacastro@gmail.com",
     subject: "Your sample pack is ready!",
-    text: `Your sample pack is ready to download at ${downloadUrl}`,
-    html: `<p>Your sample pack is ready to download at ${downloadUrl}</p>`,
+    text: `Hey ${name}, your sample pack is ready to download at ${downloadUrl}`,
+    html: `<p>Hey ${name}, your sample pack is ready to download at ${downloadUrl}</p>`,
   };
 
   try {
@@ -64,7 +54,8 @@ async function sendEmail(email: string, name: string, downloadUrl: string) {
     console.log("Sendgrid response:", response);
   } catch (error) {
     console.error("Error sending email:", error);
-    // TODO handle error
+    // TODO: handle error
+    throw error;
   }
 }
 
