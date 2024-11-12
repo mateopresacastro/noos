@@ -5,6 +5,8 @@ import { usePlayerStore } from "@/lib/zustand/store";
 import MusicBars from "@/components/music-bars";
 import Image from "next/image";
 import Link from "next/link";
+import { AnimatePresence } from "framer-motion";
+import Fade from "@/components/fade";
 
 export default function SamplePack({
   samplePack,
@@ -13,11 +15,14 @@ export default function SamplePack({
   samplePack: SamplePackData;
   userName: string;
 }) {
-  const { samplePack: currentlyPlayingSamplePack } = usePlayerStore(
+  const { samplePack: currentlyPlayingSamplePack, isPlaying } = usePlayerStore(
     (state) => state
   );
+
   const isThisSamplePackPlaying =
-    currentlyPlayingSamplePack?.name === samplePack.name;
+    currentlyPlayingSamplePack &&
+    currentlyPlayingSamplePack.name === samplePack.name &&
+    isPlaying;
 
   return (
     <Link href={`/${userName}/${samplePack.name}`} prefetch={true}>
@@ -39,7 +44,15 @@ export default function SamplePack({
               {samplePack.samples.length} samples
             </span>
           </div>
-          <div className="pt-2">{isThisSamplePackPlaying ? <MusicBars /> : null}</div>
+          <div className="self-end pb-1">
+            <AnimatePresence>
+              {isThisSamplePackPlaying ? (
+                <Fade id="music-bars-profile-page">
+                  <MusicBars />
+                </Fade>
+              ) : null}
+            </AnimatePresence>
+          </div>
         </div>
       </div>
     </Link>

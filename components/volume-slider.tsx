@@ -2,17 +2,20 @@ import * as Slider from "@radix-ui/react-slider";
 import { usePlayerStore } from "@/lib/zustand/store";
 
 export default function VolumeBar() {
-  const { volume, setVolume } = usePlayerStore((state) => state);
+  const { volume, setVolume, muted, setMuted } = usePlayerStore(
+    (state) => state
+  );
 
   const handleValueChange = (value: number[]) => {
+    if (muted) setMuted(false);
     setVolume(value[0]);
   };
 
   return (
     <Slider.Root
-      className="relative flex h-5 w-32 items-center touch-none group cursor-pointer"
+      className="relative flex h-5 w-28 items-center touch-none group cursor-pointer"
       defaultValue={[0]}
-      value={[volume ?? 0]}
+      value={[muted ? 0 : volume ?? 0]}
       max={1}
       onValueChange={handleValueChange}
       step={0.05}

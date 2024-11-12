@@ -2,19 +2,23 @@
 
 import { usePlayerStore } from "@/lib/zustand/store";
 import { FaPlay } from "react-icons/fa";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 import MusicBars from "@/components/music-bars";
+import Fade from "@/components/fade";
+import type { SamplePack } from "@/lib/db/queries";
 
 export default function Sample({
   url,
   title,
   userName,
+  wholeSamplePack,
 }: {
   url: string;
   title: string;
   userName: string;
   num?: number;
+  wholeSamplePack: SamplePack;
 }) {
   const {
     playingSampleUrl,
@@ -23,6 +27,8 @@ export default function Sample({
     stop,
     setSelectedSampleUrl,
     selectedSampleUrl,
+    setSamplePack,
+    samplePack,
   } = usePlayerStore((state) => state);
 
   const isThisSamplePlaying = playingSampleUrl === url && isPlaying;
@@ -34,6 +40,7 @@ export default function Sample({
 
   async function handlePlay() {
     try {
+      loadSamplePackToGlobalState();
       if (isThisSamplePlaying) {
         await stop();
         return;
@@ -45,8 +52,15 @@ export default function Sample({
   }
 
   async function handleDoubleClick() {
+    loadSamplePackToGlobalState();
     await stop();
     await play(url);
+  }
+
+  function loadSamplePackToGlobalState() {
+    if (!wholeSamplePack) return;
+    if (wholeSamplePack.name === samplePack?.name) return;
+    setSamplePack(wholeSamplePack);
   }
 
   return (
@@ -61,7 +75,7 @@ export default function Sample({
     >
       <div className="flex items-center justify-start">
         <div
-          className="flex items-baseline justify-start w-5 sm:w-10 sm:pl-2 text-neutral-400 hover:scale-110 active:scale-100 active:text-neutral-300 hover:text-neutral-50 transition-all duration-150"
+          className="flex items-baseline justify-start w-5 sm:w-10 sm:pl-2 text-neutral-600 hover:scale-110 active:scale-100 active:text-neutral-300 hover:text-neutral-50 transition-all duration-150"
           onClick={handlePlay}
         >
           <AnimatePresence initial={false} mode="popLayout">
@@ -77,7 +91,14 @@ export default function Sample({
           </AnimatePresence>
         </div>
         <div>
-          <span className="block pl-1">{title}</span>
+          <span
+            className={cn(
+              "block pl-1 text-neutral-200",
+              isThisSamplePlaying && "font-bold"
+            )}
+          >
+            {title}
+          </span>
           <span
             className={cn(
               "block text-xs sm:text-sm pl-1 text-neutral-500 transition-colors",
@@ -89,19 +110,5 @@ export default function Sample({
         </div>
       </div>
     </div>
-  );
-}
-
-function Fade({ id, children }: { id: string; children: React.ReactNode }) {
-  return (
-    <motion.div
-      initial={{ opacity: 0, filter: "blur(1px)" }}
-      animate={{ opacity: 1, filter: "blur(0px)" }}
-      exit={{ opacity: 0, filter: "blur(1px)" }}
-      transition={{ duration: 0.2 }}
-      key={id}
-    >
-      {children}
-    </motion.div>
   );
 }

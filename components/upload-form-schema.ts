@@ -4,8 +4,8 @@ const ONE_GB_IN_BYTES = 1000 * 1024 * 1024;
 const FIVE_MB_IN_BYTES = 5 * 1024 * 1024;
 
 export const uploadFormSchema = z.object({
-  title: z.string().min(5).max(50),
-  description: z.string().min(5).max(100).optional(),
+  title: z.string().min(5).max(35),
+  description: z.string().min(5).max(20).optional(),
   price: z.number().min(0),
   img: z
     .instanceof(FileList)

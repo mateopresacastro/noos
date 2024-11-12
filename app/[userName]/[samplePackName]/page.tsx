@@ -3,7 +3,6 @@ import Link from "next/link";
 import Sample from "@/components/sample";
 import EditPackButton from "@/components/edit-pack-button";
 import NumberFlow from "@number-flow/react";
-import LoadPackToState from "@/components/load-pack-to-state";
 import { notFound } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { getSamplePack } from "@/lib/db/queries";
@@ -29,8 +28,7 @@ export default async function Page({
 
   return (
     <>
-      <LoadPackToState samplePack={samplePack} />
-      <div className="flex items-start justify-center min-h-screen py-24">
+      <div className="flex items-start justify-center min-h-screen py-24 pb-40">
         <div className="flex items-start flex-col w-full">
           <div className="w-full flex flex-col sm:flex-row">
             <div className="w-64 flex items-center justify-center self-center">
@@ -39,6 +37,8 @@ export default async function Page({
                   src={samplePack.imgUrl}
                   alt={samplePack.title}
                   fill
+                  sizes="20rem"
+                  priority
                   className="w-full h-full object-cover"
                 />
               </div>
@@ -88,7 +88,7 @@ export default async function Page({
               value={Number(samplePack.price.toFixed(2))}
               format={{ style: "currency", currency: "USD" }}
               locales="en-US"
-              className="text-neutral-50 sm:pl-5 font-bold text-xl"
+              className="text-neutral-50 sm:pl-5 text-xl"
             />
           </div>
           <div className="mt-10 w-full hidden sm:block">
@@ -103,6 +103,7 @@ export default async function Page({
                 title={title}
                 userName={userName}
                 num={index + 1}
+                wholeSamplePack={samplePack}
               />
             ))}
           </div>
