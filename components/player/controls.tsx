@@ -6,10 +6,14 @@ import { FaStop, FaPlay } from "react-icons/fa";
 import { LuDot, LuRepeat1 } from "react-icons/lu";
 import { PiShuffleBold } from "react-icons/pi";
 
-export default function Controls({ handleClick }: { handleClick: () => void }) {
+export default function Controls({
+  handlePlayStop,
+}: {
+  handlePlayStop: () => void;
+}) {
   return (
     <div className="items-center hidden sm:flex sm:absolute sm:right-auto sm:left-1/2 sm:-translate-x-1/2 sm:flex-col w-1/3 gap-2">
-      <Buttons handleClick={handleClick} />
+      <Buttons handlePlayStop={handlePlayStop} />
       <Progress />
     </div>
   );
@@ -30,7 +34,7 @@ function Progress() {
   );
 }
 
-function Buttons({ handleClick }: { handleClick: () => void }) {
+function Buttons({ handlePlayStop }: { handlePlayStop: () => void }) {
   const {
     playNext,
     playPrevious,
@@ -63,7 +67,7 @@ function Buttons({ handleClick }: { handleClick: () => void }) {
       </button>
       <button
         className="text-neutral-900 size-8 flex items-center justify-center transition hover:bg-neutral-200 hover:scale-110 rounded-full bg-neutral-50 active:scale-100 active:bg-neutral-400"
-        onClick={handleClick}
+        onClick={handlePlayStop}
       >
         {isPlaying ? (
           <FaStop size={15} />

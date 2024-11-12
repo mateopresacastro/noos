@@ -59,7 +59,7 @@ export function usePlayer() {
     audioInstance,
   ]);
 
-  async function handleClick() {
+  async function handlePlayStop() {
     if (isPlaying) {
       stop();
       return;
@@ -69,8 +69,9 @@ export function usePlayer() {
   }
 
   return {
-    handleClick,
+    handlePlayStop,
     playingSampleUrl,
     samplePack,
+    showPlayer: playingSampleUrl && samplePack,
   };
 }
