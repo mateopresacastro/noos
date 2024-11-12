@@ -28,6 +28,21 @@ type PlayerState = {
   volume: number | null;
 };
 
+const defaultInitState: PlayerState = {
+  samplePack: null,
+  isPlaying: false,
+  playingSampleUrl: null,
+  selectedSampleUrl: null,
+  samples: null,
+  audioInstance: null,
+  duration: null,
+  currentTime: null,
+  repeat: false,
+  shuffle: false,
+  muted: false,
+  volume: 1,
+};
+
 type PlayerActions = {
   setSamplePack: (samplePack: NNSamplePack) => void;
   play: (playingSampleUrl: string) => Promise<void>;
@@ -45,82 +60,6 @@ type PlayerActions = {
 };
 
 type PlayerStore = PlayerState & PlayerActions;
-
-const defaultInitState: PlayerState = {
-  samplePack: null,
-  isPlaying: false,
-  playingSampleUrl: null,
-  selectedSampleUrl: null,
-  samples: null,
-  audioInstance: null,
-  duration: null,
-  currentTime: null,
-  repeat: false,
-  shuffle: false,
-  muted: false,
-  volume: 1,
-};
-
-async function createAudioInstance(url: string) {
-  const audioContext = new AudioContext();
-  const gainNode = audioContext.createGain();
-  const source = new Audio(url);
-  source.crossOrigin = "anonymous";
-  source.load();
-
-  const mediaSource = audioContext.createMediaElementSource(source);
-  mediaSource.connect(gainNode);
-  gainNode.connect(audioContext.destination);
-
-  return {
-    source,
-    gainNode,
-    audioContext,
-    mediaSource,
-  };
-}
-
-async function playAudio(url: string, previousInstance: AudioInstance | null) {
-  if (previousInstance) {
-    await fadeOut(previousInstance);
-    previousInstance.source.pause();
-    await previousInstance.audioContext.close();
-  }
-
-  const audioInstance = await createAudioInstance(url);
-  audioInstance.gainNode.gain.value = 0;
-  await audioInstance.source.play();
-  await fadeIn(audioInstance);
-  const duration = audioInstance.source.duration;
-
-  return {
-    isPlaying: true,
-    playingSampleUrl: url,
-    audioInstance,
-    duration,
-    currentTime: 0,
-  };
-}
-
-function fadeOut(audioInstance: AudioInstance, amount = 0) {
-  return new Promise<void>((resolve) => {
-    const { audioContext, gainNode } = audioInstance;
-    const now = audioContext.currentTime;
-    gainNode.gain.setValueAtTime(gainNode.gain.value, now);
-    gainNode.gain.linearRampToValueAtTime(amount, now + 0.1);
-    setTimeout(() => resolve(), 150);
-  });
-}
-
-function fadeIn(audioInstance: AudioInstance, amount = 1) {
-  return new Promise<void>((resolve) => {
-    const { audioContext, gainNode } = audioInstance;
-    const now = audioContext.currentTime;
-    gainNode.gain.setValueAtTime(0, now);
-    gainNode.gain.linearRampToValueAtTime(amount, now + 0.05);
-    setTimeout(() => resolve(), 100);
-  });
-}
 
 export function createPlayerStore(initState: PlayerState = defaultInitState) {
   return createStore<PlayerStore>()((set, get) => ({
@@ -246,3 +185,64 @@ export const usePlayerStore = <T>(selector: (store: PlayerStore) => T): T => {
 
   return useStore(playerStoreContext, selector);
 };
+
+async function createAudioInstance(url: string) {
+  const audioContext = new AudioContext();
+  const gainNode = audioContext.createGain();
+  const source = new Audio(url);
+  source.crossOrigin = "anonymous";
+  source.load();
+
+  const mediaSource = audioContext.createMediaElementSource(source);
+  mediaSource.connect(gainNode);
+  gainNode.connect(audioContext.destination);
+
+  return {
+    source,
+    gainNode,
+    audioContext,
+    mediaSource,
+  };
+}
+
+async function playAudio(url: string, previousInstance: AudioInstance | null) {
+  if (previousInstance) {
+    await fadeOut(previousInstance);
+    previousInstance.source.pause();
+    await previousInstance.audioContext.close();
+  }
+
+  const audioInstance = await createAudioInstance(url);
+  audioInstance.gainNode.gain.value = 0;
+  await audioInstance.source.play();
+  await fadeIn(audioInstance);
+  const duration = audioInstance.source.duration;
+
+  return {
+    isPlaying: true,
+    playingSampleUrl: url,
+    audioInstance,
+    duration,
+    currentTime: 0,
+  };
+}
+
+function fadeOut(audioInstance: AudioInstance, amount = 0) {
+  return new Promise<void>((resolve) => {
+    const { audioContext, gainNode } = audioInstance;
+    const now = audioContext.currentTime;
+    gainNode.gain.setValueAtTime(gainNode.gain.value, now);
+    gainNode.gain.linearRampToValueAtTime(amount, now + 0.1);
+    setTimeout(() => resolve(), 150);
+  });
+}
+
+function fadeIn(audioInstance: AudioInstance, amount = 1) {
+  return new Promise<void>((resolve) => {
+    const { audioContext, gainNode } = audioInstance;
+    const now = audioContext.currentTime;
+    gainNode.gain.setValueAtTime(0, now);
+    gainNode.gain.linearRampToValueAtTime(amount, now + 0.05);
+    setTimeout(() => resolve(), 100);
+  });
+}
