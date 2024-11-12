@@ -2,11 +2,13 @@ import { STRIPE_WEBHOOK_SECRET } from "@/cfg";
 import { createSamplePackDownloadUrl } from "@/lib/aws/mod";
 import { getCustomerData, stripe } from "@/lib/stripe";
 import { headers } from "next/headers";
+import sgMail from "@sendgrid/mail";
 import type Stripe from "stripe";
 
 async function handleSuccessfulPaymentIntent(
   event: Stripe.PaymentIntentSucceededEvent
 ) {
+  console.log("Handling successful payment intent:", event);
   const metadata = event.data.object.metadata;
   if (!metadata || !metadata.s3Key) {
     throw new Error("Metadata not found. Cannot retrieve sample pack");
@@ -22,14 +24,16 @@ async function handleSuccessfulPaymentIntent(
     connectedAccountId
   );
 
-  if (!customerData) throw new Error("Payment intent not found");
+  if (!customerData || !customerData.email || !customerData.name) {
+    throw new Error("Customer data not found");
+  }
+
   const { email, name } = customerData;
-
   const downloadUrl = await createSamplePackDownloadUrl(metadata.s3Key);
-
   if (!downloadUrl) throw new Error("Error creating download url");
 
   // TODO: send email
+  await sendEmail(email, name, downloadUrl);
   console.log("Successful payment intent:", {
     paymentIntentId,
     connectedAccountId,
@@ -38,6 +42,30 @@ async function handleSuccessfulPaymentIntent(
     s3Key: metadata.s3Key,
     downloadUrl,
   });
+}
+
+async function sendEmail(email: string, name: string, downloadUrl: string) {
+  if (!process.env.SENDGRID_API_KEY) {
+    console.warn("SENDGRID_API_KEY not set, skipping email");
+    return;
+  }
+
+  sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+  const msg = {
+    to: email,
+    from: "mateopresacastro@gmail.com",
+    subject: "Your sample pack is ready!",
+    text: `Your sample pack is ready to download at ${downloadUrl}`,
+    html: `<p>Your sample pack is ready to download at ${downloadUrl}</p>`,
+  };
+
+  try {
+    const response = await sgMail.send(msg);
+    console.log("Sendgrid response:", response);
+  } catch (error) {
+    console.error("Error sending email:", error);
+    // TODO handle error
+  }
 }
 
 export async function POST(request: Request) {

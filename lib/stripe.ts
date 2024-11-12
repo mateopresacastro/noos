@@ -32,6 +32,15 @@ export async function createPaymentLink({
     // To not reset it when updating the pack
     if (key) metadata.s3Key = key;
 
+    console.log("Creating payment link", {
+      priceId,
+      stripeConnectedAccountId,
+      userName,
+      productId,
+      key,
+      metadata,
+    });
+
     const { url } = await stripe.paymentLinks.create(
       {
         line_items: [
@@ -40,7 +49,9 @@ export async function createPaymentLink({
             quantity: 1,
           },
         ],
-        metadata,
+        payment_intent_data: {
+          metadata,
+        },
         application_fee_amount: 300,
         after_completion: {
           type: "redirect",

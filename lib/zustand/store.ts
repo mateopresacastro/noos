@@ -66,7 +66,7 @@ async function createAudioInstance(url: string) {
   const gainNode = audioContext.createGain();
   const source = new Audio(url);
   source.crossOrigin = "anonymous";
-  // source.load();
+  source.load();
 
   const mediaSource = audioContext.createMediaElementSource(source);
   mediaSource.connect(gainNode);
