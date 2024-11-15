@@ -57,7 +57,7 @@ function SamplePacks({
   userName: string;
 }) {
   return (
-    <div className="pt-10 sm:pt-16 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 sm:gap-14 w-fit mb-32 mx-auto">
+    <div className="pt-10 sm:pt-16 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 sm:gap-14 w-full mb-32 mx-auto">
       {samplePacks.map((samplePack) => (
         <SamplePack
           key={samplePack.title}

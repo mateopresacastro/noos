@@ -9,7 +9,7 @@ import {
 import {
   ConnectAccountOnboarding,
   ConnectComponentsProvider,
-  ConnectPayments,
+  ConnectAccountManagement,
 } from "@stripe/react-connect-js";
 import colors from "tailwindcss/colors";
 const INTER_URL =
@@ -26,6 +26,8 @@ const appearance = {
     buttonSecondaryColorText: colors.neutral[50],
     colorBorder: colors.neutral[700],
     colorDanger: colors.red[600],
+    spacingUnit: "10px",
+    actionPrimaryTextDecorationLine: "underline",
     // TODO add all colors: https://docs.stripe.com/connect/customize-connect-embedded-components
   },
 };
@@ -60,9 +62,10 @@ export default function StripeOnboarding({ userName }: { userName: string }) {
   }, [userName, fetchClientSecret, stripeConnectInstance]);
 
   return (
-    <div className="flex flex-col items-center justify-center w-full h-screen">
+    <div className="flex flex-col items-center justify-start w-full mt-20">
       {stripeConnectInstance && (
         <ConnectComponentsProvider connectInstance={stripeConnectInstance}>
+          {/* <div className="flex flex-col items-center justify-center w-full gap-32"> */}
           <ConnectAccountOnboarding
             onExit={() => console.log("onExit")}
             onLoaderStart={() => console.log("loaded!!!")}
@@ -71,6 +74,16 @@ export default function StripeOnboarding({ userName }: { userName: string }) {
               futureRequirements: "include",
             }}
           />
+          <ConnectAccountManagement />
+          {/* <ConnectBalances />
+            <ConnectDocuments />
+            <ConnectPayments />
+            <ConnectNotificationBanner />
+            <ConnectTaxRegistrations />
+            <ConnectTaxSettings />
+            <ConnectPayouts />
+            <ConnectPayoutsList /> */}
+          {/* </div> */}
         </ConnectComponentsProvider>
       )}
     </div>

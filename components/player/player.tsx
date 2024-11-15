@@ -21,7 +21,7 @@ export default function Player() {
           exit={{ y: "100%" }}
           key="player"
         >
-          <div className="max-w-8xl mx-auto h-full px-4">
+          <div className="max-w-7xl mx-auto h-full px-6">
             <div className="flex items-center justify-between h-full relative">
               <SampleMetaData />
               <MobileControls handlePlayStop={handlePlayStop} />
