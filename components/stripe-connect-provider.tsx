@@ -2,15 +2,13 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { createAccountSessionAction } from "@/lib/actions";
+
+import { ConnectComponentsProvider } from "@stripe/react-connect-js";
 import {
   loadConnectAndInitialize,
   type StripeConnectInstance,
 } from "@stripe/connect-js";
-import {
-  ConnectAccountOnboarding,
-  ConnectComponentsProvider,
-  ConnectAccountManagement,
-} from "@stripe/react-connect-js";
+
 import colors from "tailwindcss/colors";
 const INTER_URL =
   "https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap";
@@ -32,7 +30,13 @@ const appearance = {
   },
 };
 
-export default function StripeOnboarding({ userName }: { userName: string }) {
+export default function StripeConnectProvider({
+  userName,
+  children,
+}: {
+  userName: string;
+  children: React.ReactNode;
+}) {
   const [stripeConnectInstance, setStripeConnectInstance] =
     useState<StripeConnectInstance | null>(null);
 
@@ -62,30 +66,10 @@ export default function StripeOnboarding({ userName }: { userName: string }) {
   }, [userName, fetchClientSecret, stripeConnectInstance]);
 
   return (
-    <div className="flex flex-col items-center justify-start w-full mt-20">
-      {stripeConnectInstance && (
-        <ConnectComponentsProvider connectInstance={stripeConnectInstance}>
-          {/* <div className="flex flex-col items-center justify-center w-full gap-32"> */}
-          <ConnectAccountOnboarding
-            onExit={() => console.log("onExit")}
-            onLoaderStart={() => console.log("loaded!!!")}
-            collectionOptions={{
-              fields: "eventually_due",
-              futureRequirements: "include",
-            }}
-          />
-          <ConnectAccountManagement />
-          {/* <ConnectBalances />
-            <ConnectDocuments />
-            <ConnectPayments />
-            <ConnectNotificationBanner />
-            <ConnectTaxRegistrations />
-            <ConnectTaxSettings />
-            <ConnectPayouts />
-            <ConnectPayoutsList /> */}
-          {/* </div> */}
-        </ConnectComponentsProvider>
-      )}
-    </div>
+    stripeConnectInstance && (
+      <ConnectComponentsProvider connectInstance={stripeConnectInstance}>
+        {children}
+      </ConnectComponentsProvider>
+    )
   );
 }

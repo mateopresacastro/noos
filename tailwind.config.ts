@@ -12,25 +12,36 @@ const config: Config = {
   ],
   theme: {
     extend: {
-      borderRadius: {
-        lg: "var(--radius)",
-        md: "calc(var(--radius) - 2px)",
-        sm: "calc(var(--radius) - 4px)",
-      },
       keyframes: {
         "accordion-down": {
-          from: { height: "0" },
-          to: { height: "var(--radix-accordion-content-height)" },
+          from: {
+            height: "0",
+          },
+          to: {
+            height: "var(--radix-accordion-content-height)",
+          },
         },
         "accordion-up": {
-          from: { height: "var(--radix-accordion-content-height)" },
-          to: { height: "0" },
+          from: {
+            height: "var(--radix-accordion-content-height)",
+          },
+          to: {
+            height: "0",
+          },
         },
         "music-bars": {
-          "10%, 100%": { transform: "scaleY(0.6)" },
-          "30%": { transform: "scaleY(1)" },
-          "60%": { transform: "scaleY(0.5)" },
-          "80%": { transform: "scaleY(0.75)" },
+          "10%, 100%": {
+            transform: "scaleY(0.6)",
+          },
+          "30%": {
+            transform: "scaleY(1)",
+          },
+          "60%": {
+            transform: "scaleY(0.5)",
+          },
+          "80%": {
+            transform: "scaleY(0.75)",
+          },
         },
       },
       animation: {
@@ -44,6 +55,7 @@ const config: Config = {
       },
     },
   },
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
   plugins: [require("tailwindcss-animate")],
 };
 export default config;
