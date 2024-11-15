@@ -3,7 +3,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { useQuery } from "@tanstack/react-query";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
 import {
   createStripeAccountLinkAction,
   hasRequirementsDueAction,
@@ -20,6 +20,7 @@ export default function Stripe() {
 }
 
 function StripeAccountStatus() {
+  const router = useRouter();
   const { data: requirements, isLoading } = useQuery({
     queryKey: ["stripeRequirements"],
     queryFn: hasRequirementsDueAction,
@@ -33,7 +34,9 @@ function StripeAccountStatus() {
   });
 
   if (stripeAccountLink) {
-    redirect(stripeAccountLink);
+    // To redirect to custom onboarding. Remove stripe call after.
+    router.push("/onboarding");
+    // redirect(stripeAccountLink);
   }
 
   return (

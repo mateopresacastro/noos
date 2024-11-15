@@ -93,11 +93,30 @@ export async function createOnboardingLink(stripeId: string) {
   }
 }
 
-export async function createConnectedAccount(clerkId: string) {
+export async function createConnectedAccount(
+  clerkId: string,
+  userName: string | null
+) {
   try {
+    if (!userName)
+      throw new Error("userName not set when creating stripe account.");
     const account = await stripe.accounts.create(
       {
         metadata: { clerkId },
+        controller: {
+          stripe_dashboard: {
+            type: "none",
+          },
+        },
+        capabilities: {
+          card_payments: { requested: true },
+          transfers: { requested: true },
+        },
+        country: "ES", // TODO get from user
+        business_profile: {
+          support_url: `https://noos-three.vercel.app/${userName}`, // TODO handle this url properly. Real URL to avoid stripe errors
+          url: `https://noos-three.vercel.app/${userName}`,
+        },
       },
       {
         idempotencyKey: uuidv4(),
@@ -339,6 +358,38 @@ export async function getCustomerData(
       paymentIntentId,
       stripeConnectedAccountId
     );
+    return null;
+  }
+}
+
+export async function createAccountSession(account: string) {
+  try {
+    const session = await stripe.accountSessions.create({
+      account,
+      components: {
+        account_onboarding: {
+          enabled: true,
+          features: {
+            external_account_collection: true,
+          },
+        },
+        payments: {
+          enabled: true,
+          features: {
+            capture_payments: true,
+            refund_management: true,
+            dispute_management: true,
+            destination_on_behalf_of_charge_management: true,
+          },
+        },
+        account_management: { enabled: true },
+        notification_banner: { enabled: true },
+      },
+    });
+
+    return session.client_secret;
+  } catch (error) {
+    console.error("Error creating account session", error);
     return null;
   }
 }

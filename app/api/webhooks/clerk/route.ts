@@ -10,7 +10,7 @@ import type {
 } from "@clerk/nextjs/server";
 
 async function handleCreateUser(user: UserJSON) {
-  const stripeId = await createConnectedAccount(user.id);
+  const stripeId = await createConnectedAccount(user.id, user.username);
   if (!stripeId) {
     console.error("Error creating connected account");
     return null;

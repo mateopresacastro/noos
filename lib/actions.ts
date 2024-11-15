@@ -4,7 +4,11 @@ import "server-only";
 import { z } from "zod";
 import { auth, currentUser } from "@clerk/nextjs/server";
 import { AWS_PRIVATE_BUCKET_NAME, AWS_PUBLIC_BUCKET_NAME } from "@/cfg";
-import { createOnboardingLink, stripe } from "@/lib/stripe";
+import {
+  createAccountSession,
+  createOnboardingLink,
+  stripe,
+} from "@/lib/stripe";
 import { createPresignedUrl } from "@/lib/aws/mod";
 import { createPaymentLink, createProduct, updateProduct } from "@/lib/stripe";
 import {
@@ -36,6 +40,8 @@ export async function hasRequirementsDueAction() {
     if (!clerkId) throw new Error("User not signed in");
     const data = await readUser(clerkId);
     if (!data || !data.stripeId) throw new Error("User not found");
+
+    // TODO move this account stripe mod
     const { requirements } = await stripe.accounts.retrieve(data.stripeId);
 
     // TODO check for future due requirements
@@ -302,6 +308,44 @@ export async function createPreSignedUrlAction(numOfSamples: number) {
     console.error("Error handling create pre-signed URL:", error);
     // I throw here becase this function will be consumed by TanStack Query
     // No message for security
+    throw new Error();
+  }
+}
+
+const createAccountSessionActionSchema = z.object({
+  userName: z.string(),
+});
+
+type CreateAccountSessionActionSchema = z.infer<
+  typeof createAccountSessionActionSchema
+>;
+
+export async function createAccountSessionAction(
+  createData: CreateAccountSessionActionSchema
+) {
+  try {
+    const { userId } = await auth();
+    if (!userId) throw new Error("User not signed in");
+    createAccountSessionActionSchema.parse(createData);
+    const user = await readUser(userId);
+    if (!user) throw new Error("User not found");
+    if (user.userName !== createData.userName) {
+      throw new Error("User not authorized");
+    }
+
+    if (user.stripeId === null) {
+      throw new Error("No stripe account linked");
+    }
+
+    const clientSecret = await createAccountSession(user.stripeId);
+    if (!clientSecret) throw new Error("Error creating account session");
+
+    return clientSecret;
+  } catch (error) {
+    console.error("Error creating account session", {
+      error,
+      createData,
+    });
     throw new Error();
   }
 }
