@@ -15,6 +15,12 @@ const nextConfig: NextConfig = {
         port: "4566",
         pathname: "/**",
       },
+      {
+        protocol: "https",
+        hostname: "noos-public-assets-v2.s3.eu-central-1.amazonaws.com",
+        port: "",
+        pathname: "/**",
+      }
     ],
   },
 };
