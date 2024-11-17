@@ -9,9 +9,9 @@ export default function Header() {
           <Link href="/" prefetch={true}>
             <h1 className="text-xl tracking-normal">noos</h1>
           </Link>
-          <Link href="/explore" prefetch={true}>
+          {/* <Link href="/explore" prefetch={true}>
             <span className="text-neutral-300">Explore</span>
-          </Link>
+          </Link> */}
           <Link href="/pricing" prefetch={true}>
             <span className="text-neutral-300">Pricing</span>
           </Link>
