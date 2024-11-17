@@ -182,6 +182,7 @@ export async function persistSamplePackDataAction(
   samplePackData: SamplePackData
 ) {
   try {
+    console.log("persisting data", samplePackData);
     const user = await currentUser();
     if (!user || !user.username) {
       throw new Error("User not found or username not set");
