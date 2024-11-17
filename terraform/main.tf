@@ -10,7 +10,7 @@ provider "aws" {
 
 # Public bucket for images and audio files
 resource "aws_s3_bucket" "public_assets" {
-  bucket = "noos-public-assets"
+  bucket = "noos-public-assets-v2"
 
   lifecycle {
     prevent_destroy = true
@@ -57,7 +57,7 @@ resource "aws_s3_bucket_cors_configuration" "public_cors" {
 
 # Private bucket for zip files
 resource "aws_s3_bucket" "private_assets" {
-  bucket = "noos-private-assets"
+  bucket = "noos-private-assets-v2"
 
   lifecycle {
     prevent_destroy = true
