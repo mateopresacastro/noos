@@ -60,7 +60,7 @@ export default async function Page({
                     height={25}
                     className="w-5 h-5 rounded-full object-cover mr-2"
                   />
-                  <span className="block pt-1 font-bold text-xs sm:text-sm">
+                  <span className="block pt-1 font-bold text-xs sm:text-sm mb-1 hover:text-neutral-300 transition-colors duration-150 active:text-neutral-100">
                     @{userName}
                   </span>
                 </Link>
