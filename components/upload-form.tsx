@@ -49,7 +49,9 @@ export default function UploadForm() {
 
   const { mutate: uploadToS3, isPending: isUploadingToS3 } = useMutation({
     mutationFn: async (data: UploadToS3Data) => await handleUploadToS3(data),
-    onSuccess: () => persistData(),
+    onSuccess: () => {
+      persistData();
+    },
   });
 
   function createSignedUrlsOnSuccess(preSignedUrls: PreSignedUrls) {
@@ -64,7 +66,6 @@ export default function UploadForm() {
       samples: formValues.samples,
     });
   }
-
   const { mutate: persistData, isPending: isPersistingData } = useMutation({
     mutationFn: async () => {
       const data = getDataToPersist();
