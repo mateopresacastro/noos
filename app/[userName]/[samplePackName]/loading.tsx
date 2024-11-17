@@ -3,7 +3,6 @@ import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
 import Fade from "@/components/fade";
 import { FaPlay } from "react-icons/fa";
-import { LoaderIcon } from "lucide-react";
 
 // TODO responsive skeleton
 export default async function Page() {
@@ -19,7 +18,7 @@ export default async function Page() {
             </div>
             <div className="flex justify-between items-end pb-2 w-full">
               <div className="sm:pl-5 flex flex-col items-start">
-                <Skeleton className="w-40 h-6 font-bold sm:h-10 sm:w-48 " />
+                <Skeleton className="w-40 h-6 font-bold sm:h-10 sm:w-48 lg:w-full lg:h-20" />
                 <div className="flex items-center justify-center py-1 pb-2">
                   <Skeleton className="w-5 h-5 rounded-full mr-2" />
                   <Skeleton className="w-20 h-3 sm:h-4" />
@@ -29,9 +28,7 @@ export default async function Page() {
             </div>
           </div>
           <div className="flex items-center justify-between w-full pt-4 sm:justify-start">
-            <Button className="font-medium text-base px-10">
-              <LoaderIcon className="animate-spin" />
-            </Button>
+            <Button className="font-medium text-base px-10">Buy</Button>
             <Skeleton className="ml-5 w-20 hidden sm:block h-7" />
           </div>
           <div className="mt-10 w-full hidden sm:block">

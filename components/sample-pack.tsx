@@ -26,7 +26,7 @@ export default function SamplePack({
 
   return (
     <Link href={`/${userName}/${samplePack.name}`} prefetch={true}>
-      <div className="flex flex-col items-start justify-center rounded-2xl w-full aspect-square hover:opacity-80 transition-opacity duration-200 mb-2">
+      <div className="flex flex-col items-start justify-center rounded-2xl w-full aspect-square hover:opacity-80 transition-opacity duration-150 mb-2 active:opacity-60">
         <Image
           src={samplePack.imgUrl}
           alt={samplePack.title}
