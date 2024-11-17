@@ -2,20 +2,29 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
 body {
-  color: var(--foreground);
-  background: var(--background);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+@layer base {
+  :root {
+    --sidebar-background: theme(colors.neutral.500);
+    --sidebar-foreground: theme(colors.neutral.500);
+    --sidebar-primary: theme(colors.neutral.500);
+    --sidebar-primary-foreground: theme(colors.neutral.500);
+    --sidebar-accent: theme(colors.neutral.500);
+    --sidebar-accent-foreground: theme(colors.neutral.500);
+    --border-neutral-700: theme(colors.neutral.500);
+    --sidebar-ring: theme(colors.neutral.500);
+  }
+  .dark {
+    --sidebar-background: theme(colors.neutral.500);
+    --sidebar-foreground: theme(colors.neutral.500);
+    --sidebar-primary: theme(colors.neutral.500);
+    --sidebar-primary-foreground: theme(colors.neutral.500);
+    --sidebar-accent: theme(colors.neutral.500);
+    --sidebar-accent-foreground: theme(colors.neutral.500);
+    --border-neutral-700: theme(colors.neutral.500);
+    --sidebar-ring: theme(colors.neutral.500);
+  }
 }
