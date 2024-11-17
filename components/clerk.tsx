@@ -1,8 +1,7 @@
 "use client";
 
-import Stripe from "@/components/stripe";
 import { Button } from "@/components/ui/button";
-import { DollarSign, SquareArrowOutUpRight } from "lucide-react";
+import { LayoutDashboardIcon, SquareArrowOutUpRight } from "lucide-react";
 import {
   SignedOut,
   SignInButton,
@@ -35,14 +34,12 @@ export default function Clerk() {
       <SignedIn>
         <UserButton>
           <UserButton.UserProfilePage label="account" />
-          <UserButton.UserProfilePage
-            label="Stripe"
-            url="stripe"
-            labelIcon={<DollarSign className="w-4 h-4" />}
-          >
-            <Stripe />
-          </UserButton.UserProfilePage>
           <UserButton.UserProfilePage label="security" />
+          <UserButton.UserProfileLink
+            label="Dashboard"
+            url="/dashboard"
+            labelIcon={<LayoutDashboardIcon className="w-4 h-4" />}
+          />
           {username ? (
             <UserButton.UserProfileLink
               label="Your store"

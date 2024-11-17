@@ -1,4 +1,4 @@
-import VolumeSlider from "@/components/volume-slider";
+import VolumeSlider from "@/components/player/volume-slider";
 import { usePlayerStore } from "@/lib/zustand/store";
 import { Volume2 } from "lucide-react";
 import { AiFillMuted } from "react-icons/ai";

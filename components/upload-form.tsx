@@ -201,20 +201,22 @@ export default function UploadForm() {
 }
 
 function createPublicUrl(key: string, visibility: "private" | "public") {
+  if (
+    !process.env.NEXT_PUBLIC_AWS_PRIVATE_BUCKET_NAME ||
+    !process.env.NEXT_PUBLIC_AWS_PUBLIC_BUCKET_NAME
+  ) {
+    throw new Error("AWS bucket names not set");
+  }
+
+  const bucketName =
+    visibility === "private"
+      ? process.env.NEXT_PUBLIC_AWS_PRIVATE_BUCKET_NAME
+      : process.env.NEXT_PUBLIC_AWS_PUBLIC_BUCKET_NAME;
+
   if (isDev) {
-    if (
-      !process.env.NEXT_PUBLIC_AWS_PRIVATE_BUCKET_NAME ||
-      !process.env.NEXT_PUBLIC_AWS_PUBLIC_BUCKET_NAME
-    ) {
-      throw new Error("AWS bucket names not set");
-    }
-    const bucketName =
-      visibility === "private"
-        ? process.env.NEXT_PUBLIC_AWS_PRIVATE_BUCKET_NAME
-        : process.env.NEXT_PUBLIC_AWS_PUBLIC_BUCKET_NAME;
     return `https://localhost.localstack.cloud:4566/${bucketName}/${key}`;
   }
 
-  // TODO: Handle prod url
-  return "";
+  const region = process.env.NEXT_PUBLIC_AWS_REGION || "eu-central-1";
+  return `https://${bucketName}.s3.${region}.amazonaws.com/${key}`;
 }

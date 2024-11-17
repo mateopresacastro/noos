@@ -1,4 +1,4 @@
-import StripeAccountStatus from "@/components/stripe";
+import StripeAccountStatus from "@/components/stripe/connect-status";
 import { Badge } from "@/components/ui/badge";
 import {
   Sidebar,

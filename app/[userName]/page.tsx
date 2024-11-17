@@ -22,8 +22,8 @@ export default async function Page({
         <Image
           priority
           src={data.imgUrl}
-          height={96}
-          width={96}
+          height={120}
+          width={120}
           quality={80}
           alt={`${userName}`}
           className="rounded-full object-cover h-24 w-24"

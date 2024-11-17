@@ -1,4 +1,4 @@
-import ProgressBar from "@/components/progress-bar";
+import ProgressBar from "@/components/player/progress-bar";
 import { formatTime, cn } from "@/lib/utils";
 import { usePlayerStore } from "@/lib/zustand/store";
 import { BsFillSkipStartFill, BsFillSkipEndFill } from "react-icons/bs";

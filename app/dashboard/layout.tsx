@@ -4,7 +4,7 @@ import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/app-sidebar";
 import { currentUser } from "@clerk/nextjs/server";
 import { notFound } from "next/navigation";
-import StripeConnectProvider from "@/components/stripe-connect-provider";
+import StripeConnectProvider from "@/components/stripe/provider";
 
 export default async function Layout({
   children,
