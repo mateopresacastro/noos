@@ -69,6 +69,7 @@ export default function UploadForm() {
     mutationFn: async () => {
       const data = getDataToPersist();
       if (!data) throw new Error();
+      console.log("data to persist in the front end ", data);
       await persistSamplePackDataAction(data);
     },
   });
