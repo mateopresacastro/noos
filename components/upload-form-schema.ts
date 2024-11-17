@@ -8,7 +8,7 @@ export const uploadFormSchema = z.object({
   description: z.string().min(5).max(20).optional(),
   price: z.number().min(0),
   img: z
-    .instanceof(FileList)
+    .instanceof(globalThis.FileList)
     .refine((files) => files.length === 1, "Select on image")
     .refine(
       (files) => files[0]?.size <= FIVE_MB_IN_BYTES,
@@ -19,7 +19,7 @@ export const uploadFormSchema = z.object({
       "File must be an image"
     ),
   zipFile: z
-    .instanceof(FileList)
+    .instanceof(globalThis.FileList)
     .refine((files) => files.length === 1, "Select one file")
     .refine(
       (files) => files[0]?.size <= ONE_GB_IN_BYTES,
@@ -30,7 +30,7 @@ export const uploadFormSchema = z.object({
       "File must be in ZIP format"
     ),
   samples: z
-    .instanceof(FileList)
+    .instanceof(globalThis.FileList)
     .refine((files) => files.length >= 1 && files.length <= 100)
     .refine((files) => {
       const totalSize = Array.from(files).reduce(
