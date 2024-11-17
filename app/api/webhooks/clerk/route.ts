@@ -72,6 +72,7 @@ export async function POST(req: Request) {
     if (evt.type === "user.created") {
       const newUser = await handleCreateUser(evt.data);
       if (!newUser) {
+        console.error("Error creating user");
         return serverErrorResponse;
       }
     }
@@ -79,12 +80,14 @@ export async function POST(req: Request) {
     if (evt.type === "user.updated") {
       const user = await handleUpdateUser(evt.data);
       if (!user) {
+        console.error("Error updating user");
         return serverErrorResponse;
       }
     }
 
     if (evt.type === "user.deleted") {
       const user = await handleDeleteUser(evt.data);
+      console.error("Error deleting user");
       if (!user) {
         return serverErrorResponse;
       }
