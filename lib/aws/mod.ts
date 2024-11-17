@@ -63,12 +63,6 @@ export async function createPresignedUrl({
     const command = new PutObjectCommand({
       Bucket: bucketName,
       Key: key,
-      ContentType:
-        fileType === "image"
-          ? "image/*"
-          : fileType === "samples"
-          ? "audio/*"
-          : "application/zip",
     });
 
     const url = await getSignedUrl(s3, command, {
