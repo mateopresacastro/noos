@@ -50,7 +50,16 @@ export default function UploadForm() {
   const { mutate: uploadToS3, isPending: isUploadingToS3 } = useMutation({
     mutationFn: async (data: UploadToS3Data) => await handleUploadToS3(data),
     onSuccess: () => {
+      console.log("Files uploaded successfully, calling persistData");
       persistData();
+    },
+
+    onError: (error) => {
+      console.error("Error uploading to S3:", error);
+    },
+
+    onSettled: () => {
+      console.log("Upload to S3 mutation is settled");
     },
   });
 
@@ -66,12 +75,26 @@ export default function UploadForm() {
       samples: formValues.samples,
     });
   }
+
   const { mutate: persistData, isPending: isPersistingData } = useMutation({
     mutationFn: async () => {
+      console.log("data to persist in the front end ");
       const data = getDataToPersist();
       if (!data) throw new Error();
-      console.log("data to persist in the front end ", data);
       await persistSamplePackDataAction(data);
+    },
+    onError: (error) => {
+      console.error("Error persisting data:", error);
+    },
+    onSettled: () => {
+      console.log("Persist data mutation is settled");
+    },
+    onSuccess: () => {
+      console.log("Data persisted successfully");
+    },
+
+    onMutate: async () => {
+      console.log("Persist data mutation is running");
     },
   });
 
