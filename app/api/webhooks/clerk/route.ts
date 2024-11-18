@@ -1,3 +1,4 @@
+import { withAxiom, type AxiomRequest } from "next-axiom";
 import { Webhook } from "svix";
 import { headers } from "next/headers";
 import { CLERK_WEBHOOK_SECRET } from "@/cfg";
@@ -50,7 +51,7 @@ function clean(user: UserJSON) {
 const clientErrorResponse = new Response(null, { status: 400 });
 const serverErrorResponse = new Response(null, { status: 500 });
 
-export async function POST(req: Request) {
+export const POST = withAxiom(async (req: AxiomRequest) => {
   try {
     const headerPayload = await headers();
     const svix_id = headerPayload.get("svix-id");
@@ -72,7 +73,7 @@ export async function POST(req: Request) {
     if (evt.type === "user.created") {
       const newUser = await handleCreateUser(evt.data);
       if (!newUser) {
-        console.error("Error creating user");
+        req.log.error("Error creating user");
         return serverErrorResponse;
       }
     }
@@ -80,14 +81,14 @@ export async function POST(req: Request) {
     if (evt.type === "user.updated") {
       const user = await handleUpdateUser(evt.data);
       if (!user) {
-        console.error("Error updating user");
+        req.log.error("Error updating user");
         return serverErrorResponse;
       }
     }
 
     if (evt.type === "user.deleted") {
       const user = await handleDeleteUser(evt.data);
-      console.error("Error deleting user");
+      req.log.error("Error deleting user");
       if (!user) {
         return serverErrorResponse;
       }
@@ -95,6 +96,7 @@ export async function POST(req: Request) {
 
     return new Response(null, { status: 200 });
   } catch {
+    req.log.warn("Clerk Webhook failed");
     return clientErrorResponse;
   }
-}
+});

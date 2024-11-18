@@ -3,12 +3,12 @@ import { STRIPE_WEBHOOK_SECRET } from "@/cfg";
 import { createSamplePackDownloadUrl } from "@/lib/aws/mod";
 import { getCustomerData, stripe } from "@/lib/stripe";
 import { headers } from "next/headers";
+import { type AxiomRequest, withAxiom } from "next-axiom";
 import type Stripe from "stripe";
 
 async function handleSuccessfulPaymentIntent(
   event: Stripe.PaymentIntentSucceededEvent
 ) {
-  console.log("Handling successful payment intent:", event);
   const metadata = event.data.object.metadata;
   if (!metadata || !metadata.s3Key) {
     throw new Error("Metadata not found. Cannot retrieve sample pack");
@@ -59,13 +59,14 @@ async function sendEmail(email: string, name: string, downloadUrl: string) {
   }
 }
 
-export async function POST(request: Request) {
+export const POST = withAxiom(async (req: AxiomRequest) => {
   try {
-    const body = await request.text();
+    const body = await req.text();
     const headerPayload = await headers();
     const signature = headerPayload.get("stripe-signature");
 
     if (!signature) {
+      req.log.warn("Missing stripe-signature header");
       throw new Error("missing stripe-signature header");
     }
 
@@ -77,17 +78,18 @@ export async function POST(request: Request) {
 
     switch (event.type) {
       case "payment_intent.succeeded": {
+        req.log.info("Handling successful payment intent");
         handleSuccessfulPaymentIntent(event);
         break;
       }
       default: {
-        console.warn("Unhandled event type:", event.type);
+        req.log.warn("Unhandled event type:", { type: event.type });
       }
     }
 
     return new Response(null, { status: 200 });
   } catch (error) {
-    console.error("Error handling Stripe webhook:", error);
+    req.log.error("Error handling Stripe webhook:", { error });
     return new Response(null, { status: 400 });
   }
-}
+});

@@ -2,6 +2,7 @@
 
 import "server-only";
 import { z } from "zod";
+import log from "@/lib/log";
 import { auth, currentUser } from "@clerk/nextjs/server";
 import { AWS_PRIVATE_BUCKET_NAME, AWS_PUBLIC_BUCKET_NAME } from "@/cfg";
 import {
@@ -29,7 +30,7 @@ export async function createStripeAccountLinkAction() {
 
     return url;
   } catch (error) {
-    console.error("Error creating stripe account link", error);
+    log.error("Error creating stripe account link", { error });
     throw new Error();
   }
 }
@@ -55,7 +56,7 @@ export async function hasRequirementsDueAction() {
 
     return true;
   } catch (error) {
-    console.error("Error checking for requirements due", error);
+    log.error("Error checking for requirements due", { error });
     throw new Error();
   }
 }
@@ -87,7 +88,7 @@ export async function deleteSamplePackAction({
 
     if (!deletedPack) throw new Error("Error deleting sample pack");
   } catch (error) {
-    console.error("Error updating sample pack", {
+    log.error("Error updating sample pack", {
       error,
       userName,
       samplePackName,
@@ -152,7 +153,7 @@ export async function updateSamplePackAction(
     if (!updatedPack) throw new Error("Error updating sample pack on our db");
     return updatedPack.name;
   } catch (error) {
-    console.error("Error updating sample pack", {
+    log.error("Error updating sample pack", {
       error,
       updateData,
     });
@@ -182,7 +183,7 @@ export async function persistSamplePackDataAction(
   samplePackData: SamplePackData
 ) {
   try {
-    console.log("persisting data", samplePackData);
+    log.info("persisting data", samplePackData);
     const user = await currentUser();
     if (!user || !user.username) {
       throw new Error("User not found or username not set");
@@ -242,7 +243,7 @@ export async function persistSamplePackDataAction(
     if (!samplesCreated) throw new Error("Error creating samples");
     return true;
   } catch (error) {
-    console.error("Error persisting sample pack data", error);
+    log.error("Error persisting sample pack data", { error, samplePackData });
     throw new Error();
   }
 }
@@ -306,7 +307,7 @@ export async function createPreSignedUrlAction(numOfSamples: number) {
       samplesSignedUrls,
     };
   } catch (error) {
-    console.error("Error handling create pre-signed URL:", error);
+    log.error("Error handling create pre-signed URL:", { error });
     // I throw here becase this function will be consumed by TanStack Query
     // No message for security
     throw new Error();
@@ -343,7 +344,7 @@ export async function createAccountSessionAction(
 
     return clientSecret;
   } catch (error) {
-    console.error("Error creating account session", {
+    log.error("Error creating account session", {
       error,
       createData,
     });
