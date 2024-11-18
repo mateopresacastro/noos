@@ -1,5 +1,6 @@
 import "server-only";
 import prisma from "@/lib/db/cfg/client";
+import log from "@/lib/log";
 import { createSamplePackName } from "@/lib/utils";
 import { faker } from "@faker-js/faker";
 
@@ -45,11 +46,11 @@ export async function createSamplePack({
       },
     });
 
-    console.log("sample pack created", samplePack);
+    log.info("sample pack created", samplePack);
 
     return samplePack;
   } catch (error) {
-    console.error("Error creating sample pack", error);
+    log.error("Error creating sample pack", { error });
     return null;
   }
 }
@@ -99,7 +100,7 @@ export async function getSamplePack({
     if (!data) throw new Error("Sample pack not found");
     return data;
   } catch (error) {
-    console.error("Error getting sample pack", error);
+    log.error("Error getting sample pack", { error, userName, samplePackName });
     return null;
   }
 }
@@ -156,7 +157,7 @@ export async function updateSamplePack(input: SamplePackInput) {
 
     return updatedPack;
   } catch (error) {
-    console.error("Error updating sample pack", {
+    log.error("Error updating sample pack", {
       error,
       name: input.name,
       userName: input.userName,
@@ -204,7 +205,7 @@ export async function deleteSamplePack({
 
     return true;
   } catch (error) {
-    console.error("Error deleting sample pack", {
+    log.error("Error deleting sample pack", {
       error,
       samplePackName,
       userName,
@@ -225,11 +226,15 @@ export async function addSampleToSamplePack(
         title: faker.lorem.words({ min: 1, max: 3 }), // TODO: add real name
       })),
     });
-    console.log("samples created", newSamples);
+    log.info("samples created", newSamples);
     if (newSamples.count === 0) throw new Error("No samples created");
     return newSamples;
   } catch (error) {
-    console.error("Error adding sample to sample pack:", error);
+    log.error("Error adding sample to sample pack:", {
+      error,
+      samplePackId,
+      samples,
+    });
     return null;
   }
 }
@@ -240,7 +245,7 @@ export async function deleteSample(sampleId: number) {
       where: { id: sampleId },
     });
   } catch (error) {
-    console.error("Error deleting sample:", error);
+    log.error("Error deleting sample:", { error });
     return null;
   }
 }
@@ -251,7 +256,7 @@ export async function getSample(sampleId: number) {
       where: { id: sampleId },
     });
   } catch (error) {
-    console.error("Error retrieving sample:", error);
+    log.error("Error retrieving sample:", { error, sampleId });
     return null;
   }
 }
@@ -286,7 +291,11 @@ export async function createUser({
     });
     return newUser;
   } catch (error) {
-    console.error("Error creating user:", error);
+    log.error("Error creating user:", {
+      error,
+      clerkId,
+      userName,
+    });
     return null;
   }
 }
@@ -300,7 +309,7 @@ export async function readUser(clerkId: string) {
     });
     return user;
   } catch (error) {
-    console.error("Error reading user:", error);
+    log.error("Error reading user:", { error, clerkId });
     return null;
   }
 }
@@ -334,7 +343,7 @@ export async function updateUser({
     });
     return updatedUser;
   } catch (error) {
-    console.error("Error updating user:", error);
+    log.error("Error updating user:", { error, clerkId });
     return null;
   }
 }
@@ -348,7 +357,7 @@ export async function deleteUser(clerkId: string) {
     });
     return deletedUser;
   } catch (error) {
-    console.error("Error deleting user:", error);
+    log.error("Error deleting user:", { error, clerkId });
     return null;
   }
 }
@@ -369,7 +378,10 @@ export async function getData(userName: string) {
     if (!data) throw new Error("User not found");
     return data;
   } catch (error) {
-    console.error(`Error getting sample packs from user: ${userName}`, error);
+    log.error(`Error getting sample packs from user: ${userName}`, {
+      error,
+      userName,
+    });
     return null;
   }
 }

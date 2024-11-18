@@ -1,6 +1,7 @@
+import { withAxiom } from "next-axiom";
 import type { NextConfig } from "next";
 
-const nextConfig: NextConfig = {
+const nextConfig: NextConfig = withAxiom({
   images: {
     remotePatterns: [
       {
@@ -20,9 +21,9 @@ const nextConfig: NextConfig = {
         hostname: "noos-public-assets-v2.s3.eu-central-1.amazonaws.com",
         port: "",
         pathname: "/**",
-      }
+      },
     ],
   },
-};
+});
 
 export default nextConfig;

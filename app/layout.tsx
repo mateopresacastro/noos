@@ -6,6 +6,7 @@ import { dark } from "@clerk/themes";
 import Header from "@/components/header";
 import Player from "@/components/player/player";
 import Providers from "@/app/providers";
+import { AxiomWebVitals } from "next-axiom";
 
 import resolveConfig from "tailwindcss/resolveConfig";
 import tailwindConfig from "../tailwind.config";
@@ -65,6 +66,7 @@ export default function RootLayout({
       }}
     >
       <html lang="en">
+        <AxiomWebVitals />
         <body className="bg-neutral-950 text-neutral-50 dark">
           <Providers>
             <div
