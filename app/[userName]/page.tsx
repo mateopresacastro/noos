@@ -12,7 +12,7 @@ export default async function Page({
 }) {
   const userName = (await params).userName;
   const data = await getData(userName);
-  if (!data) {
+  if (!data || !data?.name) {
     notFound();
   }
 
@@ -29,7 +29,7 @@ export default async function Page({
           className="rounded-full object-cover h-24 w-24"
         />
       </div>
-      <span className="block pt-6 text-xl font-medium">{data.name}</span>
+      <span className="block pt-6 text-xl font-medium">{data?.name}</span>
       <div className="flex items-baseline justify-center pt-1">
         <span className="text-neutral-400 block text-sm font-medium">
           @{userName}
