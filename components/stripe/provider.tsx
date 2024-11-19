@@ -13,6 +13,12 @@ import colors from "tailwindcss/colors";
 const INTER_URL =
   "https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap";
 
+const fonts = [
+  {
+    cssSrc: INTER_URL,
+  },
+];
+
 const appearance = {
   variables: {
     colorBackground: colors.neutral[950],
@@ -47,19 +53,16 @@ export default function StripeConnectProvider({
 
   useEffect(() => {
     if (!userName || stripeConnectInstance) return;
-    if (!process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY) {
+    const publishableKey = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY;
+    if (!publishableKey) {
       throw new Error("stripe publishable key is not set");
     }
 
     setStripeConnectInstance(
       loadConnectAndInitialize({
-        publishableKey: process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY,
         fetchClientSecret,
-        fonts: [
-          {
-            cssSrc: INTER_URL,
-          },
-        ],
+        fonts,
+        publishableKey,
         appearance,
       })
     );
