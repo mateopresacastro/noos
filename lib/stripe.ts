@@ -381,7 +381,6 @@ export async function createAccountSession(account: string) {
             refund_management: true,
             dispute_management: true,
             destination_on_behalf_of_charge_management: true,
-            
           },
         },
         account_management: { enabled: true },
@@ -433,6 +432,6 @@ export async function hasRequirementsDue() {
     return true;
   } catch (error) {
     console.error("Error checking for requirements due", { error });
-    throw new Error();
+    return true;
   }
 }
