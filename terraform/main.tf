@@ -53,7 +53,7 @@ resource "aws_s3_bucket_cors_configuration" "public_cors" {
   cors_rule {
     allowed_headers = ["*"]
     allowed_methods = ["PUT", "HEAD"]
-    allowed_origins = ["https://noos-three.vercel.app, https://d14g83wf83qv4z.cloudfront.net"]
+    allowed_origins = ["https://noos-three.vercel.app"]
     expose_headers  = ["ETag"]
     max_age_seconds = 3000
   }
@@ -81,6 +81,7 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
 
     forwarded_values {
       query_string = false
+      headers      = ["Origin"]
       cookies {
         forward = "none"
       }
