@@ -25,19 +25,29 @@ const items = [
     url: "/dashboard",
     subItems: [
       {
-        title: "Onboarding",
-        url: "/dashboard/onboarding",
-        slug: "onboarding",
+        title: "Notifications",
+        url: "/dashboard/notifications",
+        slug: "notifications",
       },
       {
-        title: "Account management",
-        url: "/dashboard/account-management",
-        slug: "account-management",
+        title: "Payments",
+        url: "/dashboard/payments",
+        slug: "payments",
       },
       {
         title: "Balances",
         url: "/dashboard/balances",
         slug: "balances",
+      },
+      {
+        title: "Payouts",
+        url: "/dashboard/payouts",
+        slug: "payouts",
+      },
+      {
+        title: "Documents",
+        url: "/dashboard/documents",
+        slug: "documents",
       },
       {
         title: "Tax settings",
@@ -50,19 +60,14 @@ const items = [
         slug: "tax-registrations",
       },
       {
-        title: "Documents",
-        url: "/dashboard/documents",
-        slug: "documents",
+        title: "Account management",
+        url: "/dashboard/account-management",
+        slug: "account-management",
       },
       {
-        title: "Payments",
-        url: "/dashboard/payments",
-        slug: "payments",
-      },
-      {
-        title: "Payouts",
-        url: "/dashboard/payouts",
-        slug: "payouts",
+        title: "Onboarding",
+        url: "/dashboard/onboarding",
+        slug: "onboarding",
       },
     ],
   },
@@ -78,7 +83,7 @@ export function AppSidebar({
   const isMobile = useIsMobile();
   const isCollapsible = isMobile ? "offcanvas" : "none";
   return (
-    <Sidebar collapsible={isCollapsible} className="mr-8">
+    <Sidebar collapsible={isCollapsible} className="mr-10 -ml-3">
       <SidebarContent className="bg-neutral-950 pt-20">
         <SidebarGroup>
           <SidebarGroupContent>
@@ -115,7 +120,7 @@ export function AppSidebar({
                                   {hasRequirements ? (
                                     <Badge variant="warn">Not ready</Badge>
                                   ) : (
-                                    <Badge variant="success">Ready</Badge>
+                                    <Badge variant="success">Done</Badge>
                                   )}
                                 </Suspense>
                               </SidebarMenuBadge>

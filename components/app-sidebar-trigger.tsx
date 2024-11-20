@@ -9,5 +9,5 @@ export default function AppSidebarTrigger() {
     return null;
   }
 
-  return <SidebarTrigger className="mt-24 mb-2 mr-10 text-neutral-300" />;
+  return <SidebarTrigger className="mt-24 mb-6 mr-10 text-neutral-300" />;
 }

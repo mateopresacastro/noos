@@ -47,6 +47,12 @@ const appearance: AppearanceOptions = {
     formBorderRadius: "8px",
     badgeBorderRadius: "8px",
     overlayBorderRadius: "8px",
+    badgeSuccessColorBackground: colors.emerald[300],
+    badgeSuccessColorText: colors.emerald[950],
+    badgeDangerColorBackground: colors.red[300],
+    badgeDangerColorText: colors.red[950],
+    badgeNeutralColorBackground: colors.neutral[700],
+    badgeNeutralColorText: colors.neutral[50],
     // TODO add all colors: https://docs.stripe.com/connect/customize-connect-embedded-components
   },
 };

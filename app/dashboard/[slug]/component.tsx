@@ -10,6 +10,7 @@ import {
   ConnectPayments,
   ConnectPayouts,
   ConnectTaxRegistrations,
+  ConnectNotificationBanner,
 } from "@stripe/react-connect-js";
 
 export default function Component({ slug }: { slug: string }) {
@@ -39,6 +40,8 @@ export default function Component({ slug }: { slug: string }) {
         return <ConnectPayouts />;
       case "tax-registrations":
         return <ConnectTaxRegistrations />;
+      case "notifications":
+        return <ConnectNotificationBanner />;
       default:
         return <div>Not found</div>;
     }
