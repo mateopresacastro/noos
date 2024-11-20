@@ -1,4 +1,5 @@
-import StripeAccountStatus from "@/components/stripe/connect-status";
+"use client";
+
 import { Badge } from "@/components/ui/badge";
 import {
   Sidebar,
@@ -13,6 +14,7 @@ import {
   SidebarMenuSubButton,
   SidebarMenuSubItem,
 } from "@/components/ui/sidebar";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { Suspense } from "react";
@@ -66,10 +68,17 @@ const items = [
   },
 ];
 
-export function AppSidebar({ slug }: { slug: string }) {
-  console.log("slug in app sidebar", slug);
+export function AppSidebar({
+  slug,
+  hasRequirements,
+}: {
+  slug: string;
+  hasRequirements: boolean;
+}) {
+  const isMobile = useIsMobile();
+  const isCollapsible = isMobile ? "offcanvas" : "none";
   return (
-    <Sidebar>
+    <Sidebar collapsible={isCollapsible} className="mr-8">
       <SidebarContent className="bg-neutral-950 pt-20">
         <SidebarGroup>
           <SidebarGroupContent>
@@ -103,7 +112,11 @@ export function AppSidebar({ slug }: { slug: string }) {
                                     <Badge variant="outline">Loading</Badge>
                                   }
                                 >
-                                  <StripeAccountStatus />
+                                  {hasRequirements ? (
+                                    <Badge variant="warn">Not ready</Badge>
+                                  ) : (
+                                    <Badge variant="success">Ready</Badge>
+                                  )}
                                 </Suspense>
                               </SidebarMenuBadge>
                             ) : null}

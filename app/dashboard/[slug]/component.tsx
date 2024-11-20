@@ -45,7 +45,7 @@ export default function Component({ slug }: { slug: string }) {
   }, [slug]);
 
   return (
-    <div className="w-full h-fit py-24 sm:py-32 flex items-center justify-center relative">
+    <div className="w-full h-fit md:py-24 flex items-center justify-center relative">
       {component}
     </div>
   );

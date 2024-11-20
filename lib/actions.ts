@@ -5,11 +5,7 @@ import { z } from "zod";
 import log from "@/lib/log";
 import { auth, currentUser } from "@clerk/nextjs/server";
 import { AWS_PRIVATE_BUCKET_NAME, AWS_PUBLIC_BUCKET_NAME } from "@/cfg";
-import {
-  createAccountSession,
-  createOnboardingLink,
-  stripe,
-} from "@/lib/stripe";
+import { createAccountSession, createOnboardingLink } from "@/lib/stripe";
 import { createPresignedUrl } from "@/lib/aws/mod";
 import { createPaymentLink, createProduct, updateProduct } from "@/lib/stripe";
 import {
@@ -31,32 +27,6 @@ export async function createStripeAccountLinkAction() {
     return url;
   } catch (error) {
     log.error("Error creating stripe account link", { error });
-    throw new Error();
-  }
-}
-
-export async function hasRequirementsDueAction() {
-  try {
-    const { userId: clerkId } = await auth();
-    if (!clerkId) throw new Error("User not signed in");
-    const data = await readUser(clerkId);
-    if (!data || !data.stripeId) throw new Error("User not found");
-
-    // TODO move this account stripe mod
-    const { requirements } = await stripe.accounts.retrieve(data.stripeId);
-
-    // TODO check for future due requirements
-    if (
-      !requirements ||
-      !requirements.currently_due ||
-      requirements.currently_due.length === 0
-    ) {
-      return false;
-    }
-
-    return true;
-  } catch (error) {
-    log.error("Error checking for requirements due", { error });
     throw new Error();
   }
 }

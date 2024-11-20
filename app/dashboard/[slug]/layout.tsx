@@ -1,9 +1,11 @@
 import { cookies } from "next/headers";
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/app-sidebar";
 import { currentUser } from "@clerk/nextjs/server";
 import { notFound } from "next/navigation";
+import { hasRequirementsDue } from "@/lib/stripe";
 import StripeConnectProvider from "@/components/stripe/provider";
+import AppSidebarTrigger from "@/components/app-sidebar-trigger";
 
 export default async function Layout({
   params,
@@ -16,6 +18,7 @@ export default async function Layout({
   const cookieStore = await cookies();
   const defaultOpen = cookieStore.get("sidebar:state")?.value === "true";
   const userData = await currentUser();
+  const hasRequirements = await hasRequirementsDue();
   if (!userData || !userData.username) {
     notFound();
   }
@@ -23,9 +26,11 @@ export default async function Layout({
   return (
     <SidebarProvider defaultOpen={defaultOpen}>
       <StripeConnectProvider userName={userData.username}>
-        <AppSidebar slug={slug} />
-        <SidebarTrigger className="my-auto text-neutral-400" />
-        {children}
+        <AppSidebar slug={slug} hasRequirements={hasRequirements} />
+        <div className="flex flex-col items-start justify-start w-full">
+          <AppSidebarTrigger />
+          {children}
+        </div>
       </StripeConnectProvider>
     </SidebarProvider>
   );
