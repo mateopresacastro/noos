@@ -18,13 +18,7 @@ export default async function Page({
   if (!samplePack || !samplePack.price) {
     notFound();
   }
-
-  const searchParams = new URLSearchParams();
-  searchParams.set("height", "50");
-  searchParams.set("width", "50");
-  searchParams.set("quality", "75");
-  searchParams.set("fit", "crop");
-  const creatorImgUrl = `${samplePack.creator.imgUrl}?${params.toString()}`;
+  const creatorImgUrl = resize(samplePack.creator.imgUrl);
 
   return (
     <>
@@ -60,7 +54,7 @@ export default async function Page({
                     height={25}
                     className="w-5 h-5 rounded-full object-cover mr-2"
                   />
-                  <span className="block pt-1 font-bold text-xs sm:text-sm mb-1 hover:text-neutral-300 transition-colors duration-150 active:text-neutral-100">
+                  <span className="block pt-1 font-bold mb-1 hover:text-neutral-300 transition-colors duration-150 active:text-neutral-100">
                     @{userName}
                   </span>
                 </Link>
@@ -111,4 +105,13 @@ export default async function Page({
       </div>
     </>
   );
+}
+
+function resize(imgUrl: string) {
+  const searchParams = new URLSearchParams();
+  searchParams.set("height", "50");
+  searchParams.set("width", "50");
+  searchParams.set("quality", "75");
+  searchParams.set("fit", "crop");
+  return `${imgUrl}?${searchParams.toString()}`;
 }
