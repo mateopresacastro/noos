@@ -1,8 +1,9 @@
 import "server-only";
 import Stripe from "stripe";
-import { getSamplePack } from "@/lib/db/queries";
+import { getSamplePack, readUser } from "@/lib/db/queries";
 import { HOST_URL, STRIPE_SECRET_KEY } from "@/cfg";
 import { v4 as uuidv4 } from "uuid";
+import { auth } from "@clerk/nextjs/server";
 
 export const stripe = new Stripe(STRIPE_SECRET_KEY);
 
@@ -384,6 +385,21 @@ export async function createAccountSession(account: string) {
         },
         account_management: { enabled: true },
         notification_banner: { enabled: true },
+        balances: { enabled: true },
+        documents: { enabled: true },
+        tax_settings: { enabled: true },
+        tax_registrations: { enabled: true },
+        payouts: { enabled: true },
+        payouts_list: { enabled: true },
+        payment_details: {
+          enabled: true,
+          features: {
+            capture_payments: true,
+            refund_management: true,
+            dispute_management: true,
+            destination_on_behalf_of_charge_management: true,
+          },
+        },
       },
     });
 
@@ -391,5 +407,31 @@ export async function createAccountSession(account: string) {
   } catch (error) {
     console.error("Error creating account session", error);
     return null;
+  }
+}
+
+export async function hasRequirementsDue() {
+  try {
+    const { userId: clerkId } = await auth();
+    if (!clerkId) throw new Error("User not signed in");
+    const data = await readUser(clerkId);
+    if (!data || !data.stripeId) throw new Error("User not found");
+
+    // TODO move this account stripe mod
+    const { requirements } = await stripe.accounts.retrieve(data.stripeId);
+
+    // TODO check for future due requirements
+    if (
+      !requirements ||
+      !requirements.currently_due ||
+      requirements.currently_due.length === 0
+    ) {
+      return false;
+    }
+
+    return true;
+  } catch (error) {
+    console.error("Error checking for requirements due", { error });
+    throw new Error();
   }
 }

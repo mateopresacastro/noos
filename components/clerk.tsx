@@ -37,7 +37,7 @@ export default function Clerk() {
           <UserButton.UserProfilePage label="security" />
           <UserButton.UserProfileLink
             label="Dashboard"
-            url="/dashboard"
+            url="/dashboard/payments"
             labelIcon={<LayoutDashboardIcon className="w-4 h-4" />}
           />
           {username ? (
