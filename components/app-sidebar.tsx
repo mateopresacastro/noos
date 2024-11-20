@@ -17,6 +17,7 @@ import {
 import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
+import { useParams } from "next/navigation";
 import { Suspense } from "react";
 
 const items = [
@@ -73,15 +74,15 @@ const items = [
   },
 ];
 
-export function AppSidebar({
-  slug,
-  hasRequirements,
-}: {
-  slug: string;
-  hasRequirements: boolean;
-}) {
+type AppSidebarProps = {
+  children: React.ReactNode;
+};
+
+export function AppSidebar({ children }: AppSidebarProps) {
   const isMobile = useIsMobile();
   const isCollapsible = isMobile ? "offcanvas" : "none";
+  const { slug } = useParams<{ slug: string }>();
+
   return (
     <Sidebar collapsible={isCollapsible} className="mr-10 -ml-3">
       <SidebarContent className="bg-neutral-950 pt-20">
@@ -117,11 +118,7 @@ export function AppSidebar({
                                     <Badge variant="outline">Loading</Badge>
                                   }
                                 >
-                                  {hasRequirements ? (
-                                    <Badge variant="warn">Not ready</Badge>
-                                  ) : (
-                                    <Badge variant="success">Done</Badge>
-                                  )}
+                                  {children}
                                 </Suspense>
                               </SidebarMenuBadge>
                             ) : null}
