@@ -23,7 +23,6 @@ export async function createStripeAccountLinkAction() {
     const data = await readUser(clerkId);
     if (!data || !data.stripeId) throw new Error("User not found");
     const url = await createOnboardingLink(data.stripeId);
-
     return url;
   } catch (error) {
     log.error("Error creating stripe account link", { error });
@@ -112,7 +111,7 @@ export async function updateSamplePackAction(
       clerkId: userId,
     });
 
-    if (!updatedProduct) throw new Error("Error updating stirpe product");
+    if (!updatedProduct) throw new Error("Error updating stripe product");
 
     const updatedPack = await updateSamplePack({
       ...updateData,
