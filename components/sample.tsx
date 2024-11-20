@@ -39,16 +39,12 @@ export default function Sample({
   }
 
   async function handlePlay() {
-    try {
-      loadSamplePackToGlobalState();
-      if (isThisSamplePlaying) {
-        await stop();
-        return;
-      }
-      await play(url);
-    } catch (error) {
-      console.error("Failed to handle audio playback:", error);
+    loadSamplePackToGlobalState();
+    if (isThisSamplePlaying) {
+      await stop();
+      return;
     }
+    await play(url);
   }
 
   async function handleDoubleClick() {

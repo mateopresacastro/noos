@@ -5,9 +5,9 @@ import { createAccountSessionAction } from "@/lib/actions";
 
 import { ConnectComponentsProvider } from "@stripe/react-connect-js";
 import {
-  loadConnectAndInitialize,
   type AppearanceOptions,
   type StripeConnectInstance,
+  loadConnectAndInitialize,
 } from "@stripe/connect-js";
 
 import colors from "tailwindcss/colors";
@@ -29,7 +29,7 @@ const appearance: AppearanceOptions = {
     colorSecondaryText: colors.neutral[500],
     formBackgroundColor: colors.neutral[900],
     formAccentColor: colors.neutral[300],
-    overlayBackdropColor: "rgba(17, 17, 17, 0.8)",
+    overlayBackdropColor: "rgba(10, 10, 10, 0.8)",
     actionSecondaryColorText: colors.neutral[700],
     buttonSecondaryColorBackground: colors.neutral[900],
     buttonSecondaryColorBorder: colors.neutral[700],
@@ -53,7 +53,6 @@ const appearance: AppearanceOptions = {
     badgeDangerColorText: colors.red[950],
     badgeNeutralColorBackground: colors.neutral[700],
     badgeNeutralColorText: colors.neutral[50],
-    // TODO add all colors: https://docs.stripe.com/connect/customize-connect-embedded-components
   },
 };
 

@@ -23,11 +23,11 @@ export default function SampleMetaData() {
         </div>
       </Link>
       <div className="flex flex-col gap-1">
-        <span className="text-sm font-medium h-4 sm:text-base block">
+        <span className="text-sm sm:text-sm font-medium h-4 md:text-base block">
           {sampleName}
         </span>
-        <Link href={`/${samplePack.creator.userName}`}>
-          <span className="text-xs text-neutral-400 sm:text-sm block hover:text-neutral-300 transition-all duration-150 active:text-neutral-400">
+        <Link href={`/${samplePack.creator.userName}`} className="w-fit">
+          <span className="text-xs text-neutral-400 sm:text-sm block hover:text-neutral-300 transition-all duration-150 active:text-neutral-400 w-fit">
             @{samplePack.creator.userName}
           </span>
         </Link>

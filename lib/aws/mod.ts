@@ -36,8 +36,6 @@ async function createLocalStackBuckets() {
         })
       )
   );
-
-  console.log("Buckets created on localstack", await listBuckets());
 }
 
 export async function listBuckets() {
