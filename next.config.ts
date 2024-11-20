@@ -18,7 +18,7 @@ const nextConfig: NextConfig = withAxiom({
       },
       {
         protocol: "https",
-        hostname: "noos-public-assets-v2.s3.eu-central-1.amazonaws.com",
+        hostname: "d14g83wf83qv4z.cloudfront.net",
         port: "",
         pathname: "/**",
       },
