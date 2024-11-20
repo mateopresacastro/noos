@@ -104,10 +104,10 @@ export default function UploadForm() {
     const { imageSignedUrl, zipFileSignedUrl, samplesSignedUrls } =
       preSignedUrls;
     const name = createSamplePackName(title);
-    const imgUrl = createPublicUrl(imageSignedUrl.key, "public");
-    const url = createPublicUrl(zipFileSignedUrl.key, "public");
+    const imgUrl = createPublicUrl(imageSignedUrl.key);
+    const url = createPublicUrl(zipFileSignedUrl.key); // TODO we don't need this.
     const samples = samplesSignedUrls.map(({ key }) => ({
-      url: createPublicUrl(key, "public"),
+      url: createPublicUrl(key),
     }));
     return {
       samplePack: {
@@ -225,16 +225,10 @@ export default function UploadForm() {
   );
 }
 
-function createPublicUrl(key: string, visibility: "private" | "public") {
-  const bucketName =
-    visibility === "private"
-      ? "noos-private-assets-v2"
-      : "noos-public-assets-v2";
-
+function createPublicUrl(key: string) {
   if (isDev) {
-    return `https://localhost.localstack.cloud:4566/${bucketName}/${key}`;
+    return `https://localhost.localstack.cloud:4566/noos-public-assets-v2/${key}`;
   }
 
-  const region = process.env.NEXT_PUBLIC_AWS_REGION || "eu-central-1";
-  return `https://${bucketName}.s3.${region}.amazonaws.com/${key}`;
+  return `https://d14g83wf83qv4z.cloudfront.net/${key}`;
 }
