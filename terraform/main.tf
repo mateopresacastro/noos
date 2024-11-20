@@ -52,7 +52,7 @@ resource "aws_s3_bucket_cors_configuration" "public_cors" {
   bucket = aws_s3_bucket.public_assets.id
   cors_rule {
     allowed_headers = ["*"]
-    allowed_methods = ["PUT", "HEAD"]
+    allowed_methods = ["PUT", "HEAD", "GET"]
     allowed_origins = ["https://noos-three.vercel.app"]
     expose_headers  = ["ETag"]
     max_age_seconds = 3000
