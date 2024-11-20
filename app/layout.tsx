@@ -45,7 +45,7 @@ export default function RootLayout({
             medium: tailwind.theme.fontWeight.medium,
           },
           spacingUnit: tailwind.theme.spacing[4],
-          borderRadius: tailwind.theme.borderRadius.xl,
+          borderRadius: tailwind.theme.borderRadius.lg,
           colorTextSecondary: colors.neutral[400],
           colorPrimary: colors.neutral[50],
           colorInputBackground: colors.neutral[900],
@@ -70,7 +70,7 @@ export default function RootLayout({
         <body className="bg-neutral-950 text-neutral-50 dark">
           <Providers>
             <div
-              className={`${inter.className} antialiased max-w-7xl px-6 mx-auto `}
+              className={`${inter.className} antialiased max-w-7xl px-6 mx-auto`}
             >
               <Header />
               {children}

@@ -384,6 +384,21 @@ export async function createAccountSession(account: string) {
         },
         account_management: { enabled: true },
         notification_banner: { enabled: true },
+        balances: { enabled: true },
+        documents: { enabled: true },
+        tax_settings: { enabled: true },
+        tax_registrations: { enabled: true },
+        payouts: { enabled: true },
+        payouts_list: { enabled: true },
+        payment_details: {
+          enabled: true,
+          features: {
+            capture_payments: true,
+            refund_management: true,
+            dispute_management: true,
+            destination_on_behalf_of_charge_management: true,
+          },
+        },
       },
     });
 

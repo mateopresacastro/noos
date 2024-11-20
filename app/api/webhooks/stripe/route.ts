@@ -41,6 +41,7 @@ async function sendEmail(email: string, name: string, downloadUrl: string) {
   }
 
   sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+  // TODO: improve email. Short link.
   const msg = {
     to: email,
     from: "mateopresacastro@gmail.com",
