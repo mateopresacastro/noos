@@ -1,10 +1,5 @@
 import { cookies } from "next/headers";
-
-import {
-  SidebarInset,
-  SidebarProvider,
-  SidebarTrigger,
-} from "@/components/ui/sidebar";
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/app-sidebar";
 import { currentUser } from "@clerk/nextjs/server";
 import { notFound } from "next/navigation";
