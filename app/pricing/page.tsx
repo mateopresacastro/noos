@@ -1,7 +1,9 @@
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
 import { Check } from "lucide-react";
+import PriceNumber from "@/components/price-number";
 
 type Option = {
   title: string;
@@ -13,28 +15,14 @@ type Option = {
 
 const OPTIONS: Option[] = [
   {
-    title: "Starter",
-    price: 0,
-    subtitle: "To start",
-    bullets: ["Up to 3 sample packs", "500MB per pack", "20% fee on each sale"],
-    highlighted: false,
-  },
-  {
-    title: "Pro",
-    price: 35,
-    subtitle: "For profesionals",
+    title: "The One",
+    price: 1.5,
+    subtitle: "No recurring fees",
     bullets: [
-      "Unlimited sample packs",
+      "Up to 50GB of storage",
       "5GB per pack (for stems)",
       "No extra fees",
     ],
-    highlighted: true,
-  },
-  {
-    title: "Basic",
-    price: 20,
-    subtitle: "Best value",
-    bullets: ["Up to 20 sample packs", "1GB per pack", "No extra fees"],
     highlighted: false,
   },
 ];
@@ -43,9 +31,9 @@ export default function Pricing() {
   return (
     <div className="flex flex-col items-center justify-start pt-28">
       <h4 className="text-5xl tracking-tight">Pricing</h4>
-      <p className="pt-6 w-96 text-center text-lg text-neutral-300 pb-14 md:max-w-xl md:w-full">
-        Start selling samples without paying a subscription. Upgrade to enable
-        unlimited packs and additional features.
+      <p className="pt-6 w-96 text-center text-lg text-neutral-400 pb-14 md:max-w-xl md:w-full">
+        <span className="text-neutral-50">No recurring fees.</span> I charge a
+        simple $1.50 per transaction, plus standard Stripe processing fees.
       </p>
       <div className="gap-10 pb-32 flex flex-grow flex-wrap justify-center items-center">
         {OPTIONS.map((option) => (
@@ -71,11 +59,12 @@ function Option({
       <div className="text-neutral-50">{title}</div>
       <div
         className={cn(
-          "pt-1 text-lg font-medium",
+          "pt-1 text-lg font-medium text-neutral-400 flex items-baseline",
           highlighted && "text-neutral-200"
         )}
       >
-        ${price} {price === 0 ? "" : "per month"}
+        <PriceNumber price={price} />
+        <span className="pl-1">per transaction</span>
       </div>
       <div className={cn("text-sm py-6", highlighted && "text-neutral-200")}>
         {subtitle}
@@ -98,9 +87,14 @@ function Option({
           <p className="pl-3">{bullet}</p>
         </div>
       ))}
-      <Button variant={highlighted ? "default" : "secondary"} className="mt-12">
-        Get started
-      </Button>
+      <Link href="/sign-up" className="mt-12">
+        <Button
+          variant={highlighted ? "default" : "secondary"}
+          className="mt-12"
+        >
+          Get started
+        </Button>
+      </Link>
     </div>
   );
 }

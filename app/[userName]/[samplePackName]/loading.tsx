@@ -18,7 +18,7 @@ export default async function Page() {
             </div>
             <div className="flex justify-between items-end pb-2 w-full">
               <div className="sm:pl-5 flex flex-col items-start">
-                <Skeleton className="w-40 h-6 font-bold sm:h-10 sm:w-48 lg:w-full lg:h-20" />
+                <Skeleton className="w-40 h-6 font-bold sm:h-10 sm:w-48 lg:w-96 lg:h-20" />
                 <div className="flex items-center justify-center py-1 pb-2">
                   <Skeleton className="w-5 h-5 rounded-full mr-2" />
                   <Skeleton className="w-20 h-3 sm:h-4" />
@@ -36,7 +36,7 @@ export default async function Page() {
             <Separator className="mb-3 mt-2" />
           </div>
           <div className="w-full flex flex-col pt-10 sm:pt-0">
-            {[1, 2, 3].map((n) => (
+            {[1, 2, 3, 4, 5].map((n) => (
               <SampleSkeleton key={n} />
             ))}
           </div>
@@ -50,7 +50,7 @@ function SampleSkeleton() {
   return (
     <div className="flex w-[100%+6rem] cursor-pointer items-center justify-between rounded-lg transition-colors duration-150 ease-in-out hover:bg-neutral-900 h-16 pl-3 -ml-3 sm:-ml-0">
       <div className="flex items-center justify-start">
-        <div className="flex items-baseline justify-start w-5 sm:w-10 sm:pl-2 text-neutral-600 hover:scale-110 active:scale-100 active:text-neutral-300 hover:text-neutral-50 transition-all duration-150">
+        <div className="flex items-baseline justify-start w-5 sm:w-10 sm:pl-2 text-neutral-600 hover:scale-110 active:scale-100 active:text-neutral-300 hover:text-neutral-50 transition-all duration-150 animate-pulse">
           <Fade id="play">
             <FaPlay size={12} />
           </Fade>

@@ -26,11 +26,6 @@ const items = [
     url: "/dashboard",
     subItems: [
       {
-        title: "Notifications",
-        url: "/dashboard/notifications",
-        slug: "notifications",
-      },
-      {
         title: "Payments",
         url: "/dashboard/payments",
         slug: "payments",
@@ -64,6 +59,11 @@ const items = [
         title: "Account management",
         url: "/dashboard/account-management",
         slug: "account-management",
+      },
+      {
+        title: "Notifications",
+        url: "/dashboard/notifications",
+        slug: "notifications",
       },
       {
         title: "Onboarding",

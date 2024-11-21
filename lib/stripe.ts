@@ -53,7 +53,7 @@ export async function createPaymentLink({
         payment_intent_data: {
           metadata,
         },
-        application_fee_amount: 300,
+        application_fee_amount: 150,
         after_completion: {
           type: "redirect",
           redirect: { url: `${HOST_URL}/payment-success/${userName}` },
