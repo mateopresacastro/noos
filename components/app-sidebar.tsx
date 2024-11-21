@@ -106,7 +106,7 @@ export function AppSidebar({ children }: AppSidebarProps) {
                           className={cn(
                             "text-neutral-400 hover:bg-neutral-900 hover:text-neutral-50 active:bg-neutral-950 transition-all duration-150 rounded-lg",
                             slug === subItem.slug &&
-                              "bg-neutral-800 text-neutral-100"
+                              "bg-neutral-900 text-neutral-100"
                           )}
                         >
                           <Link href={subItem.url}>
