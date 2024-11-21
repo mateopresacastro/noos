@@ -20,8 +20,8 @@ const OPTIONS: Option[] = [
     subtitle: "No recurring fees",
     bullets: [
       "Up to 50GB of storage",
-      "5GB per pack (for stems)",
-      "No extra fees",
+      "5GB per pack",
+      "20MB per sample preview",
     ],
     highlighted: false,
   },
