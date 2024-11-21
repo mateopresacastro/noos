@@ -88,12 +88,7 @@ function Option({
         </div>
       ))}
       <Link href="/sign-up" className="mt-12">
-        <Button
-          variant={highlighted ? "default" : "secondary"}
-          className="mt-12"
-        >
-          Get started
-        </Button>
+        <Button className="mt-12">Get started</Button>
       </Link>
     </div>
   );
