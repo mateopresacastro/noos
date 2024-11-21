@@ -18,16 +18,14 @@ export default function SampleMetaData() {
             alt={samplePack.title}
             height={56}
             width={56}
-            className="size-10 rounded-lg sm:size-14"
+            className="size-10 rounded-md sm:size-14"
           />
         </div>
       </Link>
       <div className="flex flex-col gap-1">
-        <span className="text-sm sm:text-sm font-medium h-4 md:text-base block">
-          {sampleName}
-        </span>
+        <span className="font-medium h-4 text-sm block">{sampleName}</span>
         <Link href={`/${samplePack.creator.userName}`} className="w-fit">
-          <span className="text-xs text-neutral-400 sm:text-sm block hover:text-neutral-300 transition-all duration-150 active:text-neutral-400 w-fit">
+          <span className="text-xs text-neutral-400 block hover:text-neutral-300 transition-all duration-150 active:text-neutral-400 w-fit">
             @{samplePack.creator.userName}
           </span>
         </Link>

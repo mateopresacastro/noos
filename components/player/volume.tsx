@@ -9,10 +9,10 @@ export default function Volume() {
   return (
     <div className="items-center gap-2 hidden sm:flex">
       <button
-        className="text-neutral-400 hover:text-neutral-50 transition active:scale-90 active:text-neutral-400 mr-2"
+        className="text-neutral-400 hover:text-neutral-50 transition active:scale-90 active:text-neutral-400 mr-1"
         onClick={() => setMuted(!muted)}
       >
-        {muted ? <AiFillMuted size={20} /> : <Volume2 size={20} />}
+        {muted ? <AiFillMuted size={16} /> : <Volume2 size={18} />}
       </button>
       <VolumeSlider />
     </div>
