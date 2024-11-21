@@ -23,7 +23,7 @@ const variables = {
     medium: tailwind.theme.fontWeight.medium,
   },
   spacingUnit: tailwind.theme.spacing[4],
-  borderRadius: tailwind.theme.borderRadius.lg,
+  borderRadius: tailwind.theme.borderRadius.md,
   colorTextSecondary: colors.neutral[400],
   colorPrimary: colors.neutral[50],
   colorInputBackground: colors.neutral[900],

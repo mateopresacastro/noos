@@ -1,6 +1,7 @@
 import ProgressBar from "@/components/player/progress-bar";
-import { formatTime, cn } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 import { usePlayerStore } from "@/lib/zustand/store";
+import NumberFlow from "@number-flow/react";
 import { BsFillSkipStartFill, BsFillSkipEndFill } from "react-icons/bs";
 import { FaStop, FaPlay } from "react-icons/fa";
 import { LuDot, LuRepeat1 } from "react-icons/lu";
@@ -12,10 +13,53 @@ export default function Controls({
   handlePlayStop: () => void;
 }) {
   return (
-    <div className="items-center hidden sm:flex sm:absolute sm:right-auto sm:left-1/2 sm:-translate-x-1/2 sm:flex-col w-1/3 gap-2">
+    <div className="items-center hidden sm:flex sm:absolute sm:right-auto sm:left-1/2 sm:-translate-x-1/2 sm:flex-col w-1/3 md:w-1/2 gap-0.5">
       <Buttons handlePlayStop={handlePlayStop} />
       <Progress />
     </div>
+  );
+}
+function TimeDisplay({ duration }: { duration: number }) {
+  const minutes = Math.floor(duration / 60);
+  const seconds = Math.floor(duration % 60);
+  const animatedMinutes = (
+    <NumberFlow
+      willChange
+      value={minutes}
+      isolate
+      continuous
+      opacityTiming={{
+        duration: 250,
+        easing: "ease-out",
+      }}
+      transformTiming={{
+        easing: `linear(0, 0.0033 0.8%, 0.0263 2.39%, 0.0896 4.77%, 0.4676 15.12%, 0.5688, 0.6553, 0.7274, 0.7862, 0.8336 31.04%, 0.8793, 0.9132 38.99%, 0.9421 43.77%, 0.9642 49.34%, 0.9796 55.71%, 0.9893 62.87%, 0.9952 71.62%, 0.9983 82.76%, 0.9996 99.47%)`,
+        duration: 500,
+      }}
+    />
+  );
+  const animatedSeconds = (
+    <NumberFlow
+      willChange
+      value={seconds}
+      continuous
+      format={{
+        minimumIntegerDigits: 2,
+      }}
+      opacityTiming={{
+        duration: 250,
+        easing: "ease-out",
+      }}
+      transformTiming={{
+        easing: `linear(0, 0.0033 0.8%, 0.0263 2.39%, 0.0896 4.77%, 0.4676 15.12%, 0.5688, 0.6553, 0.7274, 0.7862, 0.8336 31.04%, 0.8793, 0.9132 38.99%, 0.9421 43.77%, 0.9642 49.34%, 0.9796 55.71%, 0.9893 62.87%, 0.9952 71.62%, 0.9983 82.76%, 0.9996 99.47%)`,
+        duration: 500,
+      }}
+    />
+  );
+  return (
+    <span className="flex">
+      {animatedMinutes}:{animatedSeconds}
+    </span>
   );
 }
 
@@ -24,11 +68,11 @@ function Progress() {
   return (
     <div className="w-full flex items-center justify-between">
       <span className="text-xs text-neutral-400 mr-2">
-        {formatTime(currentTime ?? 0)}
+        <TimeDisplay duration={currentTime ?? 0} />
       </span>
       <ProgressBar />
       <span className="text-xs text-neutral-400 ml-2">
-        {formatTime(duration ?? 0)}
+        <TimeDisplay duration={duration ?? 0} />
       </span>
     </div>
   );
