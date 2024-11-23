@@ -27,6 +27,7 @@ import {
   storeEmail,
   updateSamplePack,
 } from "@/lib/db/mod";
+import { sendTelegramMessage } from "@/lib/telegram";
 
 export async function createStripeAccountLinkAction() {
   try {
@@ -353,6 +354,7 @@ export async function subscribeToBetaAction(data: SubscribeToBetaActionSchema) {
     if (!success) throw new Error("Rate limit exceeded");
     const ok = await storeEmail(data.email);
     if (!ok) throw new Error("Error storing email");
+    await sendTelegramMessage(` ✉️ New interested user: ${data.email}`);
   } catch (error) {
     log.error("Error subscribing to beta", {
       error,
