@@ -8,7 +8,7 @@ import {
   deleteSamplePack,
   getSamplePack,
   updateSamplePack,
-} from "@/lib/db/queries";
+} from "@/lib/db/mod";
 
 describe("DB Queries", () => {
   const testUser = {

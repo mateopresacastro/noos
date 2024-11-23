@@ -32,8 +32,9 @@ export default function Pricing() {
     <div className="flex flex-col items-center justify-start pt-28">
       <h4 className="text-5xl tracking-tight">Pricing</h4>
       <p className="pt-6 w-96 text-center text-lg text-neutral-400 pb-14 md:max-w-xl md:w-full">
-        <span className="text-neutral-50">No recurring fees.</span> I charge a
-        simple $1.50 per transaction, plus standard Stripe processing fees.
+        <span className="text-neutral-50">Don&apos;t pay a subscription</span> I
+        charge a simple $1.50 per transaction, plus standard Stripe processing
+        fees.
       </p>
       <div className="gap-10 pb-32 flex flex-grow flex-wrap justify-center items-center">
         {OPTIONS.map((option) => (
@@ -80,7 +81,7 @@ function Option({
         >
           <Check
             className={cn(
-              "size-3 text-neutral-600",
+              "size-3 text-neutral-500",
               highlighted && "text-neutral-200"
             )}
           />
@@ -88,12 +89,7 @@ function Option({
         </div>
       ))}
       <Link href="/sign-up" className="mt-12">
-        <Button
-          variant={highlighted ? "default" : "secondary"}
-          className="mt-12"
-        >
-          Get started
-        </Button>
+        <Button className="mt-12">Get started</Button>
       </Link>
     </div>
   );

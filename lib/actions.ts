@@ -1,20 +1,33 @@
 "use server";
 
 import "server-only";
-import { z } from "zod";
+
+import { Ratelimit } from "@upstash/ratelimit";
+import { Redis } from "@upstash/redis";
 import log from "@/lib/log";
+import { z } from "zod";
 import { auth, currentUser } from "@clerk/nextjs/server";
 import { AWS_PRIVATE_BUCKET_NAME, AWS_PUBLIC_BUCKET_NAME } from "@/cfg";
-import { createAccountSession, createOnboardingLink } from "@/lib/stripe";
 import { createPresignedUrl } from "@/lib/aws/mod";
-import { createPaymentLink, createProduct, updateProduct } from "@/lib/stripe";
+import { headers } from "next/headers";
+
+import {
+  createAccountSession,
+  createOnboardingLink,
+  createPaymentLink,
+  createProduct,
+  updateProduct,
+} from "@/lib/stripe";
+
 import {
   addSampleToSamplePack,
   createSamplePack,
   deleteSamplePack,
   readUser,
+  storeEmail,
   updateSamplePack,
-} from "@/lib/db/queries";
+} from "@/lib/db/mod";
+import { sendTelegramMessage } from "@/lib/telegram";
 
 export async function createStripeAccountLinkAction() {
   try {
@@ -319,4 +332,44 @@ export async function createAccountSessionAction(
     });
     throw new Error();
   }
+}
+
+const ratelimit = new Ratelimit({
+  redis: Redis.fromEnv(),
+  limiter: Ratelimit.slidingWindow(1, "10 s"),
+});
+
+const subscribeToBetaActionSchema = z.object({
+  email: z.string().email(),
+});
+
+type SubscribeToBetaActionSchema = z.infer<typeof subscribeToBetaActionSchema>;
+
+export async function subscribeToBetaAction(data: SubscribeToBetaActionSchema) {
+  try {
+    subscribeToBetaActionSchema.parse(data);
+    const ip = await getIp();
+    if (!ip) throw new Error("Error getting ip");
+    const { success } = await ratelimit.limit(ip);
+    if (!success) throw new Error("Rate limit exceeded");
+    const ok = await storeEmail(data.email);
+    if (!ok) throw new Error("Error storing email");
+    await sendTelegramMessage(` ✉️ New interested user: ${data.email}`);
+  } catch (error) {
+    log.error("Error subscribing to beta", {
+      error,
+      data,
+    });
+
+    throw new Error();
+  }
+}
+
+async function getIp() {
+  const h = await headers();
+  const forwardedFor = h.get("x-forwarded-for");
+  const realIp = h.get("x-real-ip");
+  if (forwardedFor) return forwardedFor.split(",").at(0)?.trim();
+  if (realIp) return realIp.trim();
+  return null;
 }

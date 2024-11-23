@@ -5,6 +5,7 @@ import { getCustomerData, stripe } from "@/lib/stripe";
 import { headers } from "next/headers";
 import { type AxiomRequest, withAxiom } from "next-axiom";
 import type Stripe from "stripe";
+import { sendTelegramMessage } from "@/lib/telegram";
 
 async function handleSuccessfulPaymentIntent(
   event: Stripe.PaymentIntentSucceededEvent
@@ -32,6 +33,7 @@ async function handleSuccessfulPaymentIntent(
   const downloadUrl = await createSamplePackDownloadUrl(metadata.s3Key);
   if (!downloadUrl) throw new Error("Error creating download url");
   await sendEmail(email, name, downloadUrl);
+  await sendTelegramMessage(`${name} (${email}) just purchased a sample pack!`);
 }
 
 async function sendEmail(email: string, name: string, downloadUrl: string) {

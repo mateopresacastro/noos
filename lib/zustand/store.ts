@@ -2,7 +2,7 @@ import { createStore } from "zustand/vanilla";
 import { PlayerStoreContext } from "@/lib/zustand/provider";
 import { useContext } from "react";
 import { useStore } from "zustand";
-import type { SamplePack } from "@/lib/db/queries";
+import type { SamplePack } from "@/lib/db/mod";
 
 type NNSamplePack = NonNullable<SamplePack>;
 
