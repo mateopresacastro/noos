@@ -8,7 +8,6 @@ import type {
   UserJSON,
   DeletedObjectJSON,
 } from "@clerk/nextjs/server";
-import log from "@/lib/log";
 
 async function handleCreateUser(user: UserJSON) {
   const stripeId = await createConnectedAccount(user.id, user.username);
@@ -73,7 +72,7 @@ export async function POST(req: Request) {
     if (evt.type === "user.created") {
       const newUser = await handleCreateUser(evt.data);
       if (!newUser) {
-        log.error("Error creating user");
+        console.error("Error creating user");
         return serverErrorResponse;
       }
     }
@@ -81,14 +80,14 @@ export async function POST(req: Request) {
     if (evt.type === "user.updated") {
       const user = await handleUpdateUser(evt.data);
       if (!user) {
-        log.error("Error updating user");
+        console.error("Error updating user");
         return serverErrorResponse;
       }
     }
 
     if (evt.type === "user.deleted") {
       const user = await handleDeleteUser(evt.data);
-      log.error("Error deleting user");
+      console.error("Error deleting user");
       if (!user) {
         return serverErrorResponse;
       }
@@ -96,7 +95,7 @@ export async function POST(req: Request) {
 
     return new Response(null, { status: 200 });
   } catch {
-    log.warn("Clerk Webhook failed");
+    console.warn("Clerk Webhook failed");
     return clientErrorResponse;
   }
 }
