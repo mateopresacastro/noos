@@ -84,7 +84,7 @@ export async function POST(req: Request) {
       case "payment_intent.succeeded": {
         console.info("Handling successful payment intent");
         await sendTelegramMessage("Handling successful payment intent!");
-        handleSuccessfulPaymentIntent(event);
+        await handleSuccessfulPaymentIntent(event);
         break;
       }
       default: {
