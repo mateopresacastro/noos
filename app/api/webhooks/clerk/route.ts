@@ -2,7 +2,7 @@ import { withAxiom, type AxiomRequest } from "next-axiom";
 import { Webhook } from "svix";
 import { headers } from "next/headers";
 import { CLERK_WEBHOOK_SECRET } from "@/cfg";
-import { createUser, deleteUser, updateUser } from "@/lib/db/queries";
+import { createUser, deleteUser, updateUser } from "@/lib/db/mod";
 import { createConnectedAccount } from "@/lib/stripe";
 import type {
   WebhookEvent,

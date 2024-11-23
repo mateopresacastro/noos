@@ -6,7 +6,7 @@ import { AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 import MusicBars from "@/components/music-bars";
 import Fade from "@/components/fade";
-import type { SamplePack } from "@/lib/db/queries";
+import type { SamplePack } from "@/lib/db/mod";
 
 export default function Sample({
   url,

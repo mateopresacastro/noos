@@ -385,3 +385,19 @@ export async function getData(userName: string) {
     return null;
   }
 }
+
+export async function storeEmail(email: string) {
+  try {
+    const newEmail = await prisma.interestedUser.create({
+      data: {
+        email,
+      },
+    });
+
+    if (!newEmail) throw new Error("Error storing email");
+    return newEmail;
+  } catch (error) {
+    log.error("Error storing email", { error, email });
+    return null;
+  }
+}

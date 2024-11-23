@@ -1,6 +1,6 @@
 import "server-only";
 import Stripe from "stripe";
-import { getSamplePack, readUser } from "@/lib/db/queries";
+import { getSamplePack, readUser } from "@/lib/db/mod";
 import { HOST_URL, STRIPE_SECRET_KEY } from "@/cfg";
 import { v4 as uuidv4 } from "uuid";
 import { auth } from "@clerk/nextjs/server";

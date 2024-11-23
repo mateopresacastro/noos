@@ -2,7 +2,7 @@ import Image from "next/image";
 import UploadButton from "@/components/upload-button";
 import { notFound } from "next/navigation";
 import { DotIcon } from "lucide-react";
-import { getData } from "@/lib/db/queries";
+import { getData } from "@/lib/db/mod";
 import SamplePack from "@/components/sample-pack";
 
 export default async function Page({

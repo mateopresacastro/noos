@@ -5,7 +5,7 @@ import EditPackButton from "@/components/edit-pack";
 import NumberFlow from "@number-flow/react";
 import { notFound } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { getSamplePack } from "@/lib/db/queries";
+import { getSamplePack } from "@/lib/db/mod";
 import { Separator } from "@/components/ui/separator";
 
 export default async function Page({
