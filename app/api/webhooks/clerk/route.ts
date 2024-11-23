@@ -1,4 +1,3 @@
-import { withAxiom, type AxiomRequest } from "next-axiom";
 import { Webhook } from "svix";
 import { headers } from "next/headers";
 import { CLERK_WEBHOOK_SECRET } from "@/cfg";
@@ -9,6 +8,7 @@ import type {
   UserJSON,
   DeletedObjectJSON,
 } from "@clerk/nextjs/server";
+import log from "@/lib/log";
 
 async function handleCreateUser(user: UserJSON) {
   const stripeId = await createConnectedAccount(user.id, user.username);
@@ -51,7 +51,7 @@ function clean(user: UserJSON) {
 const clientErrorResponse = new Response(null, { status: 400 });
 const serverErrorResponse = new Response(null, { status: 500 });
 
-export const POST = withAxiom(async (req: AxiomRequest) => {
+export async function POST(req: Request) {
   try {
     const headerPayload = await headers();
     const svix_id = headerPayload.get("svix-id");
@@ -73,7 +73,7 @@ export const POST = withAxiom(async (req: AxiomRequest) => {
     if (evt.type === "user.created") {
       const newUser = await handleCreateUser(evt.data);
       if (!newUser) {
-        req.log.error("Error creating user");
+        log.error("Error creating user");
         return serverErrorResponse;
       }
     }
@@ -81,14 +81,14 @@ export const POST = withAxiom(async (req: AxiomRequest) => {
     if (evt.type === "user.updated") {
       const user = await handleUpdateUser(evt.data);
       if (!user) {
-        req.log.error("Error updating user");
+        log.error("Error updating user");
         return serverErrorResponse;
       }
     }
 
     if (evt.type === "user.deleted") {
       const user = await handleDeleteUser(evt.data);
-      req.log.error("Error deleting user");
+      log.error("Error deleting user");
       if (!user) {
         return serverErrorResponse;
       }
@@ -96,7 +96,7 @@ export const POST = withAxiom(async (req: AxiomRequest) => {
 
     return new Response(null, { status: 200 });
   } catch {
-    req.log.warn("Clerk Webhook failed");
+    log.warn("Clerk Webhook failed");
     return clientErrorResponse;
   }
-});
+}
