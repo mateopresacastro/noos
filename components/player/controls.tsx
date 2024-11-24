@@ -1,7 +1,9 @@
 import ProgressBar from "@/components/player/progress-bar";
 import { cn } from "@/lib/utils";
+import { debounce } from "@/lib/utils/debounce";
 import { usePlayerStore } from "@/lib/zustand/store";
 import NumberFlow from "@number-flow/react";
+import React from "react";
 import { BsFillSkipStartFill, BsFillSkipEndFill } from "react-icons/bs";
 import { FaStop, FaPlay } from "react-icons/fa";
 import { LuDot, LuRepeat1 } from "react-icons/lu";
@@ -19,6 +21,7 @@ export default function Controls({
     </div>
   );
 }
+
 function TimeDisplay({ duration }: { duration: number }) {
   const minutes = Math.floor(duration / 60);
   const seconds = Math.floor(duration % 60);
@@ -89,6 +92,16 @@ function Buttons({ handlePlayStop }: { handlePlayStop: () => void }) {
     isPlaying,
   } = usePlayerStore((state) => state);
 
+  // Debounce playNext and playPrevious with 300ms delay
+  const debouncedPlayNext = React.useMemo(
+    () => debounce(playNext, 300),
+    [playNext]
+  );
+  const debouncedPlayPrevious = React.useMemo(
+    () => debounce(playPrevious, 300),
+    [playPrevious]
+  );
+
   return (
     <div className="w-50 flex sm:gap-4 md:gap-6">
       <button
@@ -105,7 +118,7 @@ function Buttons({ handlePlayStop }: { handlePlayStop: () => void }) {
       </button>
       <button
         className="text-neutral-400 hover:text-neutral-50 transition active:scale-90 active:text-neutral-400"
-        onClick={playPrevious}
+        onClick={debouncedPlayPrevious}
       >
         <BsFillSkipStartFill size={25} />
       </button>
@@ -121,7 +134,7 @@ function Buttons({ handlePlayStop }: { handlePlayStop: () => void }) {
       </button>
       <button
         className="text-neutral-400 hover:text-neutral-50 transition active:scale-90 active:text-neutral-400"
-        onClick={playNext}
+        onClick={debouncedPlayNext}
       >
         <BsFillSkipEndFill size={25} />
       </button>
