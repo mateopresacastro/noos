@@ -131,7 +131,7 @@ export default function UploadPage({ userName }: { userName: string }) {
     <MotionConfig transition={{ duration: 0.5, type: "spring", bounce: 0 }}>
       <div className="flex flex-col items-center justify-start min-h-screen pt-32 pb-48">
         <div className="w-full max-w-2xl">
-          <h3 className="self-start font-medium pb-3">Upload a sample pack</h3>
+          <h3 className="self-start font-bold pb-3">Upload a sample pack</h3>
         </div>
         <motion.div
           animate={{ height: bounds.height + 51 }} // TODO: fix magic number. Bound is wrong
@@ -167,7 +167,7 @@ export default function UploadPage({ userName }: { userName: string }) {
                     custom={direction}
                     key={`step-${stepIndex}`}
                   >
-                    <h4 className="font-medium">{title}</h4>
+                    <h4 className="font-bold">{title}</h4>
                     <p className="text-neutral-400 text-xs text-pretty pt-1 pb-8">
                       {description}
                     </p>
@@ -220,7 +220,7 @@ function StepInfoAndControls({
   return (
     <div className="flex flex-col items-start justify-start w-full">
       <div className="w-full flex items-center justify-between">
-        <div className="font-medium text-neutral-500 text-xs pb-2 flex items-center justify-center w-[3.8rem]">
+        <div className="font-bold text-neutral-500 text-xs pb-2 flex items-center justify-center w-[3.8rem]">
           <span>Step</span>
           <span className="mx-auto">
             <NumberFlow willChange value={stepIndex + 1} />

@@ -29,7 +29,7 @@ export default function RootLayout({
       <Providers>
         <body className="bg-neutral-950 text-neutral-50 dark">
           <div
-            className={`${inter.className} antialiased max-w-7xl px-6 mx-auto`}
+            className={`${inter.className} antialiased max-w-[160rem] px-6 lg:px-10 2xl:px-16 mx-auto`}
           >
             <Header />
             {children}

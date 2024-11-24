@@ -60,7 +60,7 @@ function Option({
       <div className="text-neutral-50">{title}</div>
       <div
         className={cn(
-          "pt-1 text-lg font-medium text-neutral-400 flex items-baseline",
+          "pt-1 text-lg font-bold text-neutral-400 flex items-baseline",
           highlighted && "text-neutral-200"
         )}
       >

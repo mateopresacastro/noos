@@ -67,11 +67,11 @@ function Progress() {
   const { currentTime, duration } = usePlayerStore((state) => state);
   return (
     <div className="w-full flex items-center justify-between">
-      <span className="text-xs text-neutral-400 mr-2">
+      <span className="text-xs text-neutral-300 mr-2">
         <TimeDisplay duration={currentTime ?? 0} />
       </span>
       <ProgressBar />
-      <span className="text-xs text-neutral-400 ml-2">
+      <span className="text-xs text-neutral-300 ml-2">
         <TimeDisplay duration={duration ?? 0} />
       </span>
     </div>

@@ -13,7 +13,7 @@ export default function VolumeBar() {
 
   return (
     <Slider.Root
-      className="relative flex h-5 w-28 items-center touch-none group cursor-pointer"
+      className="relative flex h-5 w-24 mr-5 items-center touch-none group cursor-pointer"
       defaultValue={[0]}
       value={[muted ? 0 : volume ?? 0]}
       max={1}

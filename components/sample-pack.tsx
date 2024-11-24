@@ -24,24 +24,26 @@ export default function SamplePack({
     currentlyPlayingSamplePack?.name === samplePack?.name &&
     isPlaying;
 
+  const numOfSamples = samplePack.samples.length;
   return (
     <Link href={`/${userName}/${samplePack?.name}`} prefetch={true}>
       <div className="flex flex-col items-start justify-center rounded-2xl w-full aspect-square hover:opacity-80 transition-opacity duration-150 mb-2 active:opacity-60">
         <Image
           src={samplePack.imgUrl}
           alt={samplePack.title}
-          width={160}
-          height={160}
-          className="rounded-2xl w-full h-full object-cover"
+          width={300}
+          height={300}
+          quality={100}
+          className="rounded-3xl w-full h-full object-cover"
           priority
         />
         <div className="flex justify-between w-full">
           <div>
-            <span className="text-sm block pt-1 truncate text-ellipsis">
+            <span className="font-bold block pt-1 truncate text-ellipsis">
               {samplePack.title}
             </span>
-            <span className="text-xs block text-neutral-400">
-              {samplePack.samples.length} samples
+            <span className="text-xs block text-neutral-400 font-bold pt-0.5">
+              {numOfSamples} sample{numOfSamples > 1 ? "s" : ""}
             </span>
           </div>
           <div className="self-end pb-1">
