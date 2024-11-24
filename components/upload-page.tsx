@@ -1,6 +1,23 @@
 "use client";
 
+import Dropzone from "react-dropzone";
+import useMeasure from "react-use-measure";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useFieldArray, useForm, type UseFormReturn } from "react-hook-form";
+import { type Dispatch, type SetStateAction, useMemo, useState } from "react";
+import { cn } from "@/lib/utils";
+
+import {
+  AnimatePresence,
+  motion,
+  MotionConfig,
+  Reorder,
+  useDragControls,
+} from "motion/react";
+
+import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+
 import {
   Form,
   FormControl,
@@ -8,20 +25,15 @@ import {
   FormItem,
   FormMessage,
 } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { ArrowLeft, ArrowRight, Grip } from "lucide-react";
-import Dropzone from "react-dropzone";
-import { cn } from "@/lib/utils";
+
 import {
   UploadFormSchema,
   uploadFormSchema,
 } from "@/components/upload-form-schema";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Dispatch, SetStateAction, useMemo, useState } from "react";
-import { useFieldArray, useForm, type UseFormReturn } from "react-hook-form";
-import { Reorder, useDragControls } from "motion/react";
 
-const steps = [
+import { ArrowLeft, ArrowRight, Grip } from "lucide-react";
+
+const STEPS = [
   {
     title: "Choose your samples",
     description:
@@ -51,8 +63,21 @@ const steps = [
   },
 ];
 
+const VARIANTS = {
+  initial: (direction: number) => {
+    return { x: `${110 * direction}%`, opacity: 0 };
+  },
+  active: { x: "0%", opacity: 1 },
+  exit: (direction: number) => {
+    return { x: `${-110 * direction}%`, opacity: 0 };
+  },
+};
+
 export default function UploadPage() {
   const [stepIndex, setStepIndex] = useState(0);
+  const [ref, bounds] = useMeasure();
+  const [direction, setDirection] = useState(1);
+
   const form = useForm<UploadFormSchema>({
     resolver: zodResolver(uploadFormSchema),
     defaultValues: {
@@ -60,15 +85,14 @@ export default function UploadPage() {
       description: "",
       price: 0,
     },
+    mode: "all",
   });
-
-  console.log("on form comp", form.getValues());
 
   const {
     title,
     description,
     component: Step,
-  } = useMemo(() => steps[stepIndex], [stepIndex]);
+  } = useMemo(() => STEPS[stepIndex], [stepIndex]);
 
   const numberOfSamples = form.getValues().samples?.length;
 
@@ -90,48 +114,75 @@ export default function UploadPage() {
   }, [stepIndex, numberOfSamples]);
 
   return (
-    <div className="flex flex-col items-center justify-start min-h-screen pt-32 pb-48">
-      <div className="w-full max-w-xl">
-        <h3 className="self-start font-medium pb-3">Upload a sample pack</h3>
+    <MotionConfig transition={{ duration: 0.5, type: "spring", bounce: 0 }}>
+      <div className="flex flex-col items-center justify-start min-h-screen pt-32 pb-48">
+        <div className="w-full max-w-xl">
+          <h3 className="self-start font-medium pb-3">Upload a sample pack</h3>
+        </div>
+        <motion.div
+          animate={{ height: bounds.height + 56 }}
+          className="flex items-start justify-start flex-col bg-neutral-900 p-6 rounded-xl border-neutral-800 border max-w-xl w-full overflow-hidden relative"
+        >
+          <div ref={ref} className="w-full">
+            <StepInfoAndControls
+              stepIndex={stepIndex}
+              form={form}
+              setStepIndex={setStepIndex}
+              setDirection={setDirection}
+              canGoToTheNextStep={canGoToTheNextStep}
+              steps={STEPS}
+            />
+            <Form {...form}>
+              <form
+                onSubmit={form.handleSubmit(() => console.log("Submit"))}
+                className="w-full"
+                autoComplete="off"
+              >
+                <AnimatePresence
+                  mode="popLayout"
+                  initial={false}
+                  custom={direction}
+                >
+                  <motion.div
+                    variants={VARIANTS}
+                    initial="initial"
+                    animate="active"
+                    exit="exit"
+                    custom={direction}
+                    key={`step-${stepIndex}`}
+                  >
+                    <h4 className="font-medium">{title}</h4>
+                    <p className="text-neutral-400 text-xs text-pretty pt-1 pb-8">
+                      {description}
+                    </p>
+
+                    <Step form={form} />
+                  </motion.div>
+                </AnimatePresence>
+              </form>
+            </Form>
+          </div>
+        </motion.div>
       </div>
-      <div className="flex items-start justify-start flex-col bg-neutral-900 p-6 rounded-xl border-neutral-800 border max-w-xl w-full">
-        <StepInfoAndControls
-          title={title}
-          description={description}
-          stepIndex={stepIndex}
-          form={form}
-          setStepIndex={setStepIndex}
-          canGoToTheNextStep={canGoToTheNextStep}
-        />
-        <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(() => console.log("Submit"))}
-            className="w-full pt-8"
-          >
-            <Step form={form} />
-          </form>
-        </Form>
-      </div>
-    </div>
+    </MotionConfig>
   );
 }
 
 function StepInfoAndControls({
-  title,
-  description,
   stepIndex,
   form,
   setStepIndex,
   canGoToTheNextStep,
+  steps,
+  setDirection,
 }: {
-  title: string;
-  description: string;
   stepIndex: number;
   form: UseFormReturn<UploadFormSchema>;
   setStepIndex: Dispatch<SetStateAction<number>>;
+  setDirection: Dispatch<SetStateAction<number>>;
   canGoToTheNextStep: boolean;
+  steps: typeof STEPS;
 }) {
-  console.log({ canGoToTheNextStep, stepIndex });
   return (
     <div className="flex flex-col items-start justify-start w-full">
       <div className="w-full flex items-center justify-between">
@@ -153,7 +204,13 @@ function StepInfoAndControls({
       <div className="w-full flex items-center justify-between pb-10 mt-1">
         <Button
           variant="secondary"
-          onClick={() => setStepIndex(stepIndex - 1)}
+          onClick={() => {
+            if (stepIndex === 0) {
+              return;
+            }
+            setStepIndex(stepIndex - 1);
+            setDirection(-1);
+          }}
           disabled={stepIndex === 0}
         >
           <ArrowLeft className="text-neutral-400" />
@@ -165,15 +222,18 @@ function StepInfoAndControls({
               : "secondary"
           }
           className="transition-all"
-          onClick={() => setStepIndex(stepIndex + 1)}
+          onClick={() => {
+            if (stepIndex === STEPS.length - 1) {
+              return;
+            }
+            setDirection(1);
+            setStepIndex(stepIndex + 1);
+          }}
           disabled={!canGoToTheNextStep}
         >
           <ArrowRight />
         </Button>
       </div>
-
-      <h4 className="font-medium">{title}</h4>
-      <p className="text-neutral-400 text-xs text-pretty py-1">{description}</p>
     </div>
   );
 }
@@ -213,14 +273,10 @@ function StepOne({ form }: { form: UseFormReturn<UploadFormSchema> }) {
                         : "Drag and drop your samples here. Or click to select."}
                     </p>
                   </div>
-                  <FormMessage>
-                    {form.formState.errors.samples?.message}
-                  </FormMessage>
                 </section>
               )}
             </Dropzone>
           </FormControl>
-          <FormMessage />
         </FormItem>
       )}
     />
@@ -232,7 +288,6 @@ function StepTwo({ form }: { form: UseFormReturn<UploadFormSchema> }) {
     control: form.control,
     name: "samples",
   });
-
   return (
     <div className="w-full">
       <Reorder.Group values={samples} onReorder={replace} className="space-y-5">
@@ -267,7 +322,7 @@ function ReorderSample({
       dragControls={controls}
       className="flex items-start justify-between flex-col-reverse sm:flex-row sm:items-center sm:justify-between select-none"
     >
-      <div className="flex items-center w-full">
+      <div className="flex items-center w-full py-1">
         <Grip
           className="text-neutral-600 mr-3 cursor-grab active:cursor-grabbing size-5 active:text-neutral-300 transition-colors duration-150 touch-none"
           onPointerDown={(e) => {

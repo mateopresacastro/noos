@@ -52,7 +52,10 @@ export const uploadFormSchema = z.object({
             (file) => file.size <= TWENTY_MB_IN_BYTES,
             "File must be less than 20MB"
           ),
-        generatedName: z.string().min(1, "Name is required"),
+        generatedName: z
+          .string()
+          .max(20, "Name is too long")
+          .min(1, "Name is required"),
       })
     )
     .min(1, "At least one sample is required")
