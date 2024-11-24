@@ -32,6 +32,7 @@ import {
 } from "@/components/upload-form-schema";
 
 import { ArrowLeft, ArrowRight, Grip } from "lucide-react";
+import NumberFlow from "@number-flow/react";
 
 const STEPS = [
   {
@@ -75,7 +76,7 @@ const VARIANTS = {
 
 export default function UploadPage() {
   const [stepIndex, setStepIndex] = useState(0);
-  const [ref, bounds] = useMeasure();
+  const [ref, bounds] = useMeasure({ offsetSize: true });
   const [direction, setDirection] = useState(1);
 
   const form = useForm<UploadFormSchema>({
@@ -120,7 +121,7 @@ export default function UploadPage() {
           <h3 className="self-start font-medium pb-3">Upload a sample pack</h3>
         </div>
         <motion.div
-          animate={{ height: bounds.height + 56 }}
+          animate={{ height: bounds.height + 51 }} // TODO: fix magic number. Bounds is wrong
           className="flex items-start justify-start flex-col bg-neutral-900 p-6 rounded-xl border-neutral-800 border max-w-xl w-full overflow-hidden relative"
         >
           <div ref={ref} className="w-full">
@@ -186,10 +187,15 @@ function StepInfoAndControls({
   return (
     <div className="flex flex-col items-start justify-start w-full">
       <div className="w-full flex items-center justify-between">
-        <span className="font-medium text-neutral-400 text-xs pb-2">
-          Step {stepIndex + 1} of 5
-        </span>
+        <div className="font-medium text-neutral-400 text-xs pb-2 flex items-center justify-center w-[3.8rem]">
+          <span>Step</span>
+          <span className="mx-auto">
+            <NumberFlow willChange value={stepIndex + 1} />
+          </span>
+          <span className="pt-0.5">of 5</span>
+        </div>
       </div>
+
       <div className="flex items-center justify-between gap-2 w-full pb-3">
         {steps.map((_, index) => (
           <div
@@ -263,7 +269,7 @@ function StepOne({ form }: { form: UseFormReturn<UploadFormSchema> }) {
                     className="flex items-center justify-center h-96"
                   >
                     <Input {...getInputProps()} />
-                    <p className="text-neutral-400 text-xs">
+                    <p className="text-neutral-400 text-xs text-center sm:text-left">
                       {acceptedFiles?.length > 0 || field.value?.length > 0
                         ? `${
                             field.value?.length > 0
@@ -324,7 +330,7 @@ function ReorderSample({
     >
       <div className="flex items-center w-full py-1">
         <Grip
-          className="text-neutral-600 mr-3 cursor-grab active:cursor-grabbing size-5 active:text-neutral-300 transition-colors duration-150 touch-none"
+          className="text-neutral-600 mr-3 cursor-grab active:cursor-grabbing size-5 transition-colors duration-150 touch-none"
           onPointerDown={(e) => {
             e.preventDefault();
             controls.start(e);
