@@ -146,6 +146,7 @@ export async function updateSamplePackAction(
   }
 }
 
+// TODO: put limits on title length etc
 const persistSamplePackDataActionSchema = z.object({
   samplePack: z.object({
     name: z.string(),
@@ -156,7 +157,7 @@ const persistSamplePackDataActionSchema = z.object({
     url: z.string(),
     key: z.string(),
   }),
-  samples: z.array(z.object({ url: z.string() })),
+  samples: z.array(z.object({ url: z.string(), name: z.string() })),
 });
 
 type SamplePackData = z.infer<typeof persistSamplePackDataActionSchema>;
@@ -165,7 +166,6 @@ export async function persistSamplePackDataAction(
   samplePackData: SamplePackData
 ) {
   try {
-    log.info("persisting data", samplePackData);
     const user = await currentUser();
     if (!user || !user.username) {
       throw new Error("User not found or username not set");
@@ -232,6 +232,7 @@ export async function persistSamplePackDataAction(
 
 export async function createPreSignedUrlAction(numOfSamples: number) {
   try {
+    console.log("Creating pre-signed urls");
     const user = await currentUser();
     if (!user) throw new Error();
 

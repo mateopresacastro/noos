@@ -6,7 +6,10 @@ export type UploadToS3Data = {
   imageSignedUrl: string;
   image: File;
   samplesSignedUrls: string[];
-  samples: FileList;
+  samples: {
+    file: File;
+    generatedName: string;
+  }[];
 };
 
 export async function handleUploadToS3({
@@ -22,7 +25,7 @@ export async function handleUploadToS3({
     const imgPromise = uploadFile(imageSignedUrl, image);
     const promises = [zipPromise, imgPromise];
     for (let i = 0; i < samples.length; i++) {
-      const sample = samples[i];
+      const sample = samples[i].file;
       const sampleUrl = samplesSignedUrls[i];
       promises.push(uploadFile(sampleUrl, sample));
     }
