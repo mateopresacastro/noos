@@ -9,7 +9,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { ArrowLeft, ArrowRight } from "lucide-react";
+import { ArrowLeft, ArrowRight, Grip } from "lucide-react";
 import Dropzone from "react-dropzone";
 import { cn } from "@/lib/utils";
 import {
@@ -19,6 +19,7 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Dispatch, SetStateAction, useMemo, useState } from "react";
 import { useFieldArray, useForm, type UseFormReturn } from "react-hook-form";
+import { Reorder, useDragControls } from "motion/react";
 
 const steps = [
   {
@@ -89,7 +90,7 @@ export default function UploadPage() {
   }, [stepIndex, numberOfSamples]);
 
   return (
-    <div className="flex flex-col items-center justify-start min-h-screen py-32">
+    <div className="flex flex-col items-center justify-start min-h-screen pt-32 pb-48">
       <div className="w-full max-w-xl">
         <h3 className="self-start font-medium pb-3">Upload a sample pack</h3>
       </div>
@@ -227,42 +228,75 @@ function StepOne({ form }: { form: UseFormReturn<UploadFormSchema> }) {
 }
 
 function StepTwo({ form }: { form: UseFormReturn<UploadFormSchema> }) {
-  const { fields } = useFieldArray({
-    name: "samples",
+  const { fields: samples, replace } = useFieldArray({
     control: form.control,
+    name: "samples",
   });
 
   return (
     <div className="w-full">
-      <ul className="space-y-6">
-        {fields.map((field, index) => (
-          <li
-            key={field.id}
-            className="flex items-start justify-between flex-col-reverse sm:flex-row sm:items-center sm:justify-between "
-          >
-            <FormField
-              control={form.control}
-              name={`samples.${index}.generatedName`}
-              render={({ field: nameField }) => (
-                <FormItem className="w-full sm:w-3/4">
-                  <FormControl>
-                    <Input
-                      {...nameField}
-                      className="w-full text-sm bg-neutral-800"
-                      placeholder="Enter name"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <span className="pb-1 sm:pb-0 sm:px-3 text-xs text-neutral-500 text-nowrap block">
-              {field.file.name}
-            </span>
-          </li>
+      <Reorder.Group values={samples} onReorder={replace} className="space-y-5">
+        {samples.map((sample, index) => (
+          <ReorderSample
+            key={sample.file.name}
+            form={form}
+            sample={sample}
+            index={index}
+          />
         ))}
-      </ul>
+      </Reorder.Group>
     </div>
+  );
+}
+
+function ReorderSample({
+  form,
+  sample,
+  index,
+}: {
+  form: UseFormReturn<UploadFormSchema>;
+  sample: UploadFormSchema["samples"][number];
+  index: number;
+}) {
+  const controls = useDragControls();
+  return (
+    <Reorder.Item
+      key={sample.file.name}
+      value={sample}
+      dragListener={false}
+      dragControls={controls}
+      className="flex items-start justify-between flex-col-reverse sm:flex-row sm:items-center sm:justify-between select-none"
+    >
+      <div className="flex items-center w-full">
+        <Grip
+          className="text-neutral-600 mr-3 cursor-grab active:cursor-grabbing size-5 active:text-neutral-300 transition-colors duration-150 touch-none"
+          onPointerDown={(e) => {
+            e.preventDefault();
+            controls.start(e);
+          }}
+        />
+        <FormField
+          control={form.control}
+          name={`samples.${index}.generatedName`}
+          render={({ field: nameField }) => (
+            <FormItem className="w-full sm:w-3/4">
+              <FormControl>
+                <Input
+                  {...nameField}
+                  className="w-full text-sm bg-neutral-800 py-5"
+                  placeholder="Enter name"
+                  onClick={(e) => e.stopPropagation()}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+      </div>
+      <span className="pb-1 sm:pb-0 sm:px-3 text-xs text-neutral-500 text-nowrap block">
+        {sample.file.name}
+      </span>
+    </Reorder.Item>
   );
 }
 
