@@ -9,7 +9,7 @@ export default async function Page() {
   return (
     <>
       <div className="flex items-start justify-center min-h-screen py-24 pb-40">
-        <div className="flex items-start flex-col w-full">
+        <div className="flex items-start flex-col w-full max-w-[110rem] mx-auto">
           <div className="w-full flex flex-col sm:flex-row">
             <div className="w-64 flex items-center justify-center self-center">
               <div className="w-full h-full aspect-square mb-4 object-cover relative">
@@ -28,7 +28,7 @@ export default async function Page() {
             </div>
           </div>
           <div className="flex items-center justify-between w-full pt-4 sm:justify-start">
-            <Button className="font-medium text-base px-10">Buy</Button>
+            <Button className="font-bold text-base px-10">Buy</Button>
             <Skeleton className="ml-5 w-20 hidden sm:block h-7" />
           </div>
           <div className="mt-10 w-full hidden sm:block">

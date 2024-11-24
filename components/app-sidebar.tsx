@@ -93,7 +93,7 @@ export function AppSidebar({ children }: AppSidebarProps) {
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild>
                     <Link href={item.url}>
-                      <span className="font-medium text-neutral-100">
+                      <span className="font-bold text-neutral-100">
                         {item.title}
                       </span>
                     </Link>

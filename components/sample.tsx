@@ -71,7 +71,7 @@ export default function Sample({
     >
       <div className="flex items-center justify-start">
         <div
-          className="flex items-baseline justify-start w-5 sm:w-10 sm:pl-2 text-neutral-600 hover:scale-110 active:scale-90 active:text-neutral-300 hover:text-neutral-50 transition-all duration-150"
+          className="flex items-baseline justify-start w-5 sm:w-10 sm:pl-2 text-neutral-500 hover:scale-110 active:scale-90 active:text-neutral-300 hover:text-neutral-50 transition-all duration-150"
           onClick={handlePlay}
         >
           <AnimatePresence initial={false} mode="popLayout">
@@ -89,7 +89,7 @@ export default function Sample({
         <div>
           <span
             className={cn(
-              "block pl-1 text-neutral-200",
+              "block pl-1 text-neutral-50",
               isThisSamplePlaying && "font-bold"
             )}
           >
@@ -97,7 +97,7 @@ export default function Sample({
           </span>
           <span
             className={cn(
-              "block text-xs sm:text-sm pl-1 text-neutral-500 transition-colors",
+              "block text-xs sm:text-sm pl-1 text-neutral-400 transition-colors",
               isThisSampleSelected && "text-neutral-300"
             )}
           >

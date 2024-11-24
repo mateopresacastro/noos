@@ -22,8 +22,8 @@ export default async function Page({
 
   return (
     <>
-      <div className="flex items-start justify-center min-h-screen py-24 pb-40">
-        <div className="flex items-start flex-col w-full">
+      <div className="flex items-start justify-center min-h-screen pt-24 sm:pt-32 pb-40">
+        <div className="flex items-start flex-col w-full max-w-[110rem]">
           <div className="w-full flex flex-col sm:flex-row">
             <div className="w-64 flex items-center justify-center self-center">
               <div className="w-full h-full aspect-square mb-4 object-cover relative">
@@ -39,28 +39,30 @@ export default async function Page({
             </div>
             <div className="flex justify-between items-end pb-2 w-full">
               <div className="sm:pl-5 flex flex-col items-start">
-                <span className="block text-3xl font-bold sm:text-4xl md:text-5xl lg:text-6xl xl:text-8xl 2xl:text-9xl">
+                <span className="block text-3xl font-bold sm:text-4xl md:text-5xl md:tracking-tight lg:text-6xl xl:text-7xl 2xl:text-9xl lg:tracking-tighter">
                   {samplePack.title}
                 </span>
-                <Link
-                  href={`/${userName}`}
-                  prefetch={true}
-                  className="flex items-center justify-center py-1 pb-2"
-                >
-                  <Image
-                    src={creatorImgUrl}
-                    alt={samplePack.creator.userName}
-                    width={25}
-                    height={25}
-                    className="w-5 h-5 rounded-full object-cover mr-2"
-                  />
-                  <span className="block pt-1 font-bold mb-1 hover:text-neutral-300 transition-colors duration-150 active:text-neutral-100">
-                    @{userName}
+                <div className="flex items-baseline justify-between gap-2 sm:pl-2">
+                  <Link
+                    href={`/${userName}`}
+                    prefetch={true}
+                    className="flex items-baseline justify-center py-1 pb-2"
+                  >
+                    <Image
+                      src={creatorImgUrl}
+                      alt={samplePack.creator.userName}
+                      width={25}
+                      height={25}
+                      className="w-5 h-5 rounded-full object-cover mr-2 self-center"
+                    />
+                    <span className="block pt-1 font-bold mb-1 hover:text-neutral-300 transition-colors duration-150 active:text-neutral-10">
+                      @{userName}
+                    </span>
+                  </Link>
+                  <span className="block text-neutral-400 text-xs pb-1 sm:text-sm">
+                    {samplePack.description}
                   </span>
-                </Link>
-                <span className="block text-neutral-400 text-xs pb-1 sm:text-sm">
-                  {samplePack.description}
-                </span>
+                </div>
               </div>
               <div className="self-start pt-2">
                 <EditPackButton
@@ -74,7 +76,7 @@ export default async function Page({
           </div>
           <div className="flex items-baseline justify-between w-full pt-4 sm:justify-start">
             <Link href={samplePack.stripePaymentLink}>
-              <Button className="font-medium w-full text-base px-10">
+              <Button className="font-bold w-full text-base px-10 py-6">
                 Buy
               </Button>
             </Link>
@@ -82,7 +84,7 @@ export default async function Page({
               value={Number(samplePack.price.toFixed(2))}
               format={{ style: "currency", currency: "USD" }}
               locales="en-US"
-              className="text-neutral-50 sm:pl-5 text-xl"
+              className="text-neutral-50 sm:pl-5 text-xl font-bold tracking-tighter"
             />
           </div>
           <div className="mt-10 w-full hidden sm:block">
