@@ -9,5 +9,5 @@ export default async function UploadPageRoot() {
     notFound();
   }
 
-  return <UploadPage />;
+  return <UploadPage userName={userData.username} />;
 }

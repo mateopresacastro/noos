@@ -8,19 +8,14 @@ import {
   persistSamplePackDataAction,
 } from "@/lib/actions";
 
+import type { UploadFormSchema } from "@/components/upload-form-schema";
+
 type PreSignedUrls = Awaited<ReturnType<typeof createPreSignedUrlAction>>;
 
 export function useUploadPack({
   formValues,
 }: {
-  formValues: {
-    samples: FileList;
-    price: number;
-    title: string;
-    img: FileList;
-    zipFile: FileList;
-    description?: string | undefined;
-  };
+  formValues: UploadFormSchema;
 }) {
   const {
     mutate: createPreSignedUrls,
@@ -37,9 +32,9 @@ export function useUploadPack({
       preSignedUrls;
     return uploadToS3({
       zipFileSignedUrl: zipFileSignedUrl.url,
-      zipFile: formValues.zipFile[0],
+      zipFile: formValues.zipFile,
       imageSignedUrl: imageSignedUrl.url,
-      image: formValues.img[0],
+      image: formValues.img,
       samplesSignedUrls: samplesSignedUrls.map(({ url }) => url),
       samples: formValues.samples,
     });
@@ -50,7 +45,11 @@ export function useUploadPack({
     onSuccess: () => persistData(),
   });
 
-  const { mutate: persistData, isPending: isPersistingData } = useMutation({
+  const {
+    mutate: persistData,
+    isPending: isPersistingData,
+    isSuccess,
+  } = useMutation({
     mutationFn: async () => {
       const data = getDataToPersist();
       if (!data) throw new Error();
@@ -60,14 +59,15 @@ export function useUploadPack({
 
   function getDataToPersist() {
     if (!preSignedUrls) return;
-    const { description, price, title } = formValues;
+    const { description, price, title, samples: formSamples } = formValues;
     const { imageSignedUrl, zipFileSignedUrl, samplesSignedUrls } =
       preSignedUrls;
     const name = createSamplePackName(title);
     const imgUrl = createPublicUrl(imageSignedUrl.key);
     const url = createPublicUrl(zipFileSignedUrl.key); // TODO we don't need this.
-    const samples = samplesSignedUrls.map(({ key }) => ({
+    const samples = samplesSignedUrls.map(({ key }, index) => ({
       url: createPublicUrl(key),
+      name: formSamples.at(index)?.generatedName ?? "Unknown name (fix me)",
     }));
     return {
       samplePack: {
@@ -90,6 +90,8 @@ export function useUploadPack({
     isUploadingToS3,
     persistData,
     isPersistingData,
+    isLoading: isCreatingPresignedUrls || isUploadingToS3 || isPersistingData,
+    isSuccess,
   };
 }
 

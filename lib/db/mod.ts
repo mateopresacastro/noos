@@ -2,7 +2,6 @@ import "server-only";
 import prisma from "@/lib/db/cfg/client";
 import log from "@/lib/log";
 import { createSamplePackName } from "@/lib/utils";
-import { faker } from "@faker-js/faker";
 
 export async function createSamplePack({
   clerkId,
@@ -216,17 +215,17 @@ export async function deleteSamplePack({
 
 export async function addSampleToSamplePack(
   samplePackId: number,
-  samples: { url: string }[]
+  samples: { url: string; name: string }[]
 ) {
   try {
+    // TODO: enforce order of samples ?
     const newSamples = await prisma.sample.createMany({
-      data: samples.map(({ url }) => ({
+      data: samples.map(({ url, name }) => ({
         url,
         samplePackId,
-        title: faker.lorem.words({ min: 1, max: 3 }), // TODO: add real name
+        title: name, // TODO fix inconsistencies on naming
       })),
     });
-    log.info("samples created", newSamples);
     if (newSamples.count === 0) throw new Error("No samples created");
     return newSamples;
   } catch (error) {

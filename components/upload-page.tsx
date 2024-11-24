@@ -1,10 +1,11 @@
 "use client";
 
 import Dropzone from "react-dropzone";
+import NumberFlow from "@number-flow/react";
 import useMeasure from "react-use-measure";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useFieldArray, useForm, type UseFormReturn } from "react-hook-form";
-import { type Dispatch, type SetStateAction, useMemo, useState } from "react";
+import { useMemo, useState, type Dispatch, type SetStateAction } from "react";
 import { cn } from "@/lib/utils";
 
 import {
@@ -23,16 +24,18 @@ import {
   FormControl,
   FormField,
   FormItem,
+  FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 
 import {
-  UploadFormSchema,
   uploadFormSchema,
+  type UploadFormSchema,
 } from "@/components/upload-form-schema";
 
 import { ArrowLeft, ArrowRight, Grip } from "lucide-react";
-import NumberFlow from "@number-flow/react";
+import { useUploadPack } from "@/hooks/upload-pack";
+import Link from "next/link";
 
 const STEPS = [
   {
@@ -47,34 +50,35 @@ const STEPS = [
     component: StepTwo,
   },
   {
-    title: "Sample pack data",
-    description: "Select cover art, title and description.",
+    title: "Cover art",
+    description: "Max size 10MB",
     component: StepThree,
+  },
+  {
+    title: "General information",
+    description: "Select title, description and price.",
+    component: StepFour,
   },
   {
     title: "Choose zip file",
     description:
       "This is the file buyers will get. Make sure it has all samples in it. Max size 5GB.",
-    component: StepFour,
+    component: StepFive,
   },
   {
-    title: "Review",
+    title: "Review and submit",
     description: "Check that everything is correct and click submit.",
-    component: StepFive,
+    component: StepSix,
   },
 ];
 
 const VARIANTS = {
-  initial: (direction: number) => {
-    return { x: `${110 * direction}%`, opacity: 0 };
-  },
+  initial: (direction: number) => ({ x: `${110 * direction}%`, opacity: 0 }),
+  exit: (direction: number) => ({ x: `${-110 * direction}%`, opacity: 0 }),
   active: { x: "0%", opacity: 1 },
-  exit: (direction: number) => {
-    return { x: `${-110 * direction}%`, opacity: 0 };
-  },
 };
 
-export default function UploadPage() {
+export default function UploadPage({ userName }: { userName: string }) {
   const [stepIndex, setStepIndex] = useState(0);
   const [ref, bounds] = useMeasure({ offsetSize: true });
   const [direction, setDirection] = useState(1);
@@ -89,6 +93,10 @@ export default function UploadPage() {
     mode: "all",
   });
 
+  const formValues = form.getValues();
+
+  const { handleUpload, isLoading, isSuccess } = useUploadPack({ formValues });
+
   const {
     title,
     description,
@@ -97,6 +105,7 @@ export default function UploadPage() {
 
   const numberOfSamples = form.getValues().samples?.length;
 
+  // TODO check errors before letting user go to next step
   const canGoToTheNextStep = useMemo(() => {
     switch (stepIndex) {
       case 0:
@@ -109,6 +118,10 @@ export default function UploadPage() {
         return true;
       case 4:
         return true;
+      case 5:
+        return true;
+      case 6:
+        return true;
       default:
         return false;
     }
@@ -117,12 +130,12 @@ export default function UploadPage() {
   return (
     <MotionConfig transition={{ duration: 0.5, type: "spring", bounce: 0 }}>
       <div className="flex flex-col items-center justify-start min-h-screen pt-32 pb-48">
-        <div className="w-full max-w-xl">
+        <div className="w-full max-w-2xl">
           <h3 className="self-start font-medium pb-3">Upload a sample pack</h3>
         </div>
         <motion.div
-          animate={{ height: bounds.height + 51 }} // TODO: fix magic number. Bounds is wrong
-          className="flex items-start justify-start flex-col bg-neutral-900 p-6 rounded-xl border-neutral-800 border max-w-xl w-full overflow-hidden relative"
+          animate={{ height: bounds.height + 51 }} // TODO: fix magic number. Bound is wrong
+          className="flex items-start justify-start flex-col bg-neutral-900 p-6 rounded-xl border-neutral-800 border max-w-2xl w-full overflow-hidden relative"
         >
           <div ref={ref} className="w-full">
             <StepInfoAndControls
@@ -132,10 +145,12 @@ export default function UploadPage() {
               setDirection={setDirection}
               canGoToTheNextStep={canGoToTheNextStep}
               steps={STEPS}
+              handleUpload={handleUpload}
+              isLoading={isLoading}
             />
             <Form {...form}>
               <form
-                onSubmit={form.handleSubmit(() => console.log("Submit"))}
+                onSubmit={form.handleSubmit(() => handleUpload())}
                 className="w-full"
                 autoComplete="off"
               >
@@ -156,8 +171,15 @@ export default function UploadPage() {
                     <p className="text-neutral-400 text-xs text-pretty pt-1 pb-8">
                       {description}
                     </p>
-
                     <Step form={form} />
+                    {/* TODO: finish this */}
+                    {isSuccess ? (
+                      <Link href={`/${userName}`}>
+                        <Button>Go back your profile</Button>
+                      </Link>
+                    ) : isLoading ? (
+                      "Loading..."
+                    ) : null}
                   </motion.div>
                 </AnimatePresence>
               </form>
@@ -171,11 +193,12 @@ export default function UploadPage() {
 
 function StepInfoAndControls({
   stepIndex,
-  form,
   setStepIndex,
   canGoToTheNextStep,
   steps,
   setDirection,
+  handleUpload,
+  isLoading,
 }: {
   stepIndex: number;
   form: UseFormReturn<UploadFormSchema>;
@@ -183,11 +206,21 @@ function StepInfoAndControls({
   setDirection: Dispatch<SetStateAction<number>>;
   canGoToTheNextStep: boolean;
   steps: typeof STEPS;
+  handleUpload: () => void;
+  isLoading: boolean;
 }) {
+  const isFirstStep = stepIndex === 0;
+  const isLastStep = stepIndex === STEPS.length - 1;
+
+  function handleNextClick() {
+    setDirection(1);
+    setStepIndex(stepIndex + 1);
+  }
+
   return (
     <div className="flex flex-col items-start justify-start w-full">
       <div className="w-full flex items-center justify-between">
-        <div className="font-medium text-neutral-400 text-xs pb-2 flex items-center justify-center w-[3.8rem]">
+        <div className="font-medium text-neutral-500 text-xs pb-2 flex items-center justify-center w-[3.8rem]">
           <span>Step</span>
           <span className="mx-auto">
             <NumberFlow willChange value={stepIndex + 1} />
@@ -201,8 +234,8 @@ function StepInfoAndControls({
           <div
             key={index}
             className={cn(
-              "bg-neutral-700 w-full h-1 rounded-full",
-              index < stepIndex + 1 && "bg-neutral-100"
+              "bg-neutral-800 w-full h-1 rounded-full transition-colors duration-150",
+              index < stepIndex + 1 && "bg-neutral-300"
             )}
           />
         ))}
@@ -211,33 +244,28 @@ function StepInfoAndControls({
         <Button
           variant="secondary"
           onClick={() => {
-            if (stepIndex === 0) {
+            if (isFirstStep) {
               return;
             }
             setStepIndex(stepIndex - 1);
             setDirection(-1);
           }}
-          disabled={stepIndex === 0}
+          disabled={isFirstStep}
+          className="active:scale-90"
         >
           <ArrowLeft className="text-neutral-400" />
         </Button>
         <Button
-          variant={
-            stepIndex === 0 && form.getValues().samples?.length > 0
-              ? "default"
-              : "secondary"
-          }
-          className="transition-all"
-          onClick={() => {
-            if (stepIndex === STEPS.length - 1) {
-              return;
-            }
-            setDirection(1);
-            setStepIndex(stepIndex + 1);
-          }}
-          disabled={!canGoToTheNextStep}
+          variant={canGoToTheNextStep ? "default" : "secondary"}
+          type={isLastStep ? "submit" : "button"}
+          className={cn(
+            "transition-all active:scale-90",
+            isLastStep ? "w-20" : "w-10"
+          )}
+          onClick={isLastStep ? handleUpload : handleNextClick}
+          disabled={!canGoToTheNextStep || isLoading}
         >
-          <ArrowRight />
+          {isLastStep ? isLoading ? "Loading..." : "Submit" : <ArrowRight />}
         </Button>
       </div>
     </div>
@@ -263,13 +291,13 @@ function StepOne({ form }: { form: UseFormReturn<UploadFormSchema> }) {
               accept={{ "audio/*": [".mp3"] }}
             >
               {({ getRootProps, getInputProps, acceptedFiles }) => (
-                <section className="bg-neutral-800 p-6 rounded-xl border-neutral-600 border w-full border-dashed cursor-pointer active:bg-neutral-800/80">
+                <section className="bg-neutral-900 p-6 rounded-xl border-neutral-600 border w-full border-dashed cursor-pointer active:bg-neutral-800/80 hover:bg-neutral-800 transition-all duration-150">
                   <div
                     {...getRootProps()}
-                    className="flex items-center justify-center h-96"
+                    className="flex items-center justify-center h-48"
                   >
                     <Input {...getInputProps()} />
-                    <p className="text-neutral-400 text-xs text-center sm:text-left">
+                    <p className="text-neutral-500 text-xs text-center sm:text-left">
                       {acceptedFiles?.length > 0 || field.value?.length > 0
                         ? `${
                             field.value?.length > 0
@@ -296,7 +324,7 @@ function StepTwo({ form }: { form: UseFormReturn<UploadFormSchema> }) {
   });
   return (
     <div className="w-full">
-      <Reorder.Group values={samples} onReorder={replace} className="space-y-5">
+      <Reorder.Group values={samples} onReorder={replace} className="space-y-6">
         {samples.map((sample, index) => (
           <ReorderSample
             key={sample.file.name}
@@ -326,21 +354,15 @@ function ReorderSample({
       value={sample}
       dragListener={false}
       dragControls={controls}
-      className="flex items-start justify-between flex-col-reverse sm:flex-row sm:items-center sm:justify-between select-none"
+      className="flex items-start justify-between flex-col-reverse select-none"
     >
       <div className="flex items-center w-full py-1">
-        <Grip
-          className="text-neutral-600 mr-3 cursor-grab active:cursor-grabbing size-5 transition-colors duration-150 touch-none"
-          onPointerDown={(e) => {
-            e.preventDefault();
-            controls.start(e);
-          }}
-        />
+        <span className="pr-3 text-neutral-300 text-xs block">{index}</span>
         <FormField
           control={form.control}
           name={`samples.${index}.generatedName`}
           render={({ field: nameField }) => (
-            <FormItem className="w-full sm:w-3/4">
+            <FormItem className="w-full">
               <FormControl>
                 <Input
                   {...nameField}
@@ -353,22 +375,188 @@ function ReorderSample({
             </FormItem>
           )}
         />
+        <Grip
+          className="text-neutral-600 ml-3 cursor-grab active:cursor-grabbing size-5 transition-colors duration-150 touch-none"
+          onPointerDown={(e) => {
+            e.preventDefault();
+            controls.start(e);
+          }}
+        />
       </div>
-      <span className="pb-1 sm:pb-0 sm:px-3 text-xs text-neutral-500 text-nowrap block">
+      <span className="pb-1 text-xs text-neutral-500 text-nowrap block pl-5">
         {sample.file.name}
       </span>
     </Reorder.Item>
   );
 }
 
-function StepThree() {
-  return <div>Step 3</div>;
+function StepThree({ form }: { form: UseFormReturn<UploadFormSchema> }) {
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+
+  return (
+    <div className="space-y-6">
+      <FormField
+        control={form.control}
+        name="img"
+        render={({ field }) => (
+          <div className="flex items-center justify-center w-full h-48">
+            <FormItem>
+              <FormControl>
+                <Dropzone
+                  maxFiles={1}
+                  accept={{
+                    "image/*": [".jpeg", ".jpg", ".png", ".webp"],
+                  }}
+                  onDrop={(acceptedFiles) => {
+                    if (acceptedFiles.length <= 0) return;
+                    field.onChange(acceptedFiles[0]);
+                    const url = URL.createObjectURL(acceptedFiles[0]);
+                    setPreviewUrl(url);
+                  }}
+                >
+                  {({ getRootProps, getInputProps }) => (
+                    <div
+                      {...getRootProps()}
+                      className="bg-neutral-900 rounded-xl border-neutral-600 border border-dashed cursor-pointer active:bg-neutral-800/80 hover:bg-neutral-800 overflow-hidden w-full transition-all duration-150 h-48"
+                    >
+                      <Input {...getInputProps()} />
+                      {previewUrl ? (
+                        <div className="relative aspect-square h-48">
+                          <img
+                            src={previewUrl}
+                            alt="Cover art preview"
+                            className="w-full h-full object-cover"
+                          />
+                          <div className="absolute inset-0 bg-black/50 opacity-0 hover:opacity-100 transition-opacity flex items-center justify-center">
+                            <p className="text-white text-sm">
+                              Click to change image
+                            </p>
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="aspect-square flex items-center justify-center">
+                          <p className="text-neutral-400 text-xs text-center px-6">
+                            Drop your cover art here or click to select
+                          </p>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </Dropzone>
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          </div>
+        )}
+      />
+    </div>
+  );
 }
 
-function StepFour() {
-  return <div>Step 4</div>;
+function StepFour({ form }: { form: UseFormReturn<UploadFormSchema> }) {
+  return (
+    <div className="space-y-6 pb-6">
+      <FormField
+        control={form.control}
+        name="title"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Title</FormLabel>
+            <FormControl>
+              <Input
+                {...field}
+                className="w-full text-sm bg-neutral-800 py-5"
+                placeholder="Enter title"
+              />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+
+      <FormField
+        control={form.control}
+        name="description"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Description</FormLabel>
+            <FormControl>
+              <Input
+                {...field}
+                className="w-full text-sm bg-neutral-800 py-5"
+                placeholder="Enter description"
+              />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+      <FormField
+        control={form.control}
+        name="price"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Price in USD</FormLabel>
+            <FormControl>
+              <Input
+                type="number"
+                placeholder="Enter price"
+                {...field}
+                onChange={(e) => field.onChange(Number(e.target.value ?? 0))}
+                className="w-full text-sm bg-neutral-800 py-5"
+              />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+    </div>
+  );
 }
 
-function StepFive() {
-  return <div>Step 5</div>;
+function StepFive({ form }: { form: UseFormReturn<UploadFormSchema> }) {
+  return (
+    <FormField
+      control={form.control}
+      name="zipFile"
+      render={({ field }) => (
+        <FormItem>
+          <FormControl>
+            <Dropzone
+              onDrop={(acceptedFiles) => {
+                if (acceptedFiles.length > 0) {
+                  field.onChange(acceptedFiles[0]);
+                }
+              }}
+              accept={{ "application/zip": [".zip"] }}
+              maxFiles={1}
+            >
+              {({ getRootProps, getInputProps, acceptedFiles }) => (
+                <section className="bg-neutral-900 p-6 rounded-xl border-neutral-600 border w-full border-dashed cursor-pointer active:bg-neutral-800/80 hover:bg-neutral-800 transition-all duration-150">
+                  <div
+                    {...getRootProps()}
+                    className="flex items-center justify-center h-48"
+                  >
+                    <Input {...getInputProps()} />
+                    <p className="text-neutral-500 text-xs text-center sm:text-left">
+                      {acceptedFiles.length > 0 || field.value
+                        ? `Selected file: ${
+                            acceptedFiles[0]?.name ?? field.value?.name
+                          }. Go to the next step to continue.`
+                        : "Drag and drop your ZIP file here, or click to select."}
+                    </p>
+                  </div>
+                </section>
+              )}
+            </Dropzone>
+          </FormControl>
+          <FormMessage />
+        </FormItem>
+      )}
+    />
+  );
+}
+
+function StepSix() {
+  return null;
 }

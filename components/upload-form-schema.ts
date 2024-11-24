@@ -4,9 +4,6 @@ const FIVE_GB_IN_BYTES = 5000 * 1024 * 1024;
 const TWENTY_MB_IN_BYTES = 20 * 1024 * 1024;
 const TEN_MB_IN_BYTES = 10 * 1024 * 1024;
 const MAX_NUM_OF_SAMPLES = 100;
-const isFileList = (value: unknown): value is FileList => {
-  return typeof window !== "undefined" && value instanceof FileList;
-};
 
 export type SampleFile = {
   file: File;
@@ -18,25 +15,20 @@ export const uploadFormSchema = z.object({
   description: z.string().min(5).max(20).optional(),
   price: z.number().min(0),
   img: z
-    .custom<FileList>((value) => isFileList(value), "Must be a FileList")
-    .refine((files) => files.length === 1, "Select one image")
+    .custom<File>((value) => value instanceof File, "Must be a file")
     .refine(
-      (files) => files[0]?.size <= TEN_MB_IN_BYTES,
+      (file) => file.size <= TEN_MB_IN_BYTES,
       "Image must be less than 10MB"
     )
-    .refine(
-      (files) => files[0]?.type.startsWith("image/"),
-      "File must be an image"
-    ),
+    .refine((file) => file.type.startsWith("image/"), "File must be an image"),
   zipFile: z
-    .custom<FileList>((value) => isFileList(value), "Must be a FileList")
-    .refine((files) => files.length === 1, "Select one file")
+    .custom<File>((value) => value instanceof File, "Must be a file")
     .refine(
-      (files) => files[0]?.size <= FIVE_GB_IN_BYTES,
+      (file) => file.size <= FIVE_GB_IN_BYTES,
       "Zip must be less than 5GB"
     )
     .refine(
-      (files) => files[0]?.type === "application/zip",
+      (file) => file.type === "application/zip",
       "File must be in ZIP format"
     ),
   samples: z
