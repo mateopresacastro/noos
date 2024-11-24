@@ -39,7 +39,7 @@ export default function UploadForm() {
   const samplesRef = form.register("samples");
 
   const {
-    createPreSignedUrls,
+    handleUpload,
     isCreatingPresignedUrls,
     isUploadingToS3,
     isPersistingData,
@@ -57,7 +57,7 @@ export default function UploadForm() {
       )}
       <Form {...form}>
         <form
-          onSubmit={form.handleSubmit(() => createPreSignedUrls())}
+          onSubmit={form.handleSubmit(() => handleUpload())}
           className="space-y-14 w-full pt-8 overflow-y-scroll px-1"
         >
           <FormField

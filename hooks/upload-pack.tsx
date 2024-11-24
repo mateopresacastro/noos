@@ -84,7 +84,7 @@ export function useUploadPack({
   }
 
   return {
-    createPreSignedUrls,
+    handleUpload: createPreSignedUrls,
     isCreatingPresignedUrls,
     uploadToS3,
     isUploadingToS3,
