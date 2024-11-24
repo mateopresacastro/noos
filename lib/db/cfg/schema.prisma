@@ -47,6 +47,7 @@ model Sample {
   url          String
   samplePack   SamplePack @relation(fields: [samplePackId], references: [id], onDelete: Cascade)
   samplePackId Int
+  order        Int        @default(0)
   createdAt    DateTime   @default(now())
 }
 

@@ -85,6 +85,7 @@ export async function getSamplePack({
           select: {
             url: true,
             title: true,
+            order: true,
           },
         },
         creator: {
@@ -218,12 +219,12 @@ export async function addSampleToSamplePack(
   samples: { url: string; name: string }[]
 ) {
   try {
-    // TODO: enforce order of samples ?
     const newSamples = await prisma.sample.createMany({
-      data: samples.map(({ url, name }) => ({
+      data: samples.map(({ url, name }, index) => ({
         url,
         samplePackId,
         title: name, // TODO fix inconsistencies on naming
+        order: index,
       })),
     });
     if (newSamples.count === 0) throw new Error("No samples created");

@@ -90,16 +90,18 @@ export default async function Page({
             <Separator className="mb-3 mt-2" />
           </div>
           <div className="w-full flex flex-col pt-10 sm:pt-0">
-            {samplePack.samples.map(({ url, title }, index) => (
-              <Sample
-                url={url}
-                key={url}
-                title={title}
-                userName={userName}
-                num={index + 1}
-                wholeSamplePack={samplePack}
-              />
-            ))}
+            {samplePack.samples
+              .sort((a, b) => a.order - b.order)
+              .map(({ url, title }, index) => (
+                <Sample
+                  url={url}
+                  key={url}
+                  title={title}
+                  userName={userName}
+                  num={index + 1}
+                  wholeSamplePack={samplePack}
+                />
+              ))}
           </div>
         </div>
       </div>
