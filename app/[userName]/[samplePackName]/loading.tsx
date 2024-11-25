@@ -4,7 +4,6 @@ import { Skeleton } from "@/components/ui/skeleton";
 import Fade from "@/components/fade";
 import { FaPlay } from "react-icons/fa";
 
-// TODO responsive skeleton
 export default async function Page() {
   return (
     <>
@@ -28,7 +27,7 @@ export default async function Page() {
             </div>
           </div>
           <div className="flex items-center justify-between w-full pt-4 sm:justify-start">
-            <Button className="font-bold text-base px-10">Buy</Button>
+            <Button className="font-bold text-base px-10 py-6">Buy</Button>
             <Skeleton className="ml-5 w-20 hidden sm:block h-7" />
           </div>
           <div className="mt-10 w-full hidden sm:block">

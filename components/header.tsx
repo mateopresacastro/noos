@@ -14,7 +14,7 @@ export default function Header() {
               </span>
             </h1>
           </Link>
-          <Link href="/pricing" prefetch={true}>
+          <Link href="/pricing" prefetch={true} className="hidden sm:block">
             <span className="text-neutral-300">Pricing</span>
           </Link>
         </div>

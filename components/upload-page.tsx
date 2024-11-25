@@ -250,8 +250,8 @@ function StepInfoAndControls({
             setStepIndex(stepIndex - 1);
             setDirection(-1);
           }}
-          disabled={isFirstStep}
-          className="active:scale-90"
+          disabled={isFirstStep || isLoading}
+          className="active:scale-90 w-10"
         >
           <ArrowLeft className="text-neutral-400" />
         </Button>
