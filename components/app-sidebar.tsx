@@ -46,14 +46,9 @@ const items = [
         slug: "documents",
       },
       {
-        title: "Tax settings",
-        url: "/dashboard/tax-settings",
-        slug: "tax-settings",
-      },
-      {
-        title: "Tax registrations",
-        url: "/dashboard/tax-registrations",
-        slug: "tax-registrations",
+        title: "Tax",
+        url: "/dashboard/tax",
+        slug: "tax",
       },
       {
         title: "Account management",
@@ -80,11 +75,14 @@ type AppSidebarProps = {
 
 export function AppSidebar({ children }: AppSidebarProps) {
   const isMobile = useIsMobile();
-  const isCollapsible = isMobile ? "offcanvas" : "none";
+  const isCollapsible = isMobile ? "offcanvas" : undefined;
   const { slug } = useParams<{ slug: string }>();
 
   return (
-    <Sidebar collapsible={isCollapsible} className="mr-10 -ml-3">
+    <Sidebar
+      collapsible={isCollapsible}
+      className="mr-10 ml-3 lg:ml-6 2xl:ml-12"
+    >
       <SidebarContent className="bg-neutral-950 pt-20">
         <SidebarGroup>
           <SidebarGroupContent>
@@ -104,9 +102,9 @@ export function AppSidebar({ children }: AppSidebarProps) {
                         <SidebarMenuSubButton
                           asChild
                           className={cn(
-                            "text-neutral-400 hover:bg-neutral-900 hover:text-neutral-50 active:bg-neutral-950 transition-all duration-150 rounded-lg",
+                            "text-neutral-400 hover:bg-neutral-900 hover:text-neutral-50 active:bg-neutral-950 transition-all duration-150 rounded-lg py-4",
                             slug === subItem.slug &&
-                              "bg-neutral-900 text-neutral-100"
+                              "bg-neutral-900 text-neutral-50"
                           )}
                         >
                           <Link href={subItem.url}>

@@ -30,16 +30,19 @@ export default function Component({ slug }: { slug: string }) {
         return <ConnectAccountManagement />;
       case "balances":
         return <ConnectBalances />;
-      case "tax-settings":
-        return <ConnectTaxSettings />;
+      case "tax":
+        return (
+          <div className="flex flex-col items-center justify-center gap-20 w-full">
+            <ConnectTaxSettings />
+            <ConnectTaxRegistrations />
+          </div>
+        );
       case "documents":
         return <ConnectDocuments />;
       case "payments":
         return <ConnectPayments />;
       case "payouts":
         return <ConnectPayouts />;
-      case "tax-registrations":
-        return <ConnectTaxRegistrations />;
       case "notifications":
         return <ConnectNotificationBanner />;
       default:

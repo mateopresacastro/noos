@@ -8,7 +8,7 @@ import { FaPlay } from "react-icons/fa";
 export default async function Page() {
   return (
     <>
-      <div className="flex items-start justify-center min-h-screen py-24 pb-40">
+      <div className="flex items-start justify-center min-h-screen py-24 sm:pt-32 pb-40">
         <div className="flex items-start flex-col w-full max-w-[110rem] mx-auto">
           <div className="w-full flex flex-col sm:flex-row">
             <div className="w-64 flex items-center justify-center self-center">

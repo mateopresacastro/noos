@@ -10,7 +10,7 @@ export default function ProgressBar() {
 
   return (
     <Slider.Root
-      className="relative flex h-5 w-full items-center touch-none group cursor-pointer"
+      className="relative flex h-3 w-full items-center touch-none group cursor-pointer"
       defaultValue={[0]}
       value={[currentTime ?? 0]}
       max={duration ?? 1}
