@@ -10,15 +10,15 @@ export default function SampleMetaData() {
       ?.title ?? "-";
 
   return (
-    <div className="flex items-center gap-2 sm:gap-4 ">
+    <div className="flex items-center gap-2 sm:gap-2 ">
       <Link href={`/${samplePack.creator.userName}/${samplePack.name}`}>
-        <div className="size-10 rounded-lg sm:size-14 hover:opacity-80 transition-opacity duration-150 active:opacity-60">
+        <div className="size-10 rounded-lg sm:size-11 hover:opacity-80 transition-opacity duration-150 active:opacity-60">
           <Image
             src={samplePack.imgUrl}
             alt={samplePack.title}
             height={56}
             width={56}
-            className="size-10 rounded-full sm:size-14"
+            className="size-10 rounded-full sm:size-11"
           />
         </div>
       </Link>

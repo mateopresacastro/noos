@@ -33,20 +33,20 @@ export default function Clerk() {
         </div>
       </SignedOut>
       <SignedIn>
-        <div className="w-fit flex items-center gap-3 lg:gap-6">
+        <div className="w-fit flex items-center gap-3 lg:gap-4">
           <Link href="/upload" prefetch>
             <Button size="sm" className="font-bold">
               Upload
             </Button>
           </Link>
+          <Link href="/dashboard/payments" prefetch>
+            <Button size="sm" className="font-bold" variant="secondary">
+              Dashboard
+            </Button>
+          </Link>
           <UserButton>
             <UserButton.UserProfilePage label="account" />
             <UserButton.UserProfilePage label="security" />
-            <UserButton.UserProfileLink
-              label="Dashboard"
-              url="/dashboard/payments"
-              labelIcon={<LayoutDashboardIcon className="w-4 h-4" />}
-            />
             {userName ? (
               <UserButton.UserProfileLink
                 label="Your store"

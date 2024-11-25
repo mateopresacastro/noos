@@ -13,7 +13,7 @@ export default function Controls({
   handlePlayStop: () => void;
 }) {
   return (
-    <div className="items-center hidden sm:flex sm:absolute sm:right-auto sm:left-1/2 sm:-translate-x-1/2 sm:flex-col w-1/3 md:w-1/2 gap-0.5">
+    <div className="items-center hidden sm:flex sm:absolute sm:right-auto sm:left-1/2 sm:-translate-x-1/2 sm:flex-col w-1/3 md:w-1/2">
       <Buttons handlePlayStop={handlePlayStop} />
       <Progress />
     </div>
@@ -22,43 +22,43 @@ export default function Controls({
 function TimeDisplay({ duration }: { duration: number }) {
   const minutes = Math.floor(duration / 60);
   const seconds = Math.floor(duration % 60);
-  const animatedMinutes = (
+
+  const transformTiming = {
+    easing: `linear(0, 0.0033 0.8%, 0.0263 2.39%, 0.0896 4.77%, 0.4676 15.12%, 0.5688, 0.6553, 0.7274, 0.7862, 0.8336 31.04%, 0.8793, 0.9132 38.99%, 0.9421 43.77%, 0.9642 49.34%, 0.9796 55.71%, 0.9893 62.87%, 0.9952 71.62%, 0.9983 82.76%, 0.9996 99.47%)`,
+    duration: 500,
+  };
+
+  const opacityTiming = {
+    duration: 250,
+    easing: "ease-out",
+  };
+
+  const AnimatedMinutes = (
     <NumberFlow
       willChange
       value={minutes}
       isolate
       continuous
-      opacityTiming={{
-        duration: 250,
-        easing: "ease-out",
-      }}
-      transformTiming={{
-        easing: `linear(0, 0.0033 0.8%, 0.0263 2.39%, 0.0896 4.77%, 0.4676 15.12%, 0.5688, 0.6553, 0.7274, 0.7862, 0.8336 31.04%, 0.8793, 0.9132 38.99%, 0.9421 43.77%, 0.9642 49.34%, 0.9796 55.71%, 0.9893 62.87%, 0.9952 71.62%, 0.9983 82.76%, 0.9996 99.47%)`,
-        duration: 500,
-      }}
+      opacityTiming={opacityTiming}
+      transformTiming={transformTiming}
     />
   );
-  const animatedSeconds = (
+
+  const AnimatedSeconds = (
     <NumberFlow
       willChange
       value={seconds}
       continuous
+      opacityTiming={opacityTiming}
+      transformTiming={transformTiming}
       format={{
         minimumIntegerDigits: 2,
-      }}
-      opacityTiming={{
-        duration: 250,
-        easing: "ease-out",
-      }}
-      transformTiming={{
-        easing: `linear(0, 0.0033 0.8%, 0.0263 2.39%, 0.0896 4.77%, 0.4676 15.12%, 0.5688, 0.6553, 0.7274, 0.7862, 0.8336 31.04%, 0.8793, 0.9132 38.99%, 0.9421 43.77%, 0.9642 49.34%, 0.9796 55.71%, 0.9893 62.87%, 0.9952 71.62%, 0.9983 82.76%, 0.9996 99.47%)`,
-        duration: 500,
       }}
     />
   );
   return (
     <span className="flex">
-      {animatedMinutes}:{animatedSeconds}
+      {AnimatedMinutes}:{AnimatedSeconds}
     </span>
   );
 }
@@ -110,13 +110,13 @@ function Buttons({ handlePlayStop }: { handlePlayStop: () => void }) {
         <BsFillSkipStartFill size={25} />
       </button>
       <button
-        className="text-neutral-900 size-8 flex items-center justify-center transition hover:bg-neutral-200 hover:scale-110 rounded-full bg-neutral-50 active:scale-100 active:bg-neutral-400"
+        className="text-neutral-900 size-7 flex items-center justify-center transition hover:bg-neutral-200 hover:scale-110 rounded-full bg-neutral-50 active:scale-100 active:bg-neutral-400"
         onClick={handlePlayStop}
       >
         {isPlaying ? (
-          <FaStop size={15} />
+          <FaStop size={13} />
         ) : (
-          <FaPlay size={15} className="ml-0.5" />
+          <FaPlay size={13} className="ml-0.5" />
         )}
       </button>
       <button

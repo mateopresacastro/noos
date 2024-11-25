@@ -33,15 +33,6 @@ export async function createPaymentLink({
     // To not reset it when updating the pack
     if (key) metadata.s3Key = key;
 
-    console.log("Creating payment link", {
-      priceId,
-      stripeConnectedAccountId,
-      userName,
-      productId,
-      key,
-      metadata,
-    });
-
     const { url } = await stripe.paymentLinks.create(
       {
         line_items: [
@@ -417,10 +408,8 @@ export async function hasRequirementsDue() {
     const data = await readUser(clerkId);
     if (!data || !data.stripeId) throw new Error("User not found");
 
-    // TODO move this account stripe mod
     const { requirements } = await stripe.accounts.retrieve(data.stripeId);
 
-    // TODO check for future due requirements
     if (
       !requirements ||
       !requirements.currently_due ||
