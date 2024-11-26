@@ -1,11 +1,10 @@
 import sgMail from "@sendgrid/mail";
+import log from "@/lib/log";
 import { headers } from "next/headers";
 import { createSamplePackDownloadUrl } from "@/lib/aws/mod";
 import { getCustomerData, stripe } from "@/lib/stripe";
-import { sendTelegramMessage } from "@/lib/telegram";
 import { STRIPE_WEBHOOK_SECRET } from "@/cfg";
 import type Stripe from "stripe";
-import log from "@/lib/log";
 
 async function handleSuccessfulPaymentIntent(
   event: Stripe.PaymentIntentSucceededEvent
@@ -33,7 +32,7 @@ async function handleSuccessfulPaymentIntent(
   const downloadUrl = await createSamplePackDownloadUrl(metadata.s3Key);
   if (!downloadUrl) throw new Error("Error creating download url");
   await sendEmail(email, name, downloadUrl);
-  await sendTelegramMessage(`${name} (${email}) just purchased a sample pack!`);
+  await log.info(`${name} (${email}) just purchased a sample pack!`);
 }
 
 async function sendEmail(email: string, name: string, downloadUrl: string) {
@@ -82,8 +81,6 @@ export async function POST(req: Request) {
 
     switch (event.type) {
       case "payment_intent.succeeded": {
-        await log.info("Handling successful payment intent");
-        await sendTelegramMessage("Handling successful payment intent!");
         await handleSuccessfulPaymentIntent(event);
         break;
       }
