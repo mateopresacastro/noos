@@ -73,7 +73,11 @@ export default function StepFour({
                 type="number"
                 placeholder="Enter price"
                 {...field}
-                onChange={(e) => field.onChange(Number(e.target.value))}
+                onChange={(e) =>
+                  field.onChange(
+                    e.target.value === "" ? null : Number(e.target.value)
+                  )
+                }
                 className="w-full text-sm bg-neutral-800 py-5"
               />
             </FormControl>

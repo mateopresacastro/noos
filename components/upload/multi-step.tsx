@@ -118,31 +118,62 @@ export default function UploadPage({ userName }: { userName: string }) {
     }
   }, [stepIndex, previewUrl, isLoading, isSuccess, form, userName]);
 
-  const numberOfSamples = form.getValues().samples?.length;
+  const {
+    samples,
+    img,
+    zipFile,
+    title: inputTitle,
+    description: inputDescription,
+    price: inputPrice,
+  } = form.getValues();
 
-  // TODO check errors before letting user go to next step
+  const numberOfSamples = samples?.length;
+  const {
+    samples: sampleErrors,
+    price: priceError,
+    title: titleError,
+    description: descriptionError,
+  } = form.formState.errors;
+
   const canGoToTheNextStep = useMemo(() => {
-    switch (stepIndex) {
-      case 0:
-        return numberOfSamples > 0;
+    switch (stepIndex + 1) {
       case 1:
-        return true;
+        return numberOfSamples > 0;
       case 2:
-        return true;
+        return !sampleErrors;
       case 3:
-        return true;
+        return Boolean(img);
       case 4:
-        return true;
+        return (
+          [priceError, titleError, descriptionError].every((error) => !error) &&
+          [inputTitle, inputDescription].every(
+            (value) => typeof value === "string" && value !== ""
+          ) &&
+          inputPrice > 0
+        );
       case 5:
-        return true;
+        return Boolean(zipFile);
       case 6:
         return true;
       default:
         return false;
     }
-  }, [stepIndex, numberOfSamples]);
+  }, [
+    stepIndex,
+    numberOfSamples,
+    img,
+    sampleErrors,
+    zipFile,
+    priceError,
+    titleError,
+    descriptionError,
+    inputTitle,
+    inputDescription,
+    inputPrice,
+  ]);
 
   if (!step) return null;
+
   const { title, description, component: Step } = step;
 
   return (
