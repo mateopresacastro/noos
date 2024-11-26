@@ -1,4 +1,4 @@
-import UploadPage from "@/components/upload-page";
+import UploadPage from "@/components/upload/multi-step";
 import { currentUser } from "@clerk/nextjs/server";
 import { notFound } from "next/navigation";
 
