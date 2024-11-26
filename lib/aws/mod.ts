@@ -1,5 +1,8 @@
 "use server";
 
+import "server-only";
+
+import log from "@/lib/log";
 import s3 from "@/lib/aws/client";
 import crypto from "node:crypto";
 import { AWS_PRIVATE_BUCKET_NAME, AWS_PUBLIC_BUCKET_NAME } from "@/cfg";
@@ -12,7 +15,6 @@ import {
   DeleteObjectCommand,
   CreateBucketCommand,
 } from "@aws-sdk/client-s3";
-import "server-only";
 
 const FIVE_MIN_IN_SECONDS = 5 * 60;
 const ONE_DAY_IN_SECONDS = 24 * 60 * 60;
@@ -43,7 +45,7 @@ export async function listBuckets() {
     const data = await s3.send(new ListBucketsCommand({}));
     return data.Buckets;
   } catch (error) {
-    console.error("Error listing buckets:", error);
+    await log.error("Error listing buckets:", error);
     return null;
   }
 }
@@ -69,7 +71,7 @@ export async function createPresignedUrl({
 
     return { url, key };
   } catch (error) {
-    console.error("Error creating presigned URL:", error);
+    await log.error("Error creating presigned URL:", error);
     return null;
   }
 }
@@ -95,7 +97,7 @@ export async function getObject({
 
     return data;
   } catch (error) {
-    console.error("Error getting object:", error);
+    await log.error("Error getting object:", error);
     return null;
   }
 }
@@ -116,7 +118,7 @@ export async function deleteObject({
     );
     return data;
   } catch (error) {
-    console.error("Error deleting object:", error);
+    await log.error("Error deleting object:", error);
     return null;
   }
 }
@@ -134,7 +136,7 @@ export async function createSamplePackDownloadUrl(key: string) {
 
     return url;
   } catch (error) {
-    console.error("Error creating presigned URL:", error);
+    await log.error("Error creating presigned URL:", error);
     return null;
   }
 }

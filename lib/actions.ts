@@ -2,15 +2,14 @@
 
 import "server-only";
 
+import log from "@/lib/log";
 import { Ratelimit } from "@upstash/ratelimit";
 import { Redis } from "@upstash/redis";
-import log from "@/lib/log";
 import { z } from "zod";
 import { auth, currentUser } from "@clerk/nextjs/server";
 import { AWS_PRIVATE_BUCKET_NAME, AWS_PUBLIC_BUCKET_NAME } from "@/cfg";
 import { createPresignedUrl } from "@/lib/aws/mod";
 import { headers } from "next/headers";
-import { sendTelegramMessage } from "@/lib/telegram";
 
 import {
   createAccountSession,
@@ -57,14 +56,12 @@ export async function deleteSamplePackAction({
 
     if (!deletedPack) throw new Error("Error deleting sample pack");
   } catch (error) {
-    log.error("Error updating sample pack", {
+    await log.error("Error updating sample pack", {
       error,
       userName,
       samplePackName,
     });
 
-    // The action will be consumed by TanStack Query
-    // No message for security
     throw new Error();
   }
 }
@@ -122,13 +119,11 @@ export async function updateSamplePackAction(
     if (!updatedPack) throw new Error("Error updating sample pack on our db");
     return updatedPack.name;
   } catch (error) {
-    log.error("Error updating sample pack", {
+    await log.error("Error updating sample pack", {
       error,
       updateData,
     });
 
-    // The action will be consumed by TanStack Query
-    // No message for security
     throw new Error();
   }
 }
@@ -212,14 +207,16 @@ export async function persistSamplePackDataAction(
     if (!samplesCreated) throw new Error("Error creating samples");
     return true;
   } catch (error) {
-    log.error("Error persisting sample pack data", { error, samplePackData });
+    await log.error("Error persisting sample pack data", {
+      error,
+      samplePackData,
+    });
     throw new Error();
   }
 }
 
 export async function createPreSignedUrlAction(numOfSamples: number) {
   try {
-    console.log("Creating pre-signed urls");
     const user = await currentUser();
     if (!user) throw new Error();
 
@@ -277,9 +274,7 @@ export async function createPreSignedUrlAction(numOfSamples: number) {
       samplesSignedUrls,
     };
   } catch (error) {
-    log.error("Error handling create pre-signed URL:", { error });
-    // I throw here becase this function will be consumed by TanStack Query
-    // No message for security
+    await log.error("Error handling create pre-signed URL:", { error });
     throw new Error();
   }
 }
@@ -314,7 +309,7 @@ export async function createAccountSessionAction(
 
     return clientSecret;
   } catch (error) {
-    log.error("Error creating account session", {
+    await log.error("Error creating account session", {
       error,
       createData,
     });
@@ -342,9 +337,8 @@ export async function subscribeToBetaAction(data: SubscribeToBetaActionSchema) {
     if (!success) throw new Error("Rate limit exceeded");
     const ok = await storeEmail(data.email);
     if (!ok) throw new Error("Error storing email");
-    await sendTelegramMessage(` ✉️ New interested user: ${data.email}`);
   } catch (error) {
-    log.error("Error subscribing to beta", {
+    await log.error("Error subscribing to beta", {
       error,
       data,
     });
@@ -381,7 +375,7 @@ export default async function setCountryAction(data: SetCountry) {
     const ok = await updateUserStripeId({ clerkId, stripeId });
     if (!ok) throw new Error("Error updating user Stripe ID");
   } catch (error) {
-    log.error("Error setting country", { error, data });
+    await log.error("Error setting country", { error, data });
     throw new Error();
   }
 }

@@ -183,7 +183,7 @@ export default function UploadPage({ userName }: { userName: string }) {
           <h3 className="self-start font-bold pb-3">Upload a sample pack</h3>
         </div>
         <motion.div
-          animate={{ height: bounds.height + 51 }} // TODO: fix magic number. Bound is wrong
+          animate={{ height: bounds.height + 51 }}
           className="flex items-start justify-start flex-col bg-neutral-900 p-6 rounded-xl border-neutral-800 border max-w-2xl w-full overflow-hidden relative"
         >
           <div ref={ref} className="w-full">
