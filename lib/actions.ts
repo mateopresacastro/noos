@@ -10,10 +10,11 @@ import { auth, currentUser } from "@clerk/nextjs/server";
 import { AWS_PRIVATE_BUCKET_NAME, AWS_PUBLIC_BUCKET_NAME } from "@/cfg";
 import { createPresignedUrl } from "@/lib/aws/mod";
 import { headers } from "next/headers";
+import { sendTelegramMessage } from "@/lib/telegram";
 
 import {
   createAccountSession,
-  createOnboardingLink,
+  createConnectedAccount,
   createPaymentLink,
   createProduct,
   updateProduct,
@@ -26,22 +27,8 @@ import {
   readUser,
   storeEmail,
   updateSamplePack,
+  updateUserStripeId,
 } from "@/lib/db/mod";
-import { sendTelegramMessage } from "@/lib/telegram";
-
-export async function createStripeAccountLinkAction() {
-  try {
-    const { userId: clerkId } = await auth();
-    if (!clerkId) throw new Error("User not signed in");
-    const data = await readUser(clerkId);
-    if (!data || !data.stripeId) throw new Error("User not found");
-    const url = await createOnboardingLink(data.stripeId);
-    return url;
-  } catch (error) {
-    log.error("Error creating stripe account link", { error });
-    throw new Error();
-  }
-}
 
 const deleteSamplePackActionSchema = z.object({
   samplePackName: z.string(),
@@ -373,4 +360,28 @@ async function getIp() {
   if (forwardedFor) return forwardedFor.split(",").at(0)?.trim();
   if (realIp) return realIp.trim();
   return null;
+}
+
+const setCountryActionSchema = z.object({
+  country: z.string().min(2).max(10),
+});
+
+type SetCountry = z.infer<typeof setCountryActionSchema>;
+
+export default async function setCountryAction(data: SetCountry) {
+  try {
+    const { userId: clerkId } = await auth();
+    if (!clerkId) throw new Error("User not signed in");
+    setCountryActionSchema.parse(data);
+    const stripeId = await createConnectedAccount({
+      clerkId,
+      country: data.country,
+    });
+    if (!stripeId) throw new Error("Error creating connected account");
+    const ok = await updateUserStripeId({ clerkId, stripeId });
+    if (!ok) throw new Error("Error updating user Stripe ID");
+  } catch (error) {
+    log.error("Error setting country", { error, data });
+    throw new Error();
+  }
 }

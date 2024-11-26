@@ -47,7 +47,7 @@ export async function createPaymentLink({
         application_fee_amount: 150,
         after_completion: {
           type: "redirect",
-          redirect: { url: `${HOST_URL}/payment-success/${userName}` },
+          redirect: { url: `${HOST_URL}/payment-success` },
         },
       },
       {
@@ -64,34 +64,16 @@ export async function createPaymentLink({
   }
 }
 
-export async function createOnboardingLink(stripeId: string) {
-  try {
-    const { url } = await stripe.accountLinks.create(
-      {
-        account: stripeId,
-        refresh_url: `${HOST_URL}`, // TODO: redirect url
-        return_url: `${HOST_URL}`,
-        type: "account_onboarding",
-      },
-      {
-        idempotencyKey: uuidv4(),
-      }
-    );
+type CreateConnectedAccount = {
+  clerkId: string;
+  country: string;
+};
 
-    return url;
-  } catch (error) {
-    console.error("Error creating onboarding link", error);
-    return null;
-  }
-}
-
-export async function createConnectedAccount(
-  clerkId: string,
-  userName: string | null
-) {
+export async function createConnectedAccount({
+  clerkId,
+  country,
+}: CreateConnectedAccount) {
   try {
-    if (!userName)
-      throw new Error("userName not set when creating stripe account.");
     const account = await stripe.accounts.create(
       {
         metadata: { clerkId },
@@ -104,10 +86,12 @@ export async function createConnectedAccount(
           card_payments: { requested: true },
           transfers: { requested: true },
         },
-        country: "ES", // TODO get from user
+        country,
         business_profile: {
-          support_url: `https://noos-three.vercel.app/${userName}`, // TODO handle this url properly. Real URL to avoid stripe errors
-          url: `https://noos-three.vercel.app/${userName}`,
+          support_url: `https://noos-three.vercel.app`, // TODO handle this url properly. Real URL to avoid stripe errors
+          url: `https://noos-three.vercel.app`,
+          mcc: "5815", // digital goods (music)
+          product_description: "Sample Packs",
         },
       },
       {

@@ -2,7 +2,6 @@ import { Webhook } from "svix";
 import { headers } from "next/headers";
 import { CLERK_WEBHOOK_SECRET } from "@/cfg";
 import { createUser, deleteUser, updateUser } from "@/lib/db/mod";
-import { createConnectedAccount } from "@/lib/stripe";
 import type {
   WebhookEvent,
   UserJSON,
@@ -10,15 +9,8 @@ import type {
 } from "@clerk/nextjs/server";
 
 async function handleCreateUser(user: UserJSON) {
-  const stripeId = await createConnectedAccount(user.id, user.username);
-  if (!stripeId) {
-    console.error("Error creating connected account");
-    return null;
-  }
-
   const newUser = await createUser({
     ...clean(user),
-    stripeId,
   });
 
   return newUser;

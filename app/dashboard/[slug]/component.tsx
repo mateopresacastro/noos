@@ -12,14 +12,16 @@ import {
   ConnectTaxRegistrations,
   ConnectNotificationBanner,
 } from "@stripe/react-connect-js";
+import { useRouter } from "next/navigation";
 
 export default function Component({ slug }: { slug: string }) {
+  const router = useRouter();
   const component = useMemo(() => {
     switch (slug) {
       case "onboarding":
         return (
           <ConnectAccountOnboarding
-            onExit={() => console.log("onExit")}
+            onExit={() => router.refresh()}
             collectionOptions={{
               fields: "eventually_due",
               futureRequirements: "include",
@@ -48,7 +50,7 @@ export default function Component({ slug }: { slug: string }) {
       default:
         return <div>Not found</div>;
     }
-  }, [slug]);
+  }, [slug, router]);
 
   return (
     <div className="w-full h-fit md:py-24 pb-40 flex items-center justify-center relative">
