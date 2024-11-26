@@ -1,9 +1,13 @@
+"use client";
+
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
 import { Check } from "lucide-react";
 import PriceNumber from "@/components/price-number";
+import { motion } from "motion/react";
+import { container, item } from "@/lib/anim";
 
 type Option = {
   title: string;
@@ -29,19 +33,37 @@ const OPTIONS: Option[] = [
 
 export default function Pricing() {
   return (
-    <div className="flex flex-col items-center justify-start pt-28">
-      <h4 className="text-5xl tracking-tight">Pricing</h4>
-      <p className="pt-6 w-96 text-center text-lg text-neutral-400 pb-14 md:max-w-xl md:w-full">
-        <span className="text-neutral-50">Don&apos;t pay a subscription</span> I
-        charge a simple $1.50 per transaction, plus standard Stripe processing
-        fees.
-      </p>
-      <div className="gap-10 pb-32 flex flex-grow flex-wrap justify-center items-center">
-        {OPTIONS.map((option) => (
-          <Option option={option} key={option.title} />
-        ))}
+    <motion.div
+      variants={container}
+      initial="hidden"
+      animate="show"
+      className="flex flex-col items-center justify-center h-screen will-change-transform"
+    >
+      <div className="flex flex-col items-center justify-start">
+        <motion.h4
+          variants={item}
+          className="text-5xl tracking-tight self-center"
+        >
+          Pricing
+        </motion.h4>
+        <motion.div
+          variants={item}
+          className="pt-6 w-96 text-center text-lg text-neutral-400 pb-14 md:max-w-xl md:w-full"
+        >
+          <span className="text-neutral-50">Don&apos;t pay a subscription</span>{" "}
+          I charge a simple $1.50 per transaction, plus standard Stripe
+          processing fees.
+        </motion.div>
+        <motion.div
+          variants={item}
+          className="gap-10 pb-32 flex flex-grow flex-wrap justify-center items-center"
+        >
+          {OPTIONS.map((option) => (
+            <Option option={option} key={option.title} />
+          ))}
+        </motion.div>
       </div>
-    </div>
+    </motion.div>
   );
 }
 

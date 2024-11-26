@@ -20,6 +20,7 @@ import {
   StepThree,
   StepTwo,
 } from "@/components/upload/steps/mod";
+import { container, item } from "@/lib/anim";
 
 const VARIANTS = {
   initial: (direction: number) => ({ x: `${110 * direction}%`, opacity: 0 }),
@@ -178,11 +179,17 @@ export default function UploadPage({ userName }: { userName: string }) {
 
   return (
     <MotionConfig transition={{ duration: 0.5, type: "spring", bounce: 0 }}>
-      <div className="flex flex-col items-center justify-start min-h-screen pt-32 pb-48">
-        <div className="w-full max-w-2xl">
+      <motion.div
+        variants={container}
+        initial="hidden"
+        animate="show"
+        className="flex flex-col items-center justify-center min-h-screen pt-32 pb-48"
+      >
+        <motion.div variants={item} className="w-full max-w-2xl">
           <h3 className="self-start font-bold pb-3">Upload a sample pack</h3>
-        </div>
+        </motion.div>
         <motion.div
+          variants={item}
           animate={{ height: bounds.height + 51 }}
           className="flex items-start justify-start flex-col bg-neutral-900 p-6 rounded-xl border-neutral-800 border max-w-2xl w-full overflow-hidden relative"
         >
@@ -224,7 +231,7 @@ export default function UploadPage({ userName }: { userName: string }) {
             </Form>
           </div>
         </motion.div>
-      </div>
+      </motion.div>
     </MotionConfig>
   );
 }
