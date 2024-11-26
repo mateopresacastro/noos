@@ -51,8 +51,7 @@ async function sendEmail(email: string, name: string, downloadUrl: string) {
   };
 
   try {
-    const response = await sgMail.send(msg);
-    await log.info("Sendgrid response:", response);
+    await sgMail.send(msg);
   } catch (error) {
     await log.error(
       `Error sending email with link to ${email}, ${name}, download url:${downloadUrl}`,

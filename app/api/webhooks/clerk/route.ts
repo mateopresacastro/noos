@@ -68,6 +68,7 @@ export async function POST(req: Request) {
         await log.error("Error creating user");
         return serverErrorResponse;
       }
+      await log.info("New user created", { userName: newUser?.userName });
     }
 
     if (evt.type === "user.updated") {
