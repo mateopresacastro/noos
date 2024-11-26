@@ -348,6 +348,31 @@ export async function updateUser({
   }
 }
 
+type UpdateStripeId = {
+  clerkId: string;
+  stripeId: string;
+};
+
+export async function updateUserStripeId({
+  clerkId,
+  stripeId,
+}: UpdateStripeId) {
+  try {
+    const updatedUser = await prisma.user.update({
+      where: {
+        clerkId,
+      },
+      data: {
+        stripeId,
+      },
+    });
+    return updatedUser;
+  } catch (error) {
+    log.error("Error updating user Stripe ID:", { error, clerkId });
+    return null;
+  }
+}
+
 export async function deleteUser(clerkId: string) {
   try {
     const deletedUser = await prisma.user.delete({
@@ -399,5 +424,22 @@ export async function storeEmail(email: string) {
   } catch (error) {
     log.error("Error storing email", { error, email });
     return null;
+  }
+}
+
+export async function doesUserHaveStripeAccount(userName: string) {
+  try {
+    const user = await prisma.user.findUnique({
+      where: {
+        userName,
+      },
+    });
+
+    if (!user) throw new Error("User not found");
+
+    return user.stripeId !== null;
+  } catch (error) {
+    log.error("Error checking if user has stripe account", { error, userName });
+    return false;
   }
 }
