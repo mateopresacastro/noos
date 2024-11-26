@@ -1,9 +1,9 @@
-import { EmailForm } from "@/components/email-form";
+import { SignUp } from "@clerk/nextjs";
 
 export default function Page() {
   return (
     <div className="flex items-center justify-center h-screen w-full">
-      <EmailForm />
+      <SignUp />
     </div>
   );
 }
