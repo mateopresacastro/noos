@@ -4,6 +4,7 @@ import { getSamplePack, readUser } from "@/lib/db/mod";
 import { HOST_URL, STRIPE_SECRET_KEY } from "@/cfg";
 import { v4 as uuidv4 } from "uuid";
 import { auth } from "@clerk/nextjs/server";
+import log from "@/lib/log";
 
 export const stripe = new Stripe(STRIPE_SECRET_KEY);
 
@@ -57,9 +58,18 @@ export async function createPaymentLink({
     );
 
     if (!url) throw new Error("Error creating payment link");
+
+    await log.info("Created payment link", {
+      url,
+      priceId,
+      stripeConnectedAccountId,
+      userName,
+      key,
+    });
+
     return url;
   } catch (error) {
-    console.error("Error creating payment link", error);
+    await log.error("Error creating payment link", error);
     return null;
   }
 }
@@ -99,9 +109,10 @@ export async function createConnectedAccount({
       }
     );
 
+    await log.info("Created connected account", { account, clerkId, country });
     return account.id;
   } catch (error) {
-    console.error("Error creating connected account:", error);
+    await log.error("Error creating connected account:", error);
     return null;
   }
 }
@@ -157,7 +168,7 @@ export async function createProduct({
 
     return { product, priceId };
   } catch (error) {
-    console.error("Error creating product:", {
+    await log.error("Error creating product:", {
       error,
       title,
       description,
@@ -195,7 +206,7 @@ export async function getProduct(productId: string) {
 
     return { product, price };
   } catch (error) {
-    console.error("Error retrieving product:", error);
+    await log.error("Error retrieving product:", error);
     return null;
   }
 }
@@ -265,7 +276,7 @@ export async function updateProduct({
 
     return { product, newPaymentLink };
   } catch (error) {
-    console.error("Error updating product", error);
+    await log.error("Error updating product", error);
     return null;
   }
 }
@@ -292,7 +303,7 @@ async function createPrice({
       }
     );
   } catch (error) {
-    console.error("Error creating price", error);
+    await log.error("Error creating price", error);
     return null;
   }
 }
@@ -312,8 +323,6 @@ export async function getCustomerData(
       }
     );
 
-    console.dir({ paymentIntent }, { depth: null });
-
     if (!paymentIntent) {
       throw new Error("Payment intent not found");
     }
@@ -328,12 +337,11 @@ export async function getCustomerData(
 
     return { ...paymentIntent.latest_charge.billing_details };
   } catch (error) {
-    console.error(
-      "Error retrieving payment intent:",
+    await log.error("Error retrieving payment intent:", {
       error,
       paymentIntentId,
-      stripeConnectedAccountId
-    );
+      stripeConnectedAccountId,
+    });
     return null;
   }
 }
@@ -380,7 +388,7 @@ export async function createAccountSession(account: string) {
 
     return session.client_secret;
   } catch (error) {
-    console.error("Error creating account session", error);
+    await log.error("Error creating account session", error);
     return null;
   }
 }
@@ -404,7 +412,7 @@ export async function hasRequirementsDue() {
 
     return true;
   } catch (error) {
-    console.error("Error checking for requirements due", { error });
+    await log.error("Error checking for requirements due", { error });
     return true;
   }
 }

@@ -97,7 +97,6 @@ export function createPlayerStore(initState: PlayerState = defaultInitState) {
       let nextIndex;
       if (state.shuffle) {
         nextIndex = Math.floor(Math.random() * state.samples.length);
-        console.log("nextIndex", nextIndex);
       } else {
         nextIndex = (currentIndex + 1) % state.samples.length;
       }

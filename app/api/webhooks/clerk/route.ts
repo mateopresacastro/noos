@@ -1,3 +1,4 @@
+import log from "@/lib/log";
 import { Webhook } from "svix";
 import { headers } from "next/headers";
 import { CLERK_WEBHOOK_SECRET } from "@/cfg";
@@ -22,7 +23,7 @@ async function handleUpdateUser(user: UserJSON) {
 
 async function handleDeleteUser(deletedObject: DeletedObjectJSON) {
   if (!deletedObject.id) {
-    console.warn("Deleted object id is missing, skipping user deletion");
+    await log.warn("Deleted object id is missing, skipping user deletion");
     return null;
   }
 
@@ -64,7 +65,7 @@ export async function POST(req: Request) {
     if (evt.type === "user.created") {
       const newUser = await handleCreateUser(evt.data);
       if (!newUser) {
-        console.error("Error creating user");
+        await log.error("Error creating user");
         return serverErrorResponse;
       }
     }
@@ -72,14 +73,14 @@ export async function POST(req: Request) {
     if (evt.type === "user.updated") {
       const user = await handleUpdateUser(evt.data);
       if (!user) {
-        console.error("Error updating user");
+        await log.error("Error updating user");
         return serverErrorResponse;
       }
     }
 
     if (evt.type === "user.deleted") {
       const user = await handleDeleteUser(evt.data);
-      console.error("Error deleting user");
+      await log.error("Error deleting user");
       if (!user) {
         return serverErrorResponse;
       }
@@ -87,7 +88,7 @@ export async function POST(req: Request) {
 
     return new Response(null, { status: 200 });
   } catch {
-    console.warn("Clerk Webhook failed");
+    await log.warn("Clerk Webhook failed");
     return clientErrorResponse;
   }
 }

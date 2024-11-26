@@ -38,7 +38,6 @@ export default function StepThree({
                   const file = acceptedFiles[0];
                   field.onChange(file);
                   const url = URL.createObjectURL(file);
-                  console.log("here n accepted giles");
                   setPreviewUrl(url);
                 }}
               >

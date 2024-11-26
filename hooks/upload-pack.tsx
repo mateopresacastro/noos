@@ -64,7 +64,7 @@ export function useUploadPack({
       preSignedUrls;
     const name = createSamplePackName(title);
     const imgUrl = createPublicUrl(imageSignedUrl.key);
-    const url = createPublicUrl(zipFileSignedUrl.key); // TODO we don't need this.
+    const url = createPublicUrl(zipFileSignedUrl.key);
     const samples = samplesSignedUrls.map(({ key }, index) => ({
       url: createPublicUrl(key),
       name: formSamples.at(index)?.generatedName ?? "Unknown name (fix me)",

@@ -40,7 +40,6 @@ import { urlNameToTitle } from "@/lib/utils";
 import { useEffect, useState } from "react";
 import { EllipsisVertical } from "lucide-react";
 
-// TODO: handle image upload
 const editPackSchema = z.object({
   title: z.string().min(5).max(50),
   description: z.string().min(5).max(100).optional(),
@@ -79,7 +78,6 @@ export default function EditPackButton({
     price: newPrice,
   } = form.getValues();
 
-  // TODO handle loading and error state
   const { mutate: deleteSamplePack } = useMutation({
     mutationFn: async () => {
       await deleteSamplePackAction({ samplePackName: name, userName });
@@ -108,7 +106,6 @@ export default function EditPackButton({
   }, [newSamplePackName, router, userName]);
 
   function onSubmit() {
-    // TODO check that user actually changed values
     updateSamplePack();
   }
 

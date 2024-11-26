@@ -5,6 +5,7 @@ import { getCustomerData, stripe } from "@/lib/stripe";
 import { sendTelegramMessage } from "@/lib/telegram";
 import { STRIPE_WEBHOOK_SECRET } from "@/cfg";
 import type Stripe from "stripe";
+import log from "@/lib/log";
 
 async function handleSuccessfulPaymentIntent(
   event: Stripe.PaymentIntentSucceededEvent
@@ -37,12 +38,11 @@ async function handleSuccessfulPaymentIntent(
 
 async function sendEmail(email: string, name: string, downloadUrl: string) {
   if (!process.env.SENDGRID_API_KEY) {
-    console.warn("SENDGRID_API_KEY not set, skipping email");
+    await log.warn("SENDGRID_API_KEY not set, skipping email");
     return;
   }
 
   sgMail.setApiKey(process.env.SENDGRID_API_KEY);
-  // TODO: improve email. Short link.
   const msg = {
     to: email,
     from: "mateopresacastro@gmail.com",
@@ -53,11 +53,11 @@ async function sendEmail(email: string, name: string, downloadUrl: string) {
 
   try {
     const response = await sgMail.send(msg);
-    console.log("Sendgrid response:", response);
+    await log.info("Sendgrid response:", response);
   } catch (error) {
-    console.error("Error sending email:", error);
-    await sendTelegramMessage(
-      ` ⚠️ Error sending email with link to ${email}, ${name}, download url:${downloadUrl}`
+    await log.error(
+      `Error sending email with link to ${email}, ${name}, download url:${downloadUrl}`,
+      error
     );
     throw error;
   }
@@ -70,7 +70,7 @@ export async function POST(req: Request) {
     const signature = headerPayload.get("stripe-signature");
 
     if (!signature) {
-      console.warn("Missing stripe-signature header");
+      await log.warn("Missing stripe-signature header");
       throw new Error("missing stripe-signature header");
     }
 
@@ -82,21 +82,19 @@ export async function POST(req: Request) {
 
     switch (event.type) {
       case "payment_intent.succeeded": {
-        console.info("Handling successful payment intent");
+        await log.info("Handling successful payment intent");
         await sendTelegramMessage("Handling successful payment intent!");
         await handleSuccessfulPaymentIntent(event);
         break;
       }
       default: {
-        console.warn("Unhandled event type:", { type: event.type });
+        await log.warn("Unhandled event type:", { type: event.type });
       }
     }
 
     return new Response(null, { status: 200 });
   } catch (error) {
-    console.error("Error handling Stripe webhook:", { error });
-    const message = error instanceof Error ? error.message : "Unknown error";
-    await sendTelegramMessage(` ⚠️ Error handling Stripe webhook: ${message}`);
+    await log.error("Error handling Stripe webhook:", { error });
     return new Response(null, { status: 400 });
   }
 }

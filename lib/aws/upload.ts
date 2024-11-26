@@ -31,9 +31,7 @@ export async function handleUploadToS3({
     }
 
     await Promise.all(promises);
-    console.log("All files uploaded successfully.");
-  } catch (error) {
-    console.error("Error uploading to S3:", error);
+  } catch {
     throw new Error();
   }
 }
@@ -50,6 +48,4 @@ async function uploadFile(url: string, file: File) {
   if (!response.ok) {
     throw new Error(`Failed to upload file to ${url}`);
   }
-
-  console.info(`Successfully uploaded ${file.name} to ${url}`);
 }

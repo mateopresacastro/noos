@@ -18,7 +18,6 @@ export default function StepSix({
 }) {
   const values = form.getValues();
 
-  // TODO debug why these animations are not working
   return (
     <AnimatePresence mode="wait" initial={false}>
       {isLoading ? (

@@ -1,6 +1,6 @@
 import "server-only";
-import prisma from "@/lib/db/cfg/client";
 import log from "@/lib/log";
+import prisma from "@/lib/db/cfg/client";
 import { createSamplePackName } from "@/lib/utils";
 
 export async function createSamplePack({
@@ -45,11 +45,11 @@ export async function createSamplePack({
       },
     });
 
-    log.info("sample pack created", samplePack);
+    await log.info("Sample pack created", samplePack);
 
     return samplePack;
   } catch (error) {
-    log.error("Error creating sample pack", { error });
+    await log.error("Error creating sample pack", { error });
     return null;
   }
 }
@@ -100,7 +100,11 @@ export async function getSamplePack({
     if (!data) throw new Error("Sample pack not found");
     return data;
   } catch (error) {
-    log.error("Error getting sample pack", { error, userName, samplePackName });
+    await log.error("Error getting sample pack", {
+      error,
+      userName,
+      samplePackName,
+    });
     return null;
   }
 }
@@ -157,7 +161,7 @@ export async function updateSamplePack(input: SamplePackInput) {
 
     return updatedPack;
   } catch (error) {
-    log.error("Error updating sample pack", {
+    await log.error("Error updating sample pack", {
       error,
       name: input.name,
       userName: input.userName,
@@ -205,7 +209,7 @@ export async function deleteSamplePack({
 
     return true;
   } catch (error) {
-    log.error("Error deleting sample pack", {
+    await log.error("Error deleting sample pack", {
       error,
       samplePackName,
       userName,
@@ -230,7 +234,7 @@ export async function addSampleToSamplePack(
     if (newSamples.count === 0) throw new Error("No samples created");
     return newSamples;
   } catch (error) {
-    log.error("Error adding sample to sample pack:", {
+    await log.error("Error adding sample to sample pack:", {
       error,
       samplePackId,
       samples,
@@ -245,7 +249,7 @@ export async function deleteSample(sampleId: number) {
       where: { id: sampleId },
     });
   } catch (error) {
-    log.error("Error deleting sample:", { error });
+    await log.error("Error deleting sample:", { error });
     return null;
   }
 }
@@ -256,7 +260,7 @@ export async function getSample(sampleId: number) {
       where: { id: sampleId },
     });
   } catch (error) {
-    log.error("Error retrieving sample:", { error, sampleId });
+    await log.error("Error retrieving sample:", { error, sampleId });
     return null;
   }
 }
@@ -291,7 +295,7 @@ export async function createUser({
     });
     return newUser;
   } catch (error) {
-    log.error("Error creating user:", {
+    await log.error("Error creating user:", {
       error,
       clerkId,
       userName,
@@ -309,7 +313,7 @@ export async function readUser(clerkId: string) {
     });
     return user;
   } catch (error) {
-    log.error("Error reading user:", { error, clerkId });
+    await log.error("Error reading user:", { error, clerkId });
     return null;
   }
 }
@@ -343,7 +347,7 @@ export async function updateUser({
     });
     return updatedUser;
   } catch (error) {
-    log.error("Error updating user:", { error, clerkId });
+    await log.error("Error updating user:", { error, clerkId });
     return null;
   }
 }
@@ -368,7 +372,7 @@ export async function updateUserStripeId({
     });
     return updatedUser;
   } catch (error) {
-    log.error("Error updating user Stripe ID:", { error, clerkId });
+    await log.error("Error updating user Stripe ID:", { error, clerkId });
     return null;
   }
 }
@@ -382,7 +386,7 @@ export async function deleteUser(clerkId: string) {
     });
     return deletedUser;
   } catch (error) {
-    log.error("Error deleting user:", { error, clerkId });
+    await log.error("Error deleting user:", { error, clerkId });
     return null;
   }
 }
@@ -403,7 +407,7 @@ export async function getData(userName: string) {
     if (!data) throw new Error("User not found");
     return data;
   } catch (error) {
-    log.error(`Error getting sample packs from user: ${userName}`, {
+    await log.error(`Error getting sample packs from user: ${userName}`, {
       error,
       userName,
     });
@@ -422,7 +426,7 @@ export async function storeEmail(email: string) {
     if (!newEmail) throw new Error("Error storing email");
     return newEmail;
   } catch (error) {
-    log.error("Error storing email", { error, email });
+    await log.error("Error storing email", { error, email });
     return null;
   }
 }
@@ -439,7 +443,10 @@ export async function doesUserHaveStripeAccount(userName: string) {
 
     return user.stripeId !== null;
   } catch (error) {
-    log.error("Error checking if user has stripe account", { error, userName });
+    await log.error("Error checking if user has stripe account", {
+      error,
+      userName,
+    });
     return false;
   }
 }
