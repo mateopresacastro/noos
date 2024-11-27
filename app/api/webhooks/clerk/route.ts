@@ -1,7 +1,7 @@
 import log from "@/lib/log";
 import { Webhook } from "svix";
 import { headers } from "next/headers";
-import { CLERK_WEBHOOK_SECRET } from "@/cfg";
+import { CLERK_WEBHOOK_SECRET } from "@/lib/cfg";
 import { createUser, deleteUser, updateUser } from "@/lib/db/mod";
 import type {
   WebhookEvent,

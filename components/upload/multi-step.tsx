@@ -185,7 +185,7 @@ export default function UploadPage({ userName }: { userName: string }) {
         variants={container}
         initial="hidden"
         animate="show"
-        className="flex flex-col items-center justify-center min-h-screen pt-32 pb-48"
+        className="flex flex-col items-center justify-start min-h-screen pt-32 pb-48 will-change-transform"
       >
         <motion.div variants={item} className="w-full max-w-2xl">
           <h3 className="self-start font-bold pb-3">Upload a sample pack</h3>
