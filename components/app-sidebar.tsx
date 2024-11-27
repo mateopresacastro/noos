@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import {
   Sidebar,
@@ -16,14 +17,18 @@ import {
 } from "@/components/ui/sidebar";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
-import Link from "next/link";
 import { useParams } from "next/navigation";
 import { Suspense } from "react";
 
 const items = [
   {
+    title: "General",
+    subItems: [
+      { title: "General", url: "/dashboard/general", slug: "general" },
+    ],
+  },
+  {
     title: "Stripe",
-    url: "/dashboard",
     subItems: [
       {
         title: "Payments",
@@ -90,11 +95,9 @@ export function AppSidebar({ children }: AppSidebarProps) {
               {items.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild>
-                    <Link href={item.url}>
-                      <span className="font-bold text-neutral-100">
-                        {item.title}
-                      </span>
-                    </Link>
+                    <span className="font-bold text-neutral-100">
+                      {item.title}
+                    </span>
                   </SidebarMenuButton>
                   <SidebarMenuSub>
                     {item.subItems.map((subItem) => (

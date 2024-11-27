@@ -1,0 +1,1 @@
+export const STORAGE_LIMIT_50_GB_IN_BYTES = BigInt(50 * 1024 * 1024 * 1024);

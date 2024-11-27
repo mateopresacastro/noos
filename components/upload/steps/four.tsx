@@ -1,3 +1,6 @@
+import { Input } from "@/components/ui/input";
+import { AnimatePresence, motion } from "framer-motion";
+
 import {
   FormField,
   FormItem,
@@ -5,8 +8,7 @@ import {
   FormControl,
   FormMessage,
 } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { AnimatePresence, motion } from "framer-motion";
+
 import type { UploadFormSchema } from "@/components/upload-form-schema";
 import type { UseFormReturn } from "react-hook-form";
 

@@ -1,10 +1,11 @@
 import NumberFlow from "@number-flow/react";
-import { Button } from "@/components/ui/button";
-import { UploadFormSchema } from "@/components/upload-form-schema";
 import { cn } from "@/lib/utils";
-import { ArrowLeft, Loader, ArrowRight } from "lucide-react";
-import { Dispatch, SetStateAction } from "react";
+import { Button } from "@/components/ui/button";
 import { UseFormReturn } from "react-hook-form";
+import { UploadFormSchema } from "@/components/upload-form-schema";
+import { ArrowLeft, Loader, ArrowRight } from "lucide-react";
+
+import type { Dispatch, SetStateAction } from "react";
 
 export default function StepInfoAndControls({
   stepIndex,
@@ -34,6 +35,12 @@ export default function StepInfoAndControls({
     setStepIndex(stepIndex + 1);
   }
 
+  function handlePreviousClick() {
+    if (isFirstStep) return;
+    setDirection(-1);
+    setStepIndex(stepIndex - 1);
+  }
+
   return (
     <div className="flex flex-col items-start justify-start w-full">
       <div className="w-full flex items-center justify-between">
@@ -60,13 +67,7 @@ export default function StepInfoAndControls({
       <div className="w-full flex items-center justify-between pb-10 mt-1">
         <Button
           variant="secondary"
-          onClick={() => {
-            if (isFirstStep) {
-              return;
-            }
-            setStepIndex(stepIndex - 1);
-            setDirection(-1);
-          }}
+          onClick={handlePreviousClick}
           disabled={isFirstStep || isLoading || isSuccess}
           className="active:scale-90 w-10"
         >

@@ -7,7 +7,7 @@ import { Ratelimit } from "@upstash/ratelimit";
 import { Redis } from "@upstash/redis";
 import { z } from "zod";
 import { auth, currentUser } from "@clerk/nextjs/server";
-import { AWS_PRIVATE_BUCKET_NAME, AWS_PUBLIC_BUCKET_NAME } from "@/cfg";
+import { AWS_PRIVATE_BUCKET_NAME, AWS_PUBLIC_BUCKET_NAME } from "@/lib/cfg";
 import { createPresignedUrl } from "@/lib/aws/mod";
 import { headers } from "next/headers";
 
@@ -27,6 +27,7 @@ import {
   storeEmail,
   updateSamplePack,
   updateUserStripeId,
+  updateUserUsedStorage,
 } from "@/lib/db/mod";
 
 const deleteSamplePackActionSchema = z.object({
@@ -376,6 +377,40 @@ export default async function setCountryAction(data: SetCountry) {
     if (!ok) throw new Error("Error updating user Stripe ID");
   } catch (error) {
     await log.error("Error setting country", { error, data });
+    throw new Error();
+  }
+}
+
+const updateUserUsedStorageActionSchema = z.object({
+  newFileSizeInBytes: z.bigint(),
+});
+
+type UpdateUserUsedStorageActionSchema = z.infer<
+  typeof updateUserUsedStorageActionSchema
+>;
+
+export async function updateUserUsedStorageAction(
+  updateData: UpdateUserUsedStorageActionSchema
+) {
+  try {
+    await log.info("updateUserUsedStorageAction", { updateData });
+    const { userId } = await auth();
+    if (!userId) throw new Error("User not signed in");
+    updateUserUsedStorageActionSchema.parse(updateData);
+    const { newFileSizeInBytes } = updateData;
+    const user = await readUser(userId);
+    if (!user) throw new Error("User not found");
+    const ok = await updateUserUsedStorage({
+      userName: user.userName,
+      newFileSizeInBytes,
+    });
+
+    if (!ok) throw new Error("Error updating user storage used");
+  } catch (error) {
+    await log.error("Error updating user storage used", {
+      error,
+      updateData,
+    });
     throw new Error();
   }
 }

@@ -13,8 +13,15 @@ import {
   ConnectNotificationBanner,
 } from "@stripe/react-connect-js";
 import { useRouter } from "next/navigation";
+import General from "@/components/general";
 
-export default function Component({ slug }: { slug: string }) {
+export default function Component({
+  slug,
+  storageUsed,
+}: {
+  slug: string;
+  storageUsed: bigint;
+}) {
   const router = useRouter();
   const component = useMemo(() => {
     switch (slug) {
@@ -47,10 +54,12 @@ export default function Component({ slug }: { slug: string }) {
         return <ConnectPayouts />;
       case "notifications":
         return <ConnectNotificationBanner />;
+      case "general":
+        return <General storageUsed={storageUsed} />;
       default:
         return <div>Not found</div>;
     }
-  }, [slug, router]);
+  }, [slug, router, storageUsed]);
 
   return (
     <div className="w-full h-fit md:py-24 pb-40 flex items-center justify-center relative">
