@@ -51,12 +51,12 @@ export default function Pricing() {
           className="pt-6 w-96 text-center text-lg text-neutral-400 pb-14 md:max-w-xl md:w-full"
         >
           <span className="text-neutral-50">Don&apos;t pay a subscription</span>{" "}
-          I charge a simple $1.50 per transaction, plus standard Stripe
+          We charge a simple $1.50 per transaction, plus standard Stripe
           processing fees.
         </motion.div>
         <motion.div
           variants={item}
-          className="gap-10 pb-32 flex flex-grow flex-wrap justify-center items-center"
+          className="gap-10 pb-32 flex flex-grow flex-wrap justify-center items-center will-change-transform"
         >
           {OPTIONS.map((option) => (
             <Option option={option} key={option.title} />

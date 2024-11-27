@@ -16,6 +16,7 @@ export default function PriceNumber({ price }: { price: number }) {
       value={Number(priceShown.toFixed(2))}
       format={{ style: "currency", currency: "USD" }}
       locales="en-US"
+      className="will-change-transform"
     />
   );
 }
