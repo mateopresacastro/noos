@@ -9,9 +9,7 @@ export default async function Page({
 }) {
   const { userName, samplePackName } = await params;
   const samplePack = await getSamplePack({ userName, samplePackName });
-  if (!samplePack || !samplePack.price) {
-    notFound();
-  }
+  if (!samplePack || !samplePack.price) notFound();
   const creatorImgUrl = resize(samplePack.creator.imgUrl);
 
   return (
