@@ -3,7 +3,7 @@ import log from "@/lib/log";
 import { headers } from "next/headers";
 import { createSamplePackDownloadUrl } from "@/lib/aws/mod";
 import { getCustomerData, stripe } from "@/lib/stripe";
-import { STRIPE_WEBHOOK_SECRET } from "@/lib/cfg";
+import { STRIPE_WEBHOOK_SECRET } from "@/cfg";
 import type Stripe from "stripe";
 
 async function handleSuccessfulPaymentIntent(

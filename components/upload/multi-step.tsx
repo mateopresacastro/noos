@@ -1,20 +1,17 @@
 "use client";
 
 import useMeasure from "react-use-measure";
-import StepInfoAndControls from "@/components/upload/info-and-controls";
-import { Form } from "@/components/ui/form";
-import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useUploadPack } from "@/hooks/upload-pack";
-import { container, item } from "@/lib/anim";
+import { useForm } from "react-hook-form";
 import { useMemo, useState } from "react";
 import { AnimatePresence, motion, MotionConfig } from "motion/react";
-
+import { Form } from "@/components/ui/form";
+import { useUploadPack } from "@/hooks/upload-pack";
+import StepInfoAndControls from "@/components/upload/info-and-controls";
 import {
   uploadFormSchema,
   type UploadFormSchema,
 } from "@/components/upload-form-schema";
-
 import {
   StepFive,
   StepFour,
@@ -23,6 +20,7 @@ import {
   StepThree,
   StepTwo,
 } from "@/components/upload/steps/mod";
+import { container, item } from "@/lib/anim";
 
 const VARIANTS = {
   initial: (direction: number) => ({ x: `${110 * direction}%`, opacity: 0 }),
@@ -131,7 +129,6 @@ export default function UploadPage({ userName }: { userName: string }) {
   } = form.getValues();
 
   const numberOfSamples = samples?.length;
-
   const {
     samples: sampleErrors,
     price: priceError,
@@ -177,6 +174,7 @@ export default function UploadPage({ userName }: { userName: string }) {
   ]);
 
   if (!step) return null;
+
   const { title, description, component: Step } = step;
 
   return (
@@ -185,7 +183,7 @@ export default function UploadPage({ userName }: { userName: string }) {
         variants={container}
         initial="hidden"
         animate="show"
-        className="flex flex-col items-center justify-start min-h-screen pt-32 pb-48 will-change-transform"
+        className="flex flex-col items-center justify-center min-h-screen pt-32 pb-48"
       >
         <motion.div variants={item} className="w-full max-w-2xl">
           <h3 className="self-start font-bold pb-3">Upload a sample pack</h3>

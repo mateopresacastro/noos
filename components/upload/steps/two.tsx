@@ -1,22 +1,19 @@
-import { Grip } from "lucide-react";
-import { Input } from "@/components/ui/input";
 import { type UseFormReturn, useFieldArray } from "react-hook-form";
-
 import {
   FormField,
   FormItem,
   FormControl,
   FormMessage,
 } from "@/components/ui/form";
-
+import { Input } from "@/components/ui/input";
+import type { UploadFormSchema } from "@/components/upload-form-schema";
 import {
   Reorder,
   useDragControls,
   motion,
   AnimatePresence,
 } from "framer-motion";
-
-import type { UploadFormSchema } from "@/components/upload-form-schema";
+import { Grip } from "lucide-react";
 
 export default function StepTwo({
   form,

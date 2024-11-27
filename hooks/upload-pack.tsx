@@ -6,14 +6,12 @@ import { useMutation } from "@tanstack/react-query";
 import {
   createPreSignedUrlAction,
   persistSamplePackDataAction,
-  updateUserUsedStorageAction,
 } from "@/lib/actions";
 
 import type { UploadFormSchema } from "@/components/upload-form-schema";
 
 type PreSignedUrls = Awaited<ReturnType<typeof createPreSignedUrlAction>>;
 
-// TODO: error handling
 export function useUploadPack({
   formValues,
 }: {
@@ -57,27 +55,6 @@ export function useUploadPack({
       if (!data) throw new Error();
       await persistSamplePackDataAction(data);
     },
-    onSuccess: () => updateUserUsedStorage(),
-  });
-
-  const {
-    mutate: updateUserUsedStorage,
-    isSuccess: updatedUserStorageSuccess,
-    isPending: updatedUserStoragePending,
-  } = useMutation({
-    mutationFn: async () => {
-      const { img, zipFile, samples } = formValues;
-      const samplesSizeInBytes = samples.reduce(
-        (acc, { file }) => acc + file.size,
-        0
-      );
-
-      const newFileSizeInBytes = BigInt(
-        img.size + zipFile.size + samplesSizeInBytes
-      );
-
-      await updateUserUsedStorageAction({ newFileSizeInBytes });
-    },
   });
 
   function getDataToPersist() {
@@ -113,12 +90,8 @@ export function useUploadPack({
     isUploadingToS3,
     persistData,
     isPersistingData,
-    isLoading:
-      isCreatingPresignedUrls ||
-      isUploadingToS3 ||
-      isPersistingData ||
-      updatedUserStoragePending,
-    isSuccess: isSuccess && updatedUserStorageSuccess,
+    isLoading: isCreatingPresignedUrls || isUploadingToS3 || isPersistingData,
+    isSuccess,
   };
 }
 
