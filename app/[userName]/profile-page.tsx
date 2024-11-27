@@ -41,13 +41,10 @@ export default function ProfilePage({
           className="rounded-full object-cover h-24 w-24"
         />
       </motion.div>
-      <div className="relative flex mt-6">
-        <motion.span
-          variants={item}
-          className="block text-xl font-bold md:text-3xl will-change-transform"
-        >
+      <motion.div variants={item} className="relative flex mt-6">
+        <span className="block text-xl font-bold md:text-3xl will-change-transform">
           {data?.name}
-        </motion.span>
+        </span>
         {user ? (
           <button
             onClick={() => clerk.openUserProfile()}
@@ -56,7 +53,7 @@ export default function ProfilePage({
             <Settings className="size-4" />
           </button>
         ) : null}
-      </div>
+      </motion.div>
       <motion.div
         variants={item}
         className="flex items-baseline justify-center pt-1"
