@@ -1,6 +1,7 @@
 import SamplePackPage from "@/app/[userName]/[samplePackName]/sample-pack-page";
 import { notFound } from "next/navigation";
 import { getSamplePack } from "@/lib/db/mod";
+import { resize } from "@/lib/utils";
 
 export default async function Page({
   params,
@@ -19,13 +20,4 @@ export default async function Page({
       userName={userName}
     />
   );
-}
-
-function resize(imgUrl: string) {
-  const searchParams = new URLSearchParams();
-  searchParams.set("height", "50");
-  searchParams.set("width", "50");
-  searchParams.set("quality", "75");
-  searchParams.set("fit", "crop");
-  return `${imgUrl}?${searchParams.toString()}`;
 }

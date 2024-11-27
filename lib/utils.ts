@@ -31,3 +31,11 @@ export function urlNameToTitle(str: string): string {
   );
 }
 
+export function resize(imgUrl: string) {
+  const searchParams = new URLSearchParams();
+  searchParams.set("height", "50");
+  searchParams.set("width", "50");
+  searchParams.set("quality", "75");
+  searchParams.set("fit", "crop");
+  return `${imgUrl}?${searchParams.toString()}`;
+}
