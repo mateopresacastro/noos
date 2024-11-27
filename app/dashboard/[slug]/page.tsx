@@ -11,7 +11,8 @@ export default async function Onboarding({
   const slug = (await params).slug;
   const userData = await currentUser();
   if (!userData || !userData.username) notFound();
-  const storageUsed = await getUserUsedStorage(userData.username);
+  let storageUsed = await getUserUsedStorage(userData.username);
+  if (!storageUsed) storageUsed = BigInt(0);
 
   return <Component slug={slug} storageUsed={storageUsed} />;
 }
