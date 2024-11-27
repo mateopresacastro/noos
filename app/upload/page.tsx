@@ -24,7 +24,7 @@ export default async function UploadPageRoot() {
 
   const storageUsed = await getUserUsedStorage(userData.username);
   if (BigInt(storageUsed ?? 0) >= STORAGE_LIMIT_50_GB_IN_BYTES) {
-    redirect("/dashboard/onboarding");
+    redirect("/dashboard/general");
   }
 
   return <UploadPage userName={userData.username} />;
