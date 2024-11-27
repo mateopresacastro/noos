@@ -1,6 +1,6 @@
 "use client";
 
-import { SamplePackData } from "@/app/[userName]/page";
+import { SamplePackData } from "@/app/[userName]/profile-page";
 import { usePlayerStore } from "@/lib/zustand/store";
 import MusicBars from "@/components/music-bars";
 import Image from "next/image";
