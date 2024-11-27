@@ -1,8 +1,7 @@
 export const container = {
   show: {
     transition: {
-      staggerChildren: 0.12,
-      delayChildren: 0.4,
+      staggerChildren: 0.08,
     },
   },
 };
@@ -19,7 +18,7 @@ export const item = {
     filter: "blur(0px)",
     transition: {
       type: "spring",
-      duration: 1.2,
+      duration: 0.6,
       filter: {
         bounce: 0,
       },
