@@ -2,7 +2,6 @@ import Component from "@/app/dashboard/[slug]/component";
 import { getUserUsedStorage } from "@/lib/db/mod";
 import { currentUser } from "@clerk/nextjs/server";
 import { notFound } from "next/navigation";
-
 export default async function Onboarding({
   params,
 }: {
