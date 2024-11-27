@@ -1,20 +1,26 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { SquareArrowOutUpRight } from "lucide-react";
 import {
   SignedOut,
   SignInButton,
   SignUpButton,
   SignedIn,
-  UserButton,
   useUser,
 } from "@clerk/nextjs";
+import { resize } from "@/lib/utils";
 
 export default function Clerk() {
-  const data = useUser();
-  const userName = data?.user?.username;
+  const { user } = useUser();
+  let userName;
+  let imageUrl;
+
+  if (user) {
+    userName = user.username;
+    imageUrl = resize(user.imageUrl ?? "");
+  }
 
   return (
     <>
@@ -44,17 +50,15 @@ export default function Clerk() {
               Dashboard
             </Button>
           </Link>
-          <UserButton>
-            <UserButton.UserProfilePage label="account" />
-            <UserButton.UserProfilePage label="security" />
-            {userName ? (
-              <UserButton.UserProfileLink
-                label="Your store"
-                url={`/${userName}`}
-                labelIcon={<SquareArrowOutUpRight className="w-4 h-4" />}
-              />
-            ) : null}
-          </UserButton>
+          <Link href={`/${userName}`} prefetch>
+            <Image
+              src={imageUrl!}
+              alt={userName!}
+              width={50}
+              height={50}
+              className="rounded-full object-cover size-7 hover:opacity-80 transition-opacity duration-150 active:opacity-60"
+            />
+          </Link>
         </div>
       </SignedIn>
     </>

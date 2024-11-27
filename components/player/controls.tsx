@@ -13,12 +13,13 @@ export default function Controls({
   handlePlayStop: () => void;
 }) {
   return (
-    <div className="items-center hidden sm:flex sm:absolute sm:right-auto sm:left-1/2 sm:-translate-x-1/2 sm:flex-col w-1/3 md:w-1/2">
+    <div className="items-center hidden sm:flex sm:absolute sm:right-auto sm:left-1/2 sm:-translate-x-1/2 sm:flex-col w-1/3 md:w-1/2 gap-y-1">
       <Buttons handlePlayStop={handlePlayStop} />
       <Progress />
     </div>
   );
 }
+
 function TimeDisplay({ duration }: { duration: number }) {
   const minutes = Math.floor(duration / 60);
   const seconds = Math.floor(duration % 60);
@@ -66,7 +67,7 @@ function TimeDisplay({ duration }: { duration: number }) {
 function Progress() {
   const { currentTime, duration } = usePlayerStore((state) => state);
   return (
-    <div className="w-full flex items-center justify-between">
+    <div className="w-full flex items-center justify-between -mb-0.5">
       <span className="text-xs text-neutral-300 mr-2">
         <TimeDisplay duration={currentTime ?? 0} />
       </span>

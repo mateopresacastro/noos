@@ -14,7 +14,7 @@ export default function Player() {
     <AnimatePresence mode="popLayout">
       {showPlayer ? (
         <motion.div
-          className="fixed bottom-0 left-0 right-0 h-20 z-10 sm:h-16 px-2 mb-2"
+          className="fixed bottom-0 left-0 right-0 h-20 z-10 sm:h-18 px-2 mb-2"
           transition={{ type: "spring", duration: 0.6 }}
           initial={{ y: "100%" }}
           animate={{ y: 0 }}
