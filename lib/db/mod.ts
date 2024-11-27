@@ -181,7 +181,7 @@ export async function deleteSamplePack({
     // TODO try to optimize this
     const user = await prisma.user.findUnique({
       where: { userName },
-      select: { id: true, storageUsed: true },
+      select: { id: true },
     });
 
     if (!user) throw new Error("User not found");
@@ -206,17 +206,6 @@ export async function deleteSamplePack({
     });
 
     await prisma.$transaction([deleteSamples, deleteSamplePack]);
-    const { totalSize } = samplePack;
-    const newStorageUsed =
-      BigInt(user.storageUsed ?? 0) - BigInt(totalSize ?? 0);
-    await prisma.user.update({
-      where: {
-        userName,
-      },
-      data: {
-        storageUsed: newStorageUsed,
-      },
-    });
 
     return true;
   } catch (error) {
@@ -459,66 +448,5 @@ export async function doesUserHaveStripeAccount(userName: string) {
       userName,
     });
     return false;
-  }
-}
-
-export async function updateUserUsedStorage({
-  userName,
-  newFileSizeInBytes,
-}: {
-  userName: string;
-  newFileSizeInBytes: bigint;
-}) {
-  try {
-    const userData = await prisma.user.findUnique({
-      where: {
-        userName,
-      },
-      select: {
-        storageUsed: true,
-      },
-    });
-
-    if (!userData) throw new Error("User not found");
-    const newStorageUsed = userData.storageUsed + BigInt(newFileSizeInBytes);
-    const updatedUser = await prisma.user.update({
-      where: {
-        userName,
-      },
-      data: {
-        storageUsed: newStorageUsed,
-      },
-    });
-
-    return updatedUser;
-  } catch (error) {
-    await log.error("Error updating user storage used", {
-      error,
-      userName,
-      newFileSizeInBytes,
-    });
-
-    return null;
-  }
-}
-
-export async function getUserUsedStorage(userName: string) {
-  try {
-    const userData = await prisma.user.findUnique({
-      where: {
-        userName,
-      },
-      select: {
-        storageUsed: true,
-      },
-    });
-
-    if (!userData) throw new Error("User not found");
-    return userData.storageUsed;
-  } catch (error) {
-    await log.error("Error getting user storage used", {
-      error,
-      userName,
-    });
   }
 }

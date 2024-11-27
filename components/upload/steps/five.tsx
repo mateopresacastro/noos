@@ -1,16 +1,14 @@
 import Dropzone from "react-dropzone";
-import { Input } from "@/components/ui/input";
-import { UseFormReturn } from "react-hook-form";
-import { UploadFormSchema } from "@/components/upload-form-schema";
-
 import {
   FormField,
   FormItem,
   FormControl,
   FormMessage,
 } from "@/components/ui/form";
-
+import { UploadFormSchema } from "@/components/upload-form-schema";
+import { UseFormReturn } from "react-hook-form";
 import type { Dispatch, SetStateAction } from "react";
+import { Input } from "@/components/ui/input";
 
 export default function StepFive({
   form,
