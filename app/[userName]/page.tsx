@@ -9,7 +9,7 @@ export default async function Page({
 }) {
   const userName = (await params).userName;
   const data = await getData(userName);
-  if (!data || !data?.name) notFound();
+  if (!data) notFound();
 
   return <ProfilePage data={data} userName={userName} />;
 }
