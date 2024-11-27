@@ -207,7 +207,8 @@ export async function deleteSamplePack({
 
     await prisma.$transaction([deleteSamples, deleteSamplePack]);
     const { totalSize } = samplePack;
-    const newStorageUsed = BigInt(user.storageUsed ?? 0) - BigInt(totalSize ?? 0);
+    const newStorageUsed =
+      BigInt(user.storageUsed ?? 0) - BigInt(totalSize ?? 0);
     await prisma.user.update({
       where: {
         userName,
@@ -469,10 +470,6 @@ export async function updateUserUsedStorage({
   newFileSizeInBytes: bigint;
 }) {
   try {
-    await log.info("Updating user storage used first call", {
-      userName,
-      newFileSizeInBytes,
-    });
     const userData = await prisma.user.findUnique({
       where: {
         userName,
@@ -483,11 +480,6 @@ export async function updateUserUsedStorage({
     });
 
     if (!userData) throw new Error("User not found");
-    await log.info("Updating user storage used", {
-      userName,
-      newFileSizeInBytes,
-      storageUsed: userData.storageUsed,
-    });
     const newStorageUsed = userData.storageUsed + BigInt(newFileSizeInBytes);
     const updatedUser = await prisma.user.update({
       where: {
