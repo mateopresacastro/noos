@@ -393,7 +393,6 @@ export async function updateUserUsedStorageAction(
   updateData: UpdateUserUsedStorageActionSchema
 ) {
   try {
-    await log.info("updateUserUsedStorageAction", { updateData });
     const { userId } = await auth();
     if (!userId) throw new Error("User not signed in");
     updateUserUsedStorageActionSchema.parse(updateData);
