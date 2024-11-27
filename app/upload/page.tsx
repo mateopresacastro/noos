@@ -7,22 +7,20 @@ import { notFound, redirect } from "next/navigation";
 
 export default async function UploadPageRoot() {
   const userData = await currentUser();
-  if (!userData || !userData.username) {
-    notFound();
-  }
-
-  const userHasStripeAccount = await doesUserHaveStripeAccount(
-    userData.username
-  );
+  if (!userData || !userData.username) notFound();
+  const { username: userName } = userData;
+  const userHasStripeAccountPromise = doesUserHaveStripeAccount(userName);
+  const hasRequirementsPromise = hasRequirementsDue();
+  const storageUsedPromise = getUserUsedStorage(userName);
+  const [userHasStripeAccount, hasRequirements, storageUsed] =
+    await Promise.all([
+      userHasStripeAccountPromise,
+      hasRequirementsPromise,
+      storageUsedPromise,
+    ]);
 
   if (!userHasStripeAccount) redirect("/country");
-
-  const hasRequirements = await hasRequirementsDue();
-  if (hasRequirements) {
-    redirect("dashboard/onboarding");
-  }
-
-  const storageUsed = await getUserUsedStorage(userData.username);
+  if (hasRequirements) redirect("dashboard/onboarding");
   if (BigInt(storageUsed ?? 0) >= STORAGE_LIMIT_50_GB_IN_BYTES) {
     redirect("/dashboard/general");
   }
