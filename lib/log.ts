@@ -44,15 +44,15 @@ class Logger {
   }
 
   async info(message: string, details?: unknown) {
-    await this.#send("ℹ️ INFO: ", message, details);
+    await this.#send("ℹ️ *INFO*: ", message, details);
   }
 
   async warn(message: string, details?: unknown) {
-    await this.#send("⚠️ WARN: ", message, details);
+    await this.#send("⚠️ *WARN*: ", message, details);
   }
 
   async error(message: string, details?: unknown) {
-    await this.#send("❌ ERROR: ", message, details);
+    await this.#send("❌ *ERROR*: ", message, details);
   }
 }
 

@@ -12,7 +12,7 @@ export default function StorageUsed({ storageUsed }: { storageUsed: bigint }) {
   ).toFixed(2);
 
   return (
-    <div className="flex flex-col space-y-2 bg-neutral-900 rounded-xl p-5 w-full border border-neutral-700">
+    <div className="flex flex-col space-y-2 rounded-xl p-5 w-full">
       <div className="flex items-center justify-between">
         <div>
           <h3 className="text-sm text-nowrap pr-10 pb-3">
@@ -22,7 +22,7 @@ export default function StorageUsed({ storageUsed }: { storageUsed: bigint }) {
           <div className="w-full bg-neutral-700 rounded-full h-1 overflow-hidden max-w-md justify-self-start">
             <div
               className="bg-neutral-200 h-1"
-              style={{ width: `${Number(percent)}%` }}
+              style={{ width: `${percent + 2}%` }}
             />
           </div>
         </div>
