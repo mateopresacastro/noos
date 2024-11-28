@@ -52,8 +52,8 @@ export default function SamplePackPage({
               <div className="flex items-baseline justify-between gap-2 sm:pl-2">
                 <Link
                   href={`/${userName}`}
-                  prefetch={true}
                   className="flex items-baseline justify-center py-1 pb-2"
+                  prefetch={true}
                 >
                   <Image
                     src={creatorImgUrl}

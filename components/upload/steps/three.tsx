@@ -50,6 +50,7 @@ export default function StepThree({
                     <Input {...getInputProps()} />
                     {previewUrl ? (
                       <div className="relative aspect-square">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img
                           src={previewUrl}
                           alt="Cover art preview"

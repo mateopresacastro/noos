@@ -110,7 +110,7 @@ export function AppSidebar({ children }: AppSidebarProps) {
                               "bg-neutral-900 text-neutral-50"
                           )}
                         >
-                          <Link href={subItem.url}>
+                          <Link href={subItem.url} prefetch={true}>
                             <span>{subItem.title}</span>
                             {subItem.title === "Onboarding" ? (
                               <SidebarMenuBadge>
