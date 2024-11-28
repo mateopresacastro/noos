@@ -94,7 +94,7 @@ function Buttons({ handlePlayStop }: { handlePlayStop: () => void }) {
     <div className="w-50 flex sm:gap-4 md:gap-6">
       <button
         className={cn(
-          "text-neutral-400 hover:text-neutral-50 transition active:scale-90 active:text-neutral-400",
+          "text-neutral-400 hover:text-neutral-50 transition active:scale-90 active:text-neutral-400 will-change-transform",
           shuffle && "text-neutral-50 relative"
         )}
         onClick={() => setShuffle(!shuffle)}
@@ -105,13 +105,13 @@ function Buttons({ handlePlayStop }: { handlePlayStop: () => void }) {
         ) : null}
       </button>
       <button
-        className="text-neutral-400 hover:text-neutral-50 transition active:scale-90 active:text-neutral-400"
+        className="text-neutral-400 hover:text-neutral-50 transition active:scale-90 active:text-neutral-400 will-change-transform"
         onClick={playPrevious}
       >
         <BsFillSkipStartFill size={25} />
       </button>
       <button
-        className="text-neutral-900 size-7 flex items-center justify-center transition hover:bg-neutral-200 hover:scale-110 rounded-full bg-neutral-50 active:scale-100 active:bg-neutral-400"
+        className="text-neutral-900 size-7 flex items-center justify-center transition hover:bg-neutral-200 hover:scale-110 rounded-full bg-neutral-50 active:scale-100 active:bg-neutral-400 will-change-transform"
         onClick={handlePlayStop}
       >
         {isPlaying ? (
@@ -121,14 +121,14 @@ function Buttons({ handlePlayStop }: { handlePlayStop: () => void }) {
         )}
       </button>
       <button
-        className="text-neutral-400 hover:text-neutral-50 transition active:scale-90 active:text-neutral-400"
+        className="text-neutral-400 hover:text-neutral-50 transition active:scale-90 active:text-neutral-400 will-change-transform"
         onClick={playNext}
       >
         <BsFillSkipEndFill size={25} />
       </button>
       <button
         className={cn(
-          "text-neutral-400 hover:text-neutral-50 transition active:scale-90 active:text-neutral-400",
+          "text-neutral-400 hover:text-neutral-50 transition active:scale-90 active:text-neutral-400 will-change-transform",
           repeat && "text-neutral-50 relative"
         )}
         onClick={() => setRepeat(!repeat)}
