@@ -40,17 +40,17 @@ export default function Clerk() {
       </SignedOut>
       <SignedIn>
         <div className="w-fit flex items-center gap-3 lg:gap-4">
-          <Link href="/upload" prefetch>
+          <Link href="/upload" prefetch={true}>
             <Button size="sm" className="font-bold">
               Upload
             </Button>
           </Link>
-          <Link href="/dashboard/payments" prefetch>
+          <Link href="/dashboard/payments" prefetch={true}>
             <Button size="sm" className="font-bold" variant="secondary">
               Dashboard
             </Button>
           </Link>
-          <Link href={`/${userName}`} prefetch>
+          <Link href={`/${userName}`} prefetch={true}>
             <Image
               src={imageUrl!}
               alt={userName!}

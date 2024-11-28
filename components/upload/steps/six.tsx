@@ -44,7 +44,7 @@ export default function StepSix({
           <p className="text-sm text-neutral-400">
             Success! You can check your pack in your profile
           </p>
-          <Link href={`/${userName}`}>
+          <Link href={`/${userName}`} prefetch={true}>
             <Button className="py-6">Go to profile</Button>
           </Link>
         </motion.div>
@@ -57,6 +57,7 @@ export default function StepSix({
         >
           {values.img && (
             <div className="max-w-80 max-h-80 w-full mx-auto">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={URL.createObjectURL(values.img)}
                 alt="Cover art preview"

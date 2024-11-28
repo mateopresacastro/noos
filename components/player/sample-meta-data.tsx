@@ -10,8 +10,11 @@ export default function SampleMetaData() {
       ?.title ?? "-";
 
   return (
-    <div className="flex items-center gap-2 sm:gap-3 ">
-      <Link href={`/${samplePack.creator.userName}/${samplePack.name}`}>
+    <div className="flex items-center gap-2 sm:gap-3">
+      <Link
+        href={`/${samplePack.creator.userName}/${samplePack.name}`}
+        prefetch={true}
+      >
         <div className="size-10 rounded-lg sm:size-14 hover:opacity-80 transition-opacity duration-150 active:opacity-60">
           <Image
             src={samplePack.imgUrl}
@@ -24,7 +27,11 @@ export default function SampleMetaData() {
       </Link>
       <div className="flex flex-col gap-1">
         <span className="font-bold h-4 text-sm block">{sampleName}</span>
-        <Link href={`/${samplePack.creator.userName}`} className="w-fit">
+        <Link
+          href={`/${samplePack.creator.userName}`}
+          className="w-fit"
+          prefetch={true}
+        >
           <span className="text-xs text-neutral-400 block hover:text-neutral-300 transition-all duration-150 active:text-neutral-400 w-fit">
             @{samplePack.creator.userName}
           </span>

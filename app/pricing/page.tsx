@@ -110,7 +110,7 @@ function Option({
           <p className="pl-3">{bullet}</p>
         </div>
       ))}
-      <Link href="/sign-up" className="mt-12">
+      <Link href="/sign-up" className="mt-12" prefetch={true}>
         <Button className="mt-12">Get started</Button>
       </Link>
     </div>
