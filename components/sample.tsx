@@ -1,11 +1,12 @@
 "use client";
 
-import { usePlayerStore } from "@/lib/zustand/store";
-import { FaPlay } from "react-icons/fa";
-import { AnimatePresence } from "framer-motion";
-import { cn } from "@/lib/utils";
-import MusicBars from "@/components/music-bars";
 import Fade from "@/components/fade";
+import MusicBars from "@/components/music-bars";
+import { cn } from "@/lib/utils";
+import { FaPlay } from "react-icons/fa";
+import { usePlayerStore } from "@/lib/zustand/store";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { AnimatePresence } from "framer-motion";
 import type { SamplePack } from "@/lib/db/mod";
 
 export default function Sample({
@@ -20,6 +21,7 @@ export default function Sample({
   num?: number;
   wholeSamplePack: SamplePack;
 }) {
+  const isMobile = useIsMobile();
   const {
     playingSampleUrl,
     isPlaying,
@@ -36,6 +38,13 @@ export default function Sample({
 
   function handleClick() {
     setSelectedSampleUrl(url);
+  }
+
+  async function handleClickMobile() {
+    loadSamplePackToGlobalState();
+    setSelectedSampleUrl(url);
+    await stop();
+    await play(url);
   }
 
   async function handlePlay() {
@@ -66,8 +75,8 @@ export default function Sample({
         isThisSampleSelected &&
           "bg-neutral-800 hover:bg-neutral-800 active:text-neutral-400"
       )}
-      onClick={handleClick}
-      onDoubleClick={handleDoubleClick}
+      onClick={isMobile ? handleClickMobile : handleClick} // One tap to play on mobile, double click on pc
+      onDoubleClick={isMobile ? undefined : handleDoubleClick}
     >
       <div className="flex items-center justify-start">
         <div
