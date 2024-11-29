@@ -19,7 +19,7 @@ export default function Controls({
       className={cn(
         "items-center hidden md:flex md:absolute md:right-auto md:left-1/2 md:-translate-x-1/2 md:flex-col w-1/3 md:w-1/2 gap-y-1",
         drawer &&
-          "flex flex-col-reverse w-full items-center justify-center gap-6 mb-5"
+          "flex flex-col-reverse w-full items-center justify-center gap-5"
       )}
     >
       <Buttons handlePlayStop={handlePlayStop} drawer={drawer} />
