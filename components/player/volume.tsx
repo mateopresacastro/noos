@@ -7,7 +7,7 @@ export default function Volume() {
   const { muted, setMuted } = usePlayerStore((state) => state);
 
   return (
-    <div className="items-center gap-2 hidden sm:flex">
+    <div className="items-center gap-2 hidden md:flex">
       <button
         className="text-neutral-400 hover:text-neutral-50 transition active:scale-90 active:text-neutral-400 mr-1"
         onClick={() => setMuted(!muted)}

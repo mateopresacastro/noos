@@ -1,14 +1,17 @@
 "use client";
 
-import { AnimatePresence, motion } from "framer-motion";
-import { usePlayer } from "@/components/player/use-player";
 import Controls from "@/components/player/controls";
 import SampleMetaData from "@/components/player/sample-meta-data";
-import MobileControls from "@/components/player/mobile-controls";
 import Volume from "@/components/player/volume";
+import { AnimatePresence, motion } from "framer-motion";
+import { usePlayer } from "@/components/player/use-player";
+import { useIsMobile } from "@/hooks/use-mobile";
+import MyDrawer from "@/components/player/drawer";
 
 export default function Player() {
-  const { handlePlayStop, showPlayer } = usePlayer();
+  const { handlePlayStop, showPlayer, samplePack } = usePlayer();
+  const isMobile = useIsMobile();
+  if (!samplePack) return null;
 
   return (
     <AnimatePresence mode="popLayout">
@@ -21,14 +24,17 @@ export default function Player() {
           exit={{ y: "100%" }}
           key="player"
         >
-          <div className="h-full w-full px-3 backdrop-blur-3xl bg-neutral-900/50 border border-neutral-800 rounded-full mx-auto max-w-[110rem]">
-            <div className="flex items-center justify-between h-full relative">
-              <SampleMetaData />
-              <MobileControls handlePlayStop={handlePlayStop} />
-              <Controls handlePlayStop={handlePlayStop} />
-              <Volume />
+          {isMobile ? (
+            <MyDrawer />
+          ) : (
+            <div className="h-full w-full px-3 backdrop-blur-3xl bg-neutral-900/50 border border-neutral-800 rounded-full mx-auto max-w-[110rem]">
+              <div className="flex items-center justify-between h-full relative">
+                <SampleMetaData />
+                <Controls handlePlayStop={handlePlayStop} />
+                <Volume />
+              </div>
             </div>
-          </div>
+          )}
         </motion.div>
       ) : null}
     </AnimatePresence>

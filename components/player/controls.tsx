@@ -9,12 +9,20 @@ import { PiShuffleBold } from "react-icons/pi";
 
 export default function Controls({
   handlePlayStop,
+  drawer,
 }: {
   handlePlayStop: () => void;
+  drawer?: boolean;
 }) {
   return (
-    <div className="items-center hidden sm:flex sm:absolute sm:right-auto sm:left-1/2 sm:-translate-x-1/2 sm:flex-col w-1/3 md:w-1/2 gap-y-1">
-      <Buttons handlePlayStop={handlePlayStop} />
+    <div
+      className={cn(
+        "items-center hidden md:flex md:absolute md:right-auto md:left-1/2 md:-translate-x-1/2 md:flex-col w-1/3 md:w-1/2 gap-y-1",
+        drawer &&
+          "flex flex-col-reverse w-full items-center justify-center gap-6 mb-5"
+      )}
+    >
+      <Buttons handlePlayStop={handlePlayStop} drawer={drawer} />
       <Progress />
     </div>
   );
@@ -79,7 +87,13 @@ function Progress() {
   );
 }
 
-function Buttons({ handlePlayStop }: { handlePlayStop: () => void }) {
+function Buttons({
+  handlePlayStop,
+  drawer,
+}: {
+  handlePlayStop: () => void;
+  drawer?: boolean;
+}) {
   const {
     playNext,
     playPrevious,
@@ -91,7 +105,12 @@ function Buttons({ handlePlayStop }: { handlePlayStop: () => void }) {
   } = usePlayerStore((state) => state);
 
   return (
-    <div className="w-50 flex sm:gap-4 md:gap-6">
+    <div
+      className={cn(
+        "flex w-fit mx-auto w-50 gap-6",
+        drawer && "w-full justify-between max-w-lg"
+      )}
+    >
       <button
         className={cn(
           "text-neutral-400 hover:text-neutral-50 transition active:scale-90 active:text-neutral-400 will-change-transform",
@@ -99,32 +118,44 @@ function Buttons({ handlePlayStop }: { handlePlayStop: () => void }) {
         )}
         onClick={() => setShuffle(!shuffle)}
       >
-        <PiShuffleBold size={18} />
+        <PiShuffleBold size={drawer ? 25 : 18} />
         {shuffle ? (
-          <LuDot size={25} className="absolute -bottom-3 -left-[0.19rem]" />
+          <LuDot
+            size={25}
+            className={cn(
+              "absolute -bottom-3 -left-[0.19rem]",
+              drawer && "-bottom-1 left-[0.05rem]"
+            )}
+          />
         ) : null}
       </button>
       <button
         className="text-neutral-400 hover:text-neutral-50 transition active:scale-90 active:text-neutral-400 will-change-transform"
         onClick={playPrevious}
       >
-        <BsFillSkipStartFill size={25} />
+        <BsFillSkipStartFill size={drawer ? 40 : 25} />
       </button>
       <button
-        className="text-neutral-900 size-7 flex items-center justify-center transition hover:bg-neutral-200 hover:scale-110 rounded-full bg-neutral-50 active:scale-100 active:bg-neutral-400 will-change-transform"
+        className={cn(
+          "text-neutral-900 size-7 flex items-center justify-center transition hover:bg-neutral-200 hover:scale-110 rounded-full bg-neutral-50 active:scale-100 active:bg-neutral-400 will-change-transform",
+          drawer && "size-16"
+        )}
         onClick={handlePlayStop}
       >
         {isPlaying ? (
-          <FaStop size={13} />
+          <FaStop size={drawer ? 23 : 13} />
         ) : (
-          <FaPlay size={13} className="ml-0.5" />
+          <FaPlay
+            size={drawer ? 23 : 13}
+            className={cn("ml-0.5", drawer && "ml-1")}
+          />
         )}
       </button>
       <button
         className="text-neutral-400 hover:text-neutral-50 transition active:scale-90 active:text-neutral-400 will-change-transform"
         onClick={playNext}
       >
-        <BsFillSkipEndFill size={25} />
+        <BsFillSkipEndFill size={drawer ? 40 : 25} />
       </button>
       <button
         className={cn(
@@ -133,9 +164,15 @@ function Buttons({ handlePlayStop }: { handlePlayStop: () => void }) {
         )}
         onClick={() => setRepeat(!repeat)}
       >
-        <LuRepeat1 size={18} />
+        <LuRepeat1 size={drawer ? 25 : 18} />
         {repeat ? (
-          <LuDot size={25} className="absolute -bottom-3 -left-[0.19rem]" />
+          <LuDot
+            size={25}
+            className={cn(
+              "absolute -bottom-3 -left-[0.19rem]",
+              drawer && "-bottom-1 left-[0.05rem]"
+            )}
+          />
         ) : null}
       </button>
     </div>
