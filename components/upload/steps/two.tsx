@@ -28,9 +28,24 @@ export default function StepTwo({
     name: "samples",
   });
 
+  function handleReorder(newOrder: UploadFormSchema["samples"]) {
+    const currentSamples = form.getValues().samples;
+    const swappedFiles = newOrder.map((item) => {
+      const matchingSample = currentSamples.find(
+        (sample) => sample.file.name === item.file.name
+      );
+      return matchingSample || item;
+    });
+    replace(swappedFiles);
+  }
+
   return (
     <div className="w-full">
-      <Reorder.Group values={samples} onReorder={replace} className="space-y-6">
+      <Reorder.Group
+        values={samples}
+        onReorder={handleReorder}
+        className="space-y-6"
+      >
         {samples.map((sample, index) => (
           <ReorderSample
             key={sample.file.name}
@@ -54,6 +69,7 @@ function ReorderSample({
   index: number;
 }) {
   const controls = useDragControls();
+
   return (
     <Reorder.Item
       key={sample.file.name}
@@ -78,7 +94,7 @@ function ReorderSample({
         <FormField
           control={form.control}
           name={`samples.${index}.generatedName`}
-          render={({ field: nameField }) => (
+          render={({ field }) => (
             <FormItem className="w-full">
               <FormControl>
                 <motion.div
@@ -89,10 +105,11 @@ function ReorderSample({
                   className="will-change-transform"
                 >
                   <Input
-                    {...nameField}
+                    {...field}
                     className="w-full text-sm bg-neutral-800 py-5 mb-1"
                     placeholder="Enter name"
                     onClick={(e) => e.stopPropagation()}
+                    id={`samples.${index}.generatedName`}
                   />
                 </motion.div>
               </FormControl>

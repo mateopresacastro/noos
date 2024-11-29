@@ -26,6 +26,7 @@ export default function StepSix({
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
+          key="uploading-files"
           className="w-full flex items-center justify-center gap-3 flex-col py-20"
         >
           <Loader className="animate-spin" />
@@ -38,6 +39,7 @@ export default function StepSix({
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
+          key="success-uploading-files"
           className="w-full flex items-center justify-center gap-3 flex-col py-20"
         >
           <Check />
@@ -54,6 +56,7 @@ export default function StepSix({
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           className="space-y-6 pb-1"
+          key="preview-form"
         >
           {values.img && (
             <div className="max-w-80 max-h-80 w-full mx-auto">

@@ -25,7 +25,7 @@ export function useUploadPack({
     isPending: isCreatingPresignedUrls,
   } = useMutation({
     mutationFn: async () =>
-      await createPreSignedUrlAction(formValues.samples.length),
+      await createPreSignedUrlAction(formValues.samples?.length),
     onSuccess: createSignedUrlsOnSuccess,
   });
 

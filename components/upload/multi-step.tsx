@@ -43,6 +43,7 @@ export default function UploadPage({ userName }: { userName: string }) {
     defaultValues: {
       title: "",
       description: "",
+      samples: [],
     },
     mode: "all",
   });
@@ -128,7 +129,7 @@ export default function UploadPage({ userName }: { userName: string }) {
     title: inputTitle,
     description: inputDescription,
     price: inputPrice,
-  } = form.getValues();
+  } = formValues;
 
   const numberOfSamples = samples?.length;
 
