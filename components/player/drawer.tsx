@@ -36,7 +36,7 @@ export default function MyDrawer() {
                   onClick={() => setOpen(false)}
                 />
               </div>
-              <div className="w-full flex items-center justify-center self-center max-w-lg">
+              <div className="w-full flex items-center justify-center self-center max-w-lg max-h-[50vh]">
                 <div className="w-full h-full aspect-square mb-4 object-cover relative">
                   <Image
                     src={samplePack.imgUrl}
