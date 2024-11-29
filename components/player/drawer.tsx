@@ -23,7 +23,7 @@ export default function MyDrawer() {
         </div>
       </Drawer.Trigger>
       <Drawer.Portal>
-        <Drawer.Overlay className="fixed inset-0 bg-black/40" />
+        <Drawer.Overlay className="fixed inset-0 bg-black/40 z-50" />
         <Drawer.Content className="backdrop-blur-3xl bg-neutral-900/60 flex flex-col rounded-t-[10px] h-[100dvh] fixed bottom-0 left-0 right-0 outline-none z-50">
           <div className="p-4 rounded-t-[10px] flex-1 w-full">
             <div className="max-w-2xl mx-auto flex flex-col justify-between h-full py-1 w-full">
