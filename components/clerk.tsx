@@ -45,7 +45,7 @@ export default function Clerk() {
               Upload
             </Button>
           </Link>
-          <Link href="/dashboard/payments" prefetch={true}>
+          <Link href="/dashboard/general" prefetch={true}>
             <Button size="sm" className="font-bold" variant="secondary">
               Dashboard
             </Button>
