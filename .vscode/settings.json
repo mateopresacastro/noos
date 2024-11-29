@@ -19,6 +19,7 @@
     "tanstack",
     "trpc",
     "uuidv",
+    "vaul",
     "wavesurfer",
     "zustand"
   ]
