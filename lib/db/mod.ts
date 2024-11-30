@@ -179,50 +179,44 @@ export async function deleteSamplePack({
 }) {
   try {
     await prisma.$transaction(async (tx) => {
-      const userAndSamplePack = await tx.user.findUnique({
+      const user = await tx.user.findUnique({
         where: { userName },
-        select: {
-          id: true,
-          storageUsed: true,
-          samplePacks: {
-            where: {
-              name: samplePackName,
-            },
-            select: {
-              totalSize: true,
-              id: true,
-            },
+        select: { id: true, storageUsed: true },
+      });
+
+      if (!user) throw new Error("User not found");
+
+      const deletedSamplePack = await tx.samplePack.delete({
+        where: {
+          creatorId_name: {
+            creatorId: user.id,
+            name: samplePackName,
           },
         },
-      });
-
-      if (!userAndSamplePack) throw new Error("User not found");
-      const samplePack = userAndSamplePack.samplePacks.at(0);
-      if (!samplePack) throw new Error("Sample pack not found");
-      await tx.sample.deleteMany({
-        where: { samplePackId: samplePack.id },
-      });
-
-      await tx.samplePack.delete({
-        where: {
-          id: samplePack.id,
+        select: {
+          totalSize: true,
         },
       });
 
       const newStorageUsed =
-        BigInt(userAndSamplePack.storageUsed ?? 0) -
-        BigInt(samplePack.totalSize ?? 0);
+        BigInt(user.storageUsed ?? 0) -
+        BigInt(deletedSamplePack.totalSize ?? 0);
 
-      await tx.user.update({
-        where: {
-          userName,
-        },
+      console.log({
+        storageUsed: user.storageUsed,
+        newStorageUsed,
+        deletedSampleSize: deletedSamplePack.totalSize,
+      });
+
+      const updatedUser = await tx.user.update({
+        where: { id: user.id },
         data: {
           storageUsed: newStorageUsed,
         },
       });
-    });
 
+      console.log(updatedUser);
+    });
     return true;
   } catch (error) {
     await log.error("Error deleting sample pack", {
@@ -448,37 +442,49 @@ export async function doesUserHaveStripeAccount(userName: string) {
 export async function updateUserUsedStorage({
   userName,
   newFileSizeInBytes,
+  samplePackName,
 }: {
   userName: string;
   newFileSizeInBytes: bigint;
+  samplePackName: string;
 }) {
   try {
-    const userData = await prisma.user.findUnique({
-      where: {
-        userName,
-      },
-      select: {
-        storageUsed: true,
-      },
+    await prisma.$transaction(async (tx) => {
+      const userData = await tx.user.findUnique({
+        where: { userName },
+        select: { storageUsed: true, id: true },
+      });
+
+      if (!userData) throw new Error("User not found");
+
+      await tx.samplePack.update({
+        where: {
+          creatorId_name: {
+            creatorId: userData.id,
+            name: samplePackName,
+          },
+        },
+        data: { totalSize: newFileSizeInBytes },
+      });
+
+      const newStorageUsed = userData.storageUsed + BigInt(newFileSizeInBytes);
+      await tx.user.update({
+        where: {
+          userName,
+        },
+        data: {
+          storageUsed: newStorageUsed,
+        },
+      });
     });
 
-    if (!userData) throw new Error("User not found");
-    const newStorageUsed = userData.storageUsed + BigInt(newFileSizeInBytes);
-    const updatedUser = await prisma.user.update({
-      where: {
-        userName,
-      },
-      data: {
-        storageUsed: newStorageUsed,
-      },
-    });
-
-    return updatedUser;
+    return true;
   } catch (error) {
     await log.error("Error updating user storage used", {
       error,
       userName,
       newFileSizeInBytes,
+      samplePackName,
     });
 
     return null;

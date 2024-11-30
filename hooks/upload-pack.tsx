@@ -66,7 +66,7 @@ export function useUploadPack({
     isPending: updatedUserStoragePending,
   } = useMutation({
     mutationFn: async () => {
-      const { img, zipFile, samples } = formValues;
+      const { img, zipFile, samples, title } = formValues;
       const samplesSizeInBytes = samples.reduce(
         (acc, { file }) => acc + file.size,
         0
@@ -76,7 +76,10 @@ export function useUploadPack({
         img.size + zipFile.size + samplesSizeInBytes
       );
 
-      await updateUserUsedStorageAction({ newFileSizeInBytes });
+      await updateUserUsedStorageAction({
+        newFileSizeInBytes,
+        samplePackName: createSamplePackName(title),
+      });
     },
   });
 

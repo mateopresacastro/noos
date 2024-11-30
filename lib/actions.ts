@@ -383,6 +383,7 @@ export default async function setCountryAction(data: SetCountry) {
 
 const updateUserUsedStorageActionSchema = z.object({
   newFileSizeInBytes: z.bigint(),
+  samplePackName: z.string(),
 });
 
 type UpdateUserUsedStorageActionSchema = z.infer<
@@ -401,6 +402,7 @@ export async function updateUserUsedStorageAction(
     if (!user) throw new Error("User not found");
     const ok = await updateUserUsedStorage({
       userName: user.userName,
+      samplePackName: updateData.samplePackName,
       newFileSizeInBytes,
     });
 
