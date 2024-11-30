@@ -259,16 +259,6 @@ export async function addSampleToSamplePack(
   }
 }
 
-export async function deleteSample(sampleId: number) {
-  try {
-    return await prisma.sample.delete({
-      where: { id: sampleId },
-    });
-  } catch (error) {
-    await log.error("Error deleting sample:", { error });
-    return null;
-  }
-}
 
 export async function getSample(sampleId: number) {
   try {
