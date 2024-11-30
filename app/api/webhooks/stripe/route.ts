@@ -5,14 +5,17 @@ import { createSamplePackDownloadUrl } from "@/lib/aws/mod";
 import { getCustomerData, stripe } from "@/lib/stripe";
 import { STRIPE_WEBHOOK_SECRET } from "@/lib/cfg";
 import type Stripe from "stripe";
+import { increaseTimesSold } from "@/lib/db/mod";
 
 async function handleSuccessfulPaymentIntent(
   event: Stripe.PaymentIntentSucceededEvent
 ) {
   const metadata = event.data.object.metadata;
-  if (!metadata || !metadata.s3Key) {
+  if (!metadata || !metadata.s3Key || !metadata.stripeProductId) {
     throw new Error("Metadata not found. Cannot retrieve sample pack");
   }
+
+
   const paymentIntentId = event.data.object.id;
   const connectedAccountId = event.account;
   if (!paymentIntentId || !connectedAccountId) {
@@ -32,6 +35,7 @@ async function handleSuccessfulPaymentIntent(
   const downloadUrl = await createSamplePackDownloadUrl(metadata.s3Key);
   if (!downloadUrl) throw new Error("Error creating download url");
   await sendEmail(email, name, downloadUrl);
+  await increaseTimesSold(metadata.stripeProductId);
   await log.info(`${name} (${email}) just purchased a sample pack!`);
 }
 

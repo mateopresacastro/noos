@@ -13,6 +13,7 @@ export async function createSamplePack({
   url,
   stripePaymentLink,
   stripeProductId,
+  samples,
 }: {
   clerkId: string;
   name: string;
@@ -23,6 +24,10 @@ export async function createSamplePack({
   url: string;
   stripePaymentLink: string;
   stripeProductId: string;
+  samples: {
+    name: string;
+    url: string;
+  }[];
 }) {
   try {
     const user = await prisma.user.findUnique({
@@ -42,6 +47,13 @@ export async function createSamplePack({
         url,
         stripePaymentLink,
         stripeProductId,
+        samples: {
+          create: samples.map(({ name, url }, index) => ({
+            url,
+            title: name, // TODO fix inconsistencies on naming
+            order: index,
+          })),
+        },
       },
     });
 
@@ -178,44 +190,36 @@ export async function deleteSamplePack({
   userName: string;
 }) {
   try {
-    // TODO try to optimize this
-    const user = await prisma.user.findUnique({
-      where: { userName },
-      select: { id: true, storageUsed: true },
-    });
+    await prisma.$transaction(async (tx) => {
+      const user = await tx.user.findUnique({
+        where: { userName },
+        select: { id: true, storageUsed: true },
+      });
 
-    if (!user) throw new Error("User not found");
-    const samplePack = await prisma.samplePack.findFirst({
-      where: {
-        creatorId: user.id,
-        name: samplePackName,
-      },
-    });
+      if (!user) throw new Error("User not found");
 
-    if (!samplePack) throw new Error("Sample pack not found");
-    const deleteSamples = prisma.sample.deleteMany({
-      where: {
-        samplePackId: samplePack.id,
-      },
-    });
+      const deletedSamplePack = await tx.samplePack.delete({
+        where: {
+          creatorId_name: {
+            creatorId: user.id,
+            name: samplePackName,
+          },
+        },
+        select: {
+          totalSize: true,
+        },
+      });
 
-    const deleteSamplePack = prisma.samplePack.delete({
-      where: {
-        id: samplePack.id,
-      },
-    });
+      const newStorageUsed =
+        BigInt(user.storageUsed ?? 0) -
+        BigInt(deletedSamplePack.totalSize ?? 0);
 
-    await prisma.$transaction([deleteSamples, deleteSamplePack]);
-    const { totalSize } = samplePack;
-    const newStorageUsed =
-      BigInt(user.storageUsed ?? 0) - BigInt(totalSize ?? 0);
-    await prisma.user.update({
-      where: {
-        userName,
-      },
-      data: {
-        storageUsed: newStorageUsed,
-      },
+      await tx.user.update({
+        where: { id: user.id },
+        data: {
+          storageUsed: newStorageUsed,
+        },
+      });
     });
 
     return true;
@@ -225,53 +229,6 @@ export async function deleteSamplePack({
       samplePackName,
       userName,
     });
-    return null;
-  }
-}
-
-export async function addSampleToSamplePack(
-  samplePackId: number,
-  samples: { url: string; name: string }[]
-) {
-  try {
-    const newSamples = await prisma.sample.createMany({
-      data: samples.map(({ url, name }, index) => ({
-        url,
-        samplePackId,
-        title: name, // TODO fix inconsistencies on naming
-        order: index,
-      })),
-    });
-    if (newSamples.count === 0) throw new Error("No samples created");
-    return newSamples;
-  } catch (error) {
-    await log.error("Error adding sample to sample pack:", {
-      error,
-      samplePackId,
-      samples,
-    });
-    return null;
-  }
-}
-
-export async function deleteSample(sampleId: number) {
-  try {
-    return await prisma.sample.delete({
-      where: { id: sampleId },
-    });
-  } catch (error) {
-    await log.error("Error deleting sample:", { error });
-    return null;
-  }
-}
-
-export async function getSample(sampleId: number) {
-  try {
-    return await prisma.sample.findUnique({
-      where: { id: sampleId },
-    });
-  } catch (error) {
-    await log.error("Error retrieving sample:", { error, sampleId });
     return null;
   }
 }
@@ -465,37 +422,49 @@ export async function doesUserHaveStripeAccount(userName: string) {
 export async function updateUserUsedStorage({
   userName,
   newFileSizeInBytes,
+  samplePackName,
 }: {
   userName: string;
   newFileSizeInBytes: bigint;
+  samplePackName: string;
 }) {
   try {
-    const userData = await prisma.user.findUnique({
-      where: {
-        userName,
-      },
-      select: {
-        storageUsed: true,
-      },
+    await prisma.$transaction(async (tx) => {
+      const userData = await tx.user.findUnique({
+        where: { userName },
+        select: { storageUsed: true, id: true },
+      });
+
+      if (!userData) throw new Error("User not found");
+
+      await tx.samplePack.update({
+        where: {
+          creatorId_name: {
+            creatorId: userData.id,
+            name: samplePackName,
+          },
+        },
+        data: { totalSize: newFileSizeInBytes },
+      });
+
+      const newStorageUsed = userData.storageUsed + BigInt(newFileSizeInBytes);
+      await tx.user.update({
+        where: {
+          userName,
+        },
+        data: {
+          storageUsed: newStorageUsed,
+        },
+      });
     });
 
-    if (!userData) throw new Error("User not found");
-    const newStorageUsed = userData.storageUsed + BigInt(newFileSizeInBytes);
-    const updatedUser = await prisma.user.update({
-      where: {
-        userName,
-      },
-      data: {
-        storageUsed: newStorageUsed,
-      },
-    });
-
-    return updatedUser;
+    return true;
   } catch (error) {
     await log.error("Error updating user storage used", {
       error,
       userName,
       newFileSizeInBytes,
+      samplePackName,
     });
 
     return null;
@@ -520,5 +489,29 @@ export async function getUserUsedStorage(userName: string) {
       error,
       userName,
     });
+  }
+}
+
+export async function increaseTimesSold(stripeProductId: string) {
+  try {
+    const updatedSamplePack = await prisma.samplePack.update({
+      where: {
+        stripeProductId,
+      },
+      data: {
+        timesSold: {
+          increment: 1,
+        },
+      },
+    });
+
+    return updatedSamplePack;
+  } catch (error) {
+    await log.error("Error increasing times sold", {
+      error,
+      stripeProductId,
+    });
+
+    return null;
   }
 }

@@ -8,27 +8,31 @@ import log from "@/lib/log";
 
 export const stripe = new Stripe(STRIPE_SECRET_KEY);
 
+type CreatePaymentLink = {
+  priceId: string;
+  stripeConnectedAccountId: string;
+  userName: string;
+  stripeProductId: string;
+  key?: string;
+};
+
 export async function createPaymentLink({
   priceId,
   stripeConnectedAccountId,
   userName,
-  productId,
+  stripeProductId,
   key,
-}: {
-  priceId: string;
-  stripeConnectedAccountId: string;
-  userName: string;
-  productId: string;
-  key?: string;
-}) {
+}: CreatePaymentLink) {
   try {
-    const metadata: {
+    type Metadata = {
       ownerUserName: string;
-      productId: string;
+      stripeProductId: string;
       s3Key?: string;
-    } = {
+    };
+
+    const metadata: Metadata = {
       ownerUserName: userName,
-      productId,
+      stripeProductId,
     };
 
     // To not reset it when updating the pack
@@ -259,7 +263,7 @@ export async function updateProduct({
       if (!newPrice) throw new Error("Error creating price");
       newPaymentLink = await createPaymentLink({
         priceId: newPrice.id,
-        productId: stripeProductId,
+        stripeProductId,
         stripeConnectedAccountId,
         userName,
       });
@@ -414,5 +418,24 @@ export async function hasRequirementsDue() {
   } catch (error) {
     await log.error("Error checking for requirements due", { error });
     return true;
+  }
+}
+
+export async function deleteStripeProduct({
+  stripeProductId,
+  stripeConnectedAccountId,
+}: {
+  stripeProductId: string;
+  stripeConnectedAccountId: string;
+}) {
+  try {
+    const deletedProduct = await stripe.products.del(stripeProductId, {
+      stripeAccount: stripeConnectedAccountId,
+    });
+
+    return deletedProduct;
+  } catch (error) {
+    await log.error("Error deleting stripe product", { error });
+    return null;
   }
 }

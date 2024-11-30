@@ -25,6 +25,7 @@ await prisma.user.create({
           imgUrl,
           name: "drum-kit-essentials",
           url: "https://www.example.com/drum-kit-essentials",
+          stripeProductId: "drum-kit-essentials",
           samples: {
             create: Array(7)
               .fill(null)
@@ -41,6 +42,7 @@ await prisma.user.create({
           imgUrl,
           name: "synth-wave-collection",
           url: "https://www.example.com/synth-wave-collection",
+          stripeProductId: "synth-wave-collection",
           samples: {
             create: Array(7)
               .fill(null)
@@ -57,6 +59,7 @@ await prisma.user.create({
           imgUrl,
           name: "bass-loops-pro",
           url: "https://www.example.com/bass-loops-pro",
+          stripeProductId: "bass-loops-pro",
           samples: {
             create: Array(7)
               .fill(null)
@@ -87,6 +90,7 @@ await prisma.user.create({
           imgUrl,
           name: "drum-kit-essentials",
           url: "https://www.example.com/drum-kit-essentials",
+          stripeProductId: "drum-kit-essentials",
           samples: {
             create: Array(7)
               .fill(null)
@@ -102,6 +106,7 @@ await prisma.user.create({
           price: 24.99,
           imgUrl,
           name: "synth-wave-collection",
+          stripeProductId: "synth-wave-collection",
           url: "https://www.example.com/synth-wave-collection",
           samples: {
             create: Array(7)
@@ -119,6 +124,7 @@ await prisma.user.create({
           imgUrl,
           name: "bass-loops-pro",
           url: "https://www.example.com/bass-loops-pro",
+          stripeProductId: "bass-loops-pro",
           samples: {
             create: Array(7)
               .fill(null)

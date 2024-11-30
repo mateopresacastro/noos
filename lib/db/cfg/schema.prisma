@@ -29,7 +29,7 @@ model SamplePack {
   imgUrl            String
   name              String
   stripePaymentLink String        @default("")
-  stripeProductId   String        @default("")
+  stripeProductId   String        @unique
   url               String
   description       String?
   price             Float         @default(0.0)
@@ -37,7 +37,8 @@ model SamplePack {
   creator           User          @relation(fields: [creatorId], references: [id], onDelete: Cascade)
   creatorId         Int
   createdAt         DateTime      @default(now())
-  totalSize         BigInt           @default(0)
+  totalSize         BigInt        @default(0)
+  timesSold         Int           @default(0)
   Transaction       Transaction[]
 
   @@unique([creatorId, name])
