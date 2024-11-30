@@ -16,11 +16,11 @@ import {
   createConnectedAccount,
   createPaymentLink,
   createProduct,
+  deleteStripeProduct,
   updateProduct,
 } from "@/lib/stripe";
 
 import {
-  addSampleToSamplePack,
   createSamplePack,
   deleteSamplePack,
   readUser,
@@ -50,12 +50,14 @@ export async function deleteSamplePackAction({
     const user = await readUser(userId);
     if (!user) throw new Error("User not found");
     if (user.userName !== userName) throw new Error("User not authorized");
-    const deletedPack = await deleteSamplePack({
+    const ok = await deleteSamplePack({
       samplePackName,
       userName,
     });
 
-    if (!deletedPack) throw new Error("Error deleting sample pack");
+    if (!ok) throw new Error("Error deleting sample pack");
+    if (!user.stripeId) throw new Error("User not linked to stripe");
+    // TODO delete stripe product
   } catch (error) {
     await log.error("Error updating sample pack", {
       error,
@@ -186,7 +188,17 @@ export async function persistSamplePackDataAction(
       key,
     });
 
-    if (!stripePaymentLink) throw new Error("Error creating payment link");
+    if (!stripePaymentLink) {
+      await deleteStripeProduct({
+        stripeProductId: stripeProduct.product.id,
+        stripeConnectedAccountId: userData.stripeId,
+      });
+
+      throw new Error(
+        `Error creating payment link. Stripe product deleted: ${stripeProduct.product.id}`
+      );
+    }
+
     const newSamplePack = await createSamplePack({
       clerkId: user.id,
       name,
@@ -197,15 +209,20 @@ export async function persistSamplePackDataAction(
       url,
       stripePaymentLink,
       stripeProductId: stripeProduct.product.id,
+      samples,
     });
 
-    if (!newSamplePack) throw new Error("Error creating sample pack");
-    const samplesCreated = await addSampleToSamplePack(
-      newSamplePack.id,
-      samples
-    );
+    if (!newSamplePack) {
+      await deleteStripeProduct({
+        stripeProductId: stripeProduct.product.id,
+        stripeConnectedAccountId: userData.stripeId,
+      });
 
-    if (!samplesCreated) throw new Error("Error creating samples");
+      throw new Error(
+        `Error creating sample pack. Stripe product deleted: ${stripeProduct.product.id}`
+      );
+    }
+
     return true;
   } catch (error) {
     await log.error("Error persisting sample pack data", {
@@ -227,6 +244,7 @@ export async function createPreSignedUrlAction(numOfSamples: number) {
       );
     }
 
+    // TODO optimize this
     const zipFileSignedUrl = await createPresignedUrl({
       bucketName: AWS_PRIVATE_BUCKET_NAME,
       fileType: "zip",

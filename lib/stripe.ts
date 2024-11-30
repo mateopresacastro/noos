@@ -420,3 +420,22 @@ export async function hasRequirementsDue() {
     return true;
   }
 }
+
+export async function deleteStripeProduct({
+  stripeProductId,
+  stripeConnectedAccountId,
+}: {
+  stripeProductId: string;
+  stripeConnectedAccountId: string;
+}) {
+  try {
+    const deletedProduct = await stripe.products.del(stripeProductId, {
+      stripeAccount: stripeConnectedAccountId,
+    });
+
+    return deletedProduct;
+  } catch (error) {
+    await log.error("Error deleting stripe product", { error });
+    return null;
+  }
+}

@@ -13,6 +13,7 @@ export async function createSamplePack({
   url,
   stripePaymentLink,
   stripeProductId,
+  samples,
 }: {
   clerkId: string;
   name: string;
@@ -23,6 +24,10 @@ export async function createSamplePack({
   url: string;
   stripePaymentLink: string;
   stripeProductId: string;
+  samples: {
+    name: string;
+    url: string;
+  }[];
 }) {
   try {
     const user = await prisma.user.findUnique({
@@ -42,6 +47,13 @@ export async function createSamplePack({
         url,
         stripePaymentLink,
         stripeProductId,
+        samples: {
+          create: samples.map(({ name, url }, index) => ({
+            url,
+            title: name, // TODO fix inconsistencies on naming
+            order: index,
+          })),
+        },
       },
     });
 
@@ -202,52 +214,20 @@ export async function deleteSamplePack({
         BigInt(user.storageUsed ?? 0) -
         BigInt(deletedSamplePack.totalSize ?? 0);
 
-      console.log({
-        storageUsed: user.storageUsed,
-        newStorageUsed,
-        deletedSampleSize: deletedSamplePack.totalSize,
-      });
-
-      const updatedUser = await tx.user.update({
+      await tx.user.update({
         where: { id: user.id },
         data: {
           storageUsed: newStorageUsed,
         },
       });
-
-      console.log(updatedUser);
     });
+
     return true;
   } catch (error) {
     await log.error("Error deleting sample pack", {
       error,
       samplePackName,
       userName,
-    });
-    return null;
-  }
-}
-
-export async function addSampleToSamplePack(
-  samplePackId: number,
-  samples: { url: string; name: string }[]
-) {
-  try {
-    const newSamples = await prisma.sample.createMany({
-      data: samples.map(({ url, name }, index) => ({
-        url,
-        samplePackId,
-        title: name, // TODO fix inconsistencies on naming
-        order: index,
-      })),
-    });
-    if (newSamples.count === 0) throw new Error("No samples created");
-    return newSamples;
-  } catch (error) {
-    await log.error("Error adding sample to sample pack:", {
-      error,
-      samplePackId,
-      samples,
     });
     return null;
   }

@@ -130,6 +130,7 @@ describe("DB Queries", () => {
     clerkId: testUser.clerkId,
     stripePaymentLink: "http://example.com/stripe-payment-link",
     stripeProductId: "test-stripe-product-id",
+    samples: [{ name: "sample1", url: "http://example.com/sample1.jpg" }],
   };
 
   describe("Sample pack", () => {
