@@ -522,3 +522,27 @@ export async function getUserUsedStorage(userName: string) {
     });
   }
 }
+
+export async function increaseTimesSold(stripeProductId: string) {
+  try {
+    const updatedSamplePack = await prisma.samplePack.update({
+      where: {
+        stripeProductId,
+      },
+      data: {
+        timesSold: {
+          increment: 1,
+        },
+      },
+    });
+
+    return updatedSamplePack;
+  } catch (error) {
+    await log.error("Error increasing times sold", {
+      error,
+      stripeProductId,
+    });
+
+    return null;
+  }
+}

@@ -181,7 +181,7 @@ export async function persistSamplePackDataAction(
     const stripePaymentLink = await createPaymentLink({
       priceId: stripeProduct.priceId,
       stripeConnectedAccountId: userData.stripeId,
-      productId: stripeProduct.product.id,
+      stripeProductId: stripeProduct.product.id,
       userName: user.username,
       key,
     });
