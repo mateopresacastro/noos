@@ -259,18 +259,6 @@ export async function addSampleToSamplePack(
   }
 }
 
-
-export async function getSample(sampleId: number) {
-  try {
-    return await prisma.sample.findUnique({
-      where: { id: sampleId },
-    });
-  } catch (error) {
-    await log.error("Error retrieving sample:", { error, sampleId });
-    return null;
-  }
-}
-
 type CreateUser = {
   clerkId: string;
   name: string;
