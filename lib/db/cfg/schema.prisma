@@ -27,7 +27,7 @@ model SamplePack {
   id                Int           @id @default(autoincrement())
   title             String
   imgUrl            String
-  name              String
+  name              String        @unique
   stripePaymentLink String        @default("")
   stripeProductId   String        @unique
   url               String

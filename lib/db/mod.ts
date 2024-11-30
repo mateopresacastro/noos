@@ -178,44 +178,49 @@ export async function deleteSamplePack({
   userName: string;
 }) {
   try {
-    // TODO try to optimize this
-    const user = await prisma.user.findUnique({
-      where: { userName },
-      select: { id: true, storageUsed: true },
-    });
+    await prisma.$transaction(async (tx) => {
+      const userAndSamplePack = await tx.user.findUnique({
+        where: { userName },
+        select: {
+          id: true,
+          storageUsed: true,
+          samplePacks: {
+            where: {
+              name: samplePackName,
+            },
+            select: {
+              totalSize: true,
+              id: true,
+            },
+          },
+        },
+      });
 
-    if (!user) throw new Error("User not found");
-    const samplePack = await prisma.samplePack.findFirst({
-      where: {
-        creatorId: user.id,
-        name: samplePackName,
-      },
-    });
+      if (!userAndSamplePack) throw new Error("User not found");
+      const samplePack = userAndSamplePack.samplePacks.at(0);
+      if (!samplePack) throw new Error("Sample pack not found");
+      await tx.sample.deleteMany({
+        where: { samplePackId: samplePack.id },
+      });
 
-    if (!samplePack) throw new Error("Sample pack not found");
-    const deleteSamples = prisma.sample.deleteMany({
-      where: {
-        samplePackId: samplePack.id,
-      },
-    });
+      await tx.samplePack.delete({
+        where: {
+          id: samplePack.id,
+        },
+      });
 
-    const deleteSamplePack = prisma.samplePack.delete({
-      where: {
-        id: samplePack.id,
-      },
-    });
+      const newStorageUsed =
+        BigInt(userAndSamplePack.storageUsed ?? 0) -
+        BigInt(samplePack.totalSize ?? 0);
 
-    await prisma.$transaction([deleteSamples, deleteSamplePack]);
-    const { totalSize } = samplePack;
-    const newStorageUsed =
-      BigInt(user.storageUsed ?? 0) - BigInt(totalSize ?? 0);
-    await prisma.user.update({
-      where: {
-        userName,
-      },
-      data: {
-        storageUsed: newStorageUsed,
-      },
+      await tx.user.update({
+        where: {
+          userName,
+        },
+        data: {
+          storageUsed: newStorageUsed,
+        },
+      });
     });
 
     return true;
