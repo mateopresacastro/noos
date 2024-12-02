@@ -23,6 +23,12 @@ jobs:
       AWS_PUBLIC_BUCKET_NAME: noos-public-assets
       AWS_PUBLIC_BUCKET_URL: mock-aws-public-bucket-url
       STRIPE_WEBHOOK_SECRET: mock-stripe-webhook-secret
+      NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: ${{secrets.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY}}
+      CLERK_SECRET_KEY: ${{secrets.CLERK_SECRET_KEY}}
+      NEXT_PUBLIC_CLERK_SIGN_IN_URL: "/sign-in"
+      NEXT_PUBLIC_CLERK_SIGN_UP_URL: "/sign-up"
+      NEXT_PUBLIC_CLERK_SIGN_UP_FALLBACK_REDIRECT_URL: "/country"
+      NEXT_PUBLIC_CLERK_SIGN_IN_FALLBACK_REDIRECT_URL: "/dashboard/general"
       FORCE_COLOR: 1
     steps:
       - name: Checkout code

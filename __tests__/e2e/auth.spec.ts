@@ -1,26 +1,26 @@
 import { test, expect } from "@playwright/test";
 
 test("Protected pages", async ({ page }) => {
-  await page.goto("http://localhost:3000/");
+  await page.goto("/");
   await page.getByRole("button", { name: "Start Selling" }).waitFor();
   await page.getByRole("button", { name: "Start Selling" }).click();
   await expect(
     page.getByRole("heading", { name: "Create your account" })
   ).toBeVisible();
-  await page.goto("http://localhost:3000/");
+  await page.goto("/");
   await page.getByRole("button", { name: "Sign up" }).click();
   await expect(
     page.getByRole("heading", { name: "Create your account" })
   ).toBeVisible();
-  await page.goto("http://localhost:3000/dashboard");
+  await page.goto("/dashboard");
   await expect(
     page.getByRole("heading", { name: "This page could not be found." })
   ).toBeVisible();
-  await page.goto("http://localhost:3000/dashboard/general");
+  await page.goto("/dashboard/general");
   await expect(
     page.getByRole("heading", { name: "This page could not be found." })
   ).toBeVisible();
-  await page.goto("http://localhost:3000/upload");
+  await page.goto("/upload");
   await expect(
     page.getByRole("heading", { name: "This page could not be found." })
   ).toBeVisible();
