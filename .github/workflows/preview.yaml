@@ -9,6 +9,7 @@ on:
 jobs:
   Test:
     runs-on: ubuntu-latest
+    environment: Preview
     env:
       DATABASE_URL: postgresql://yourusername:yourpassword@localhost:5432/yourdatabase
       DIRECT_URL: postgresql://yourusername:yourpassword@localhost:5432/yourdatabase
