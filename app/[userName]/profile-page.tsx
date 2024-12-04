@@ -45,7 +45,7 @@ export default function ProfilePage({
         <span className="block text-xl font-bold md:text-3xl will-change-transform">
           {data?.name}
         </span>
-        {user ? (
+        {user && user.username === userName ? (
           <button
             onClick={() => clerk.openUserProfile()}
             data-testid="settings-button"

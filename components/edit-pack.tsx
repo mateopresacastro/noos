@@ -114,6 +114,7 @@ export default function EditPackButton({
       <DialogTrigger
         asChild
         className="cursor-pointer hover:scale-110 active:scale-90 active:text-neutral-300 mt-2"
+        data-testid="update-pack-button"
       >
         <EllipsisVertical size={20} />
       </DialogTrigger>
