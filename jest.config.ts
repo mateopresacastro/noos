@@ -12,8 +12,8 @@ const config: Config = {
   testEnvironment: "node",
   setupFilesAfterEnv: ["<rootDir>/jest.setup.ts"],
   testPathIgnorePatterns: [
-    "<rootDir>/__tests__/utils.ts",
-    "<rootDir>/__tests__/e2e",
+    "<rootDir>/src/__tests__/utils.ts",
+    "<rootDir>/src/__tests__/e2e",
   ],
 };
 

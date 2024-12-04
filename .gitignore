@@ -40,14 +40,15 @@ yarn-error.log*
 next-env.d.ts
 
 # terraform
-/terraform/.terraform
-/terraform/*.tfstate
-/terraform/*.tfstate.backup
+src/terraform/.terraform
+src/terraform/*.tfstate
+src/terraform/*.tfstate.backup
 
 /volume
 /.swc
 node_modules/
 /test-results/
-/playwright-report/
+
 /blob-report/
 /playwright/.cache/
+/playwright-report

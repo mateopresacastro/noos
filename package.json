@@ -16,8 +16,8 @@
     "prepare": "husky"
   },
   "prisma": {
-    "schema": "lib/db/cfg/schema.prisma",
-    "seed": "node --experimental-strip-types lib/db/cfg/seed.ts"
+    "schema": "src/db/cfg/schema.prisma",
+    "seed": "node --experimental-strip-types src//db/cfg/seed.ts"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.685.0",
