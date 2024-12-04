@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "docker compose up -d --remove-orphans --quiet-pul && npm run db:push && npm run db:seed && next dev --turbo",
+    "dev": "docker compose up -d --remove-orphans --quiet-pull && npm run db:push && npm run db:seed && next dev --turbo",
     "build": "prisma generate && next build",
     "start": "next start",
     "lint": "next lint",
