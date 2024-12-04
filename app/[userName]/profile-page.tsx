@@ -48,6 +48,7 @@ export default function ProfilePage({
         {user ? (
           <button
             onClick={() => clerk.openUserProfile()}
+            data-testid="settings-button"
             className="absolute -right-7 top-[0.8rem] hover:scale-110 active:scale-90 active:text-neutral-300 transition-all duration-150 hover:text-neutral-300 text-neutral-400"
           >
             <Settings className="size-4" />
