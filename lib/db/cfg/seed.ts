@@ -5,138 +5,59 @@ const prisma = new PrismaClient();
 const imgUrl =
   "https://img.clerk.com/eyJ0eXBlIjoicHJveHkiLCJzcmMiOiJodHRwczovL2ltYWdlcy5jbGVyay5kZXYvdXBsb2FkZWQvaW1nXzJvREhnRTdsdnVGQ09aRmN3R3lLWXZXaThqcyJ9";
 
-await prisma.sample.deleteMany();
-await prisma.samplePack.deleteMany();
-await prisma.user.deleteMany();
+const sampleUrl =
+  "https://d14g83wf83qv4z.cloudfront.net/uploads/samples/767faad9b5a73d4efd34fc0aeb66f6c8";
 
-await prisma.user.create({
-  data: {
-    clerkId: "user_1",
-    email: "user1@example.com",
-    userName: "producer1",
-    imgUrl: imgUrl,
-    name: "Producer One",
-    samplePacks: {
-      create: [
-        {
-          title: "Drum Kit Essentials",
-          description: "Essential drum sounds for any genre",
-          price: 19.99,
-          imgUrl,
-          name: "drum-kit-essentials",
-          url: "https://www.example.com/drum-kit-essentials",
-          stripeProductId: "drum-kit-essentials",
-          samples: {
-            create: Array(7)
-              .fill(null)
-              .map((_, i) => ({
-                title: `Drum ${i + 1}`,
-                url: imgUrl,
-              })),
+try {
+  await prisma.user.create({
+    data: {
+      clerkId: "user-1",
+      email: process.env.CLERK_TEST_USER_EMAIL!,
+      userName: process.env.CLERK_TEST_USERNAME!,
+      imgUrl: imgUrl,
+      name: "producer-1",
+      samplePacks: {
+        create: [
+          {
+            title: "sample-pack-1",
+            description: "desc-1",
+            price: 19.99,
+            imgUrl,
+            name: "sample-pack-1",
+            url: "https://www.example.com/drum-kit-essentials",
+            stripeProductId: "sample-pack-1",
+            samples: {
+              create: Array(7)
+                .fill(null)
+                .map((_, i) => ({
+                  title: `title-${i + 1}`,
+                  url: sampleUrl,
+                })),
+            },
           },
-        },
-        {
-          title: "Synth Wave Collection",
-          description: "Retro synth sounds from the 80s",
-          price: 24.99,
-          imgUrl,
-          name: "synth-wave-collection",
-          url: "https://www.example.com/synth-wave-collection",
-          stripeProductId: "synth-wave-collection",
-          samples: {
-            create: Array(7)
-              .fill(null)
-              .map((_, i) => ({
-                title: `Synth ${i + 1}`,
-                url: imgUrl,
-              })),
+          {
+            title: "sample-pack-2",
+            description: "desc-2",
+            price: 19.99,
+            imgUrl,
+            name: "sample-pack-2",
+            url: "https://www.example.com/drum-kit-essentials",
+            stripeProductId: "sample-pack-2",
+            samples: {
+              create: Array(7)
+                .fill(null)
+                .map((_, i) => ({
+                  title: `title-${i + 1}`,
+                  url: sampleUrl,
+                })),
+            },
           },
-        },
-        {
-          title: "Bass Loops Pro",
-          description: "Professional bass loops for producers",
-          price: 29.99,
-          imgUrl,
-          name: "bass-loops-pro",
-          url: "https://www.example.com/bass-loops-pro",
-          stripeProductId: "bass-loops-pro",
-          samples: {
-            create: Array(7)
-              .fill(null)
-              .map((_, i) => ({
-                title: `Bass ${i + 1}`,
-                url: imgUrl,
-              })),
-          },
-        },
-      ],
+        ],
+      },
     },
-  },
-});
-
-await prisma.user.create({
-  data: {
-    clerkId: "user_2",
-    email: "user2@example.com",
-    userName: "producer2",
-    imgUrl: imgUrl,
-    name: "Producer Two",
-    samplePacks: {
-      create: [
-        {
-          title: "Drum Kit Essentials",
-          description: "Essential drum sounds for any genre",
-          price: 19.99,
-          imgUrl,
-          name: "drum-kit-essentials",
-          url: "https://www.example.com/drum-kit-essentials",
-          stripeProductId: "drum-kit-essentials",
-          samples: {
-            create: Array(7)
-              .fill(null)
-              .map((_, i) => ({
-                title: `Drum ${i + 1}`,
-                url: imgUrl,
-              })),
-          },
-        },
-        {
-          title: "Synth Wave Collection",
-          description: "Retro synth sounds from the 80s",
-          price: 24.99,
-          imgUrl,
-          name: "synth-wave-collection",
-          stripeProductId: "synth-wave-collection",
-          url: "https://www.example.com/synth-wave-collection",
-          samples: {
-            create: Array(7)
-              .fill(null)
-              .map((_, i) => ({
-                title: `Synth ${i + 1}`,
-                url: imgUrl,
-              })),
-          },
-        },
-        {
-          title: "Bass Loops Pro",
-          description: "Professional bass loops for producers",
-          price: 29.99,
-          imgUrl,
-          name: "bass-loops-pro",
-          url: "https://www.example.com/bass-loops-pro",
-          stripeProductId: "bass-loops-pro",
-          samples: {
-            create: Array(7)
-              .fill(null)
-              .map((_, i) => ({
-                title: `Bass ${i + 1}`,
-                url: imgUrl,
-              })),
-          },
-        },
-      ],
-    },
-  },
-});
+  });
+} catch (error) {
+  console.error("Error seeding database:", error);
+}
 
 await prisma.$disconnect();
