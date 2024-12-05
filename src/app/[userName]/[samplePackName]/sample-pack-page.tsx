@@ -7,7 +7,7 @@ import Sample from "@/components/sample";
 import NumberFlow from "@number-flow/react";
 import { Button } from "@/components/ui/button";
 import { SamplePack } from "@/db/mod";
-import { Separator } from "@radix-ui/react-separator";
+import { Separator } from "@/components/ui/separator";
 import { motion } from "motion/react";
 import { container, item } from "@/anim";
 
@@ -101,7 +101,8 @@ export default function SamplePackPage({
           variants={item}
           className="mt-10 w-full hidden sm:block will-change-transform"
         >
-          <span className="ml-14 text-neutral-400 mb-3 text-sm">Title</span>
+          <span className="ml-5 text-neutral-400 mb-3 text-sm">#</span>
+          <span className="ml-6 text-neutral-400 mb-3 text-sm">Title</span>
           <Separator className="mb-3 mt-2" />
         </motion.div>
         <div className="w-full flex flex-col pt-10 sm:pt-0">

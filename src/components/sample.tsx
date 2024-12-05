@@ -7,12 +7,14 @@ import { FaPlay } from "react-icons/fa";
 import { usePlayerStore } from "@/zustand/store";
 import { AnimatePresence } from "framer-motion";
 import type { SamplePack } from "@/db/mod";
+import { useState } from "react";
 
 export default function Sample({
   url,
   title,
   userName,
   wholeSamplePack,
+  num,
 }: {
   url: string;
   title: string;
@@ -20,6 +22,7 @@ export default function Sample({
   num?: number;
   wholeSamplePack: SamplePack;
 }) {
+  const [hovering, setHovering] = useState(false);
   const {
     playingSampleUrl,
     isPlaying,
@@ -68,6 +71,8 @@ export default function Sample({
       )}
       onClick={handleClick}
       onDoubleClick={handleDoubleClick}
+      onMouseEnter={() => setHovering(true)}
+      onMouseLeave={() => setHovering(false)}
     >
       <div className="flex items-center justify-start">
         <div
@@ -79,9 +84,15 @@ export default function Sample({
               <Fade id="music-bars">
                 <MusicBars />
               </Fade>
-            ) : (
+            ) : hovering ? (
               <Fade id="play">
                 <FaPlay size={12} />
+              </Fade>
+            ) : (
+              <Fade id="num">
+                <span className="font-mono text-xs text-neutral-400">
+                  {num}
+                </span>{" "}
               </Fade>
             )}
           </AnimatePresence>
