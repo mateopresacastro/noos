@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { resize } from "@/utils";
 import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
 
 import {
   DropdownMenu,
@@ -20,7 +21,6 @@ import {
   useUser,
   useClerk,
 } from "@clerk/nextjs";
-import { useRouter } from "next/navigation";
 
 export default function Clerk() {
   const { user } = useUser();
@@ -73,7 +73,7 @@ export default function Clerk() {
                 className="rounded-full object-cover size-7 hover:opacity-80 transition-opacity duration-150 active:opacity-60"
               />
             </DropdownMenuTrigger>
-            <DropdownMenuContent className="dark:bg-neutral-900 mt-2 rounded-xl">
+            <DropdownMenuContent className="dark:bg-neutral-900 mt-2 rounded-xl mr-2">
               <DropdownMenuItem
                 className="text-sm rounded-lg cursor-pointer"
                 onClick={() => router.push(`/${userName}`)}
