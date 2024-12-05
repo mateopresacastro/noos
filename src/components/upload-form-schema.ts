@@ -1,9 +1,10 @@
 import { z } from "zod";
-
-const FIVE_GB_IN_BYTES = 5000 * 1024 * 1024;
-const TWENTY_MB_IN_BYTES = 20 * 1024 * 1024;
-const TEN_MB_IN_BYTES = 10 * 1024 * 1024;
-const MAX_NUM_OF_SAMPLES = 100;
+import {
+  TEN_MB_IN_BYTES,
+  FIVE_GB_IN_BYTES,
+  TWENTY_MB_IN_BYTES,
+  MAX_NUM_OF_SAMPLES,
+} from "@/consts";
 
 export type SampleFile = {
   file: File;

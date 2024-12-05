@@ -59,7 +59,7 @@ export default function StepSix({
           key="preview-form"
         >
           {values.img && (
-            <div className="max-w-80 max-h-80 w-full mx-auto">
+            <div className="max-w-80 max-h-80 w-full mx-auto aspect-square">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={URL.createObjectURL(values.img)}
