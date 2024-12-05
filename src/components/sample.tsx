@@ -95,7 +95,7 @@ export default function Sample({
               <Fade id="num">
                 <span className="font-mono text-xs text-neutral-400">
                   {num}
-                </span>{" "}
+                </span>
               </Fade>
             )}
           </AnimatePresence>

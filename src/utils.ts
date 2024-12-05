@@ -76,7 +76,7 @@ export function getAudioDuration(url: string): Promise<number> {
 export function formatDuration(seconds: number) {
   const mins = Math.floor(seconds / 60);
   const secs = Math.floor(seconds % 60);
-  return `${mins.toString().padStart(2, "0")}:${secs
+  return `${mins.toString().padStart(1, "0")}:${secs
     .toString()
     .padStart(2, "0")}`;
 }

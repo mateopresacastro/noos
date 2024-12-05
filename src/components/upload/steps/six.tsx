@@ -29,7 +29,7 @@ export default function StepSix({
           key="uploading-files"
           className="w-full flex items-center justify-center gap-3 flex-col py-20"
         >
-          <Loader className="animate-spin" />
+          <Loader className="animate-spin text-neutral-500" />
           <p className="text-sm text-neutral-400">
             Uploading files, this can take a couple of minutes...
           </p>
