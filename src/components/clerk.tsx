@@ -84,7 +84,7 @@ export default function Clerk() {
                 className="text-sm rounded-lg cursor-pointer"
                 onClick={() => clerk.signOut()}
               >
-                Log Out
+                Sign out
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
