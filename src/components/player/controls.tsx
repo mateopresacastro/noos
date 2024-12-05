@@ -66,7 +66,7 @@ function TimeDisplay({ duration }: { duration: number }) {
     />
   );
   return (
-    <span className="flex">
+    <span className="flex font-mono">
       {AnimatedMinutes}:{AnimatedSeconds}
     </span>
   );
