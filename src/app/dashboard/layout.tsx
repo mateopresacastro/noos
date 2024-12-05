@@ -29,7 +29,7 @@ export default async function Layout({
         <AppSidebar>
           <StripeRequirementsBadge />
         </AppSidebar>
-        <div className="flex flex-col items-start justify-start w-full pb-40 ml-4">
+        <div className="flex flex-col items-start justify-start w-full pb-40 ml-0 md:ml-4">
           <AppSidebarTrigger />
           {children}
         </div>

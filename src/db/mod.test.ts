@@ -1,4 +1,4 @@
-import prisma from "@/db/cfg/client";
+import prisma from "@/db/client";
 import {
   createUser,
   readUser,

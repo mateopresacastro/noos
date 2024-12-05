@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+import { Prisma, PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
@@ -57,7 +57,13 @@ try {
     },
   });
 } catch (error) {
-  console.error("Error seeding database:", error);
+  if (
+    !(error instanceof Prisma.PrismaClientKnownRequestError) ||
+    error.code !== "P2002"
+  ) {
+    throw error;
+  }
+  console.log("The database is already seeded.");
 }
 
 await prisma.$disconnect();

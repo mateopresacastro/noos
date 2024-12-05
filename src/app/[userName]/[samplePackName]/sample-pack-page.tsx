@@ -94,7 +94,7 @@ export default function SamplePackPage({
             value={Number(samplePack.price.toFixed(2))}
             format={{ style: "currency", currency: "USD" }}
             locales="en-US"
-            className="text-neutral-50 sm:pl-5 text-xl font-bold tracking-tighter"
+            className="text-neutral-50 sm:pl-5 text-xl font-bold tracking-tighter font-mono"
           />
         </motion.div>
         <motion.div

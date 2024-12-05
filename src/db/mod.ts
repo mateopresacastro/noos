@@ -1,6 +1,6 @@
 import "server-only";
 import log from "@/log";
-import prisma from "@/db/cfg/client";
+import prisma from "@/db/client";
 import { createSamplePackName } from "@/utils";
 
 export async function createSamplePack({

@@ -12,15 +12,15 @@ export default function StorageUsed({ storageUsed }: { storageUsed: bigint }) {
   ).toFixed(2);
 
   return (
-    <div className="flex flex-col space-y-2 rounded-xl p-5 w-full">
-      <div className="flex items-center justify-start">
+    <div className="flex flex-col space-y-2 rounded-xl w-full pl-2">
+      <div className="flex items-center justify-start w-full">
         <div>
-          <div className="flex items-baseline">
-            <h3 className="text-nowrap pr-10 pb-3">
-              <span className="font-bold">{percent}% </span>of your storage
-              limit is used
+          <div className="flex items-baseline flex-col sm:flex-row">
+            <h3 className="text-nowrap pr-10 pb-2 text-sm">
+              <span className="font-bold font-mono">{percent}</span>% of your
+              storage limit is used
             </h3>
-            <div className=" text-neutral-400 text-nowrap pl-10 text-xs">
+            <div className=" text-neutral-400 text-nowrap md:pl-10 text-xs pb-2 sm:pb-0 font-mono">
               {usedStorageGB} GB / {totalStorageGB} GB
             </div>
           </div>

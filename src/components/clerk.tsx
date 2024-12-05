@@ -2,24 +2,37 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { resize } from "@/utils";
 import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
+
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+
 import {
   SignedOut,
   SignInButton,
   SignUpButton,
   SignedIn,
   useUser,
+  useClerk,
 } from "@clerk/nextjs";
-import { resize } from "@/utils";
 
 export default function Clerk() {
   const { user } = useUser();
-  let userName;
-  let imageUrl;
+  const router = useRouter();
+  const clerk = useClerk();
+  let userName: string;
+  let imageUrl: string;
 
-  if (user) {
+  if (user && user.username) {
     userName = user.username;
     imageUrl = resize(user.imageUrl ?? "");
+    router.prefetch(`/${userName}`);
   }
 
   return (
@@ -50,15 +63,31 @@ export default function Clerk() {
               Dashboard
             </Button>
           </Link>
-          <Link href={`/${userName}`} prefetch={true}>
-            <Image
-              src={imageUrl!}
-              alt={userName!}
-              width={50}
-              height={50}
-              className="rounded-full object-cover size-7 hover:opacity-80 transition-opacity duration-150 active:opacity-60"
-            />
-          </Link>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild className="cursor-pointer">
+              <Image
+                src={imageUrl!}
+                alt={userName!}
+                width={50}
+                height={50}
+                className="rounded-full object-cover size-7 hover:opacity-80 transition-opacity duration-150 active:opacity-60"
+              />
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="dark:bg-neutral-900 mt-2 rounded-xl mr-2">
+              <DropdownMenuItem
+                className="text-sm rounded-lg cursor-pointer"
+                onClick={() => router.push(`/${userName}`)}
+              >
+                Profile
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                className="text-sm rounded-lg cursor-pointer"
+                onClick={() => clerk.signOut()}
+              >
+                Sign out
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </SignedIn>
     </>
