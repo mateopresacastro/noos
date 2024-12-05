@@ -24,24 +24,35 @@ export default function StepFour({
         name="title"
         render={({ field }) => (
           <FormItem>
-            <FormLabel className="transition-colors">Title</FormLabel>
-            <FormControl>
-              <Input
-                {...field}
-                className="w-full text-sm bg-neutral-800 py-5"
-                placeholder="Enter title"
-              />
-            </FormControl>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              layout
+              className="will-change-transform"
+            >
+              <FormLabel className="transition-colors">Title</FormLabel>
+              <FormControl>
+                <Input
+                  {...field}
+                  className="w-full text-sm bg-neutral-800 py-5 mt-1"
+                  placeholder="Enter title"
+                />
+              </FormControl>
+            </motion.div>
             <AnimatePresence mode="wait">
-              <motion.span
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                className="will-change-transform"
-                layout
-              >
-                <FormMessage className="mt-1" />
-              </motion.span>
+              {form.formState.errors[field.name] && (
+                <motion.span
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  className="will-change-transform"
+                  layout
+                  key="title-message"
+                >
+                  <FormMessage className="mt-1" />
+                </motion.span>
+              )}
             </AnimatePresence>
           </FormItem>
         )}
@@ -52,15 +63,36 @@ export default function StepFour({
         name="description"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Description</FormLabel>
-            <FormControl>
-              <Input
-                {...field}
-                className="w-full text-sm bg-neutral-800 py-5"
-                placeholder="Enter description"
-              />
-            </FormControl>
-            <FormMessage />
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              layout
+              className="will-change-transform"
+            >
+              <FormLabel className="transition-colors">Description</FormLabel>
+              <FormControl>
+                <Input
+                  {...field}
+                  className="w-full text-sm bg-neutral-800 py-5 mt-1"
+                  placeholder="Enter description"
+                />
+              </FormControl>
+            </motion.div>
+            <AnimatePresence mode="wait">
+              {form.formState.errors[field.name] && (
+                <motion.span
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  className="will-change-transform"
+                  layout
+                  key="title-message"
+                >
+                  <FormMessage className="mt-1" />
+                </motion.span>
+              )}
+            </AnimatePresence>
           </FormItem>
         )}
       />
@@ -69,21 +101,44 @@ export default function StepFour({
         name="price"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Price in USD</FormLabel>
-            <FormControl>
-              <Input
-                type="number"
-                placeholder="Enter price"
-                {...field}
-                onChange={(e) =>
-                  field.onChange(
-                    e.target.value === "" ? null : Number(e.target.value)
-                  )
-                }
-                className="w-full text-sm bg-neutral-800 py-5"
-              />
-            </FormControl>
-            <FormMessage />
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              layout
+              className="will-change-transform flex flex-col"
+            >
+              <FormLabel className="bock mb-2 transition-colors">
+                Price in USD
+              </FormLabel>
+              <FormControl>
+                <Input
+                  {...field}
+                  type="number"
+                  onChange={(e) =>
+                    field.onChange(
+                      e.target.value === "" ? null : Number(e.target.value)
+                    )
+                  }
+                  placeholder="Enter price"
+                  className="w-full text-sm bg-neutral-800 py-5 mt-1"
+                />
+              </FormControl>
+            </motion.div>
+            <AnimatePresence mode="wait">
+              {form.formState.errors[field.name] && (
+                <motion.span
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  className="will-change-transform"
+                  layout
+                  key="title-message"
+                >
+                  <FormMessage className="mt-1" />
+                </motion.span>
+              )}
+            </AnimatePresence>
           </FormItem>
         )}
       />
