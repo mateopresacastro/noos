@@ -2,12 +2,12 @@
 
 import Fade from "@/components/fade";
 import MusicBars from "@/components/music-bars";
-import { cn } from "@/utils";
+import { cn, formatDuration } from "@/utils";
 import { FaPlay } from "react-icons/fa";
 import { usePlayerStore } from "@/zustand/store";
 import { AnimatePresence } from "framer-motion";
-import type { SamplePack } from "@/db/mod";
 import { useState } from "react";
+import type { SamplePack } from "@/db/mod";
 
 export default function Sample({
   url,
@@ -15,12 +15,14 @@ export default function Sample({
   userName,
   wholeSamplePack,
   num,
+  duration,
 }: {
   url: string;
   title: string;
   userName: string;
   num?: number;
   wholeSamplePack: SamplePack;
+  duration: number;
 }) {
   const [hovering, setHovering] = useState(false);
   const {
@@ -61,6 +63,7 @@ export default function Sample({
     if (wholeSamplePack.name === samplePack?.name) return;
     setSamplePack(wholeSamplePack);
   }
+  const fmtDuration = formatDuration(duration);
 
   return (
     <div
@@ -115,6 +118,16 @@ export default function Sample({
             @{userName}
           </span>
         </div>
+      </div>
+      <div>
+        <span
+          className={cn(
+            "text-xs text-neutral-400 font-mono mr-3 sm:mr-5 transition-colors",
+            isThisSampleSelected && "text-neutral-300"
+          )}
+        >
+          {fmtDuration}
+        </span>
       </div>
     </div>
   );

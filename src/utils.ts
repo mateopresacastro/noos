@@ -39,3 +39,44 @@ export function resize(imgUrl: string) {
   searchParams.set("fit", "crop");
   return `${imgUrl}?${searchParams.toString()}`;
 }
+
+export function getAudioDuration(url: string): Promise<number> {
+  return new Promise((resolve, reject) => {
+    const audio = new Audio(url);
+
+    const handleLoadedMetadata = () => {
+      resolve(audio.duration);
+      audio.removeEventListener("loadedmetadata", handleLoadedMetadata);
+      audio.removeEventListener("error", handleError);
+    };
+
+    const handleError = () => {
+      reject(new Error("Failed to load audio"));
+      audio.removeEventListener("loadedmetadata", handleLoadedMetadata);
+      audio.removeEventListener("error", handleError);
+    };
+
+    audio.addEventListener("loadedmetadata", handleLoadedMetadata);
+    audio.addEventListener("error", handleError);
+
+    try {
+      audio.load();
+    } catch (err) {
+      reject(
+        new Error(
+          `Error loading audio: ${
+            err instanceof Error ? err.message : String(err)
+          }`
+        )
+      );
+    }
+  });
+}
+
+export function formatDuration(seconds: number) {
+  const mins = Math.floor(seconds / 60);
+  const secs = Math.floor(seconds % 60);
+  return `${mins.toString().padStart(2, "0")}:${secs
+    .toString()
+    .padStart(2, "0")}`;
+}

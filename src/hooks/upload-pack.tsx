@@ -1,7 +1,7 @@
 "use client";
 
 import { UploadToS3Data, handleUploadToS3 } from "@/aws/upload";
-import { createSamplePackName, isDev } from "@/utils";
+import { createSamplePackName, getAudioDuration, isDev } from "@/utils";
 import { useMutation } from "@tanstack/react-query";
 import {
   createPreSignedUrlAction,
@@ -52,7 +52,7 @@ export function useUploadPack({
     isSuccess,
   } = useMutation({
     mutationFn: async () => {
-      const data = getDataToPersist();
+      const data = await getDataToPersist();
       if (!data) throw new Error();
       await persistSamplePackDataAction(data);
     },
@@ -82,7 +82,7 @@ export function useUploadPack({
     },
   });
 
-  function getDataToPersist() {
+  async function getDataToPersist() {
     if (!preSignedUrls) return;
     const { description, price, title, samples: formSamples } = formValues;
     const { imageSignedUrl, zipFileSignedUrl, samplesSignedUrls } =
@@ -90,10 +90,20 @@ export function useUploadPack({
     const name = createSamplePackName(title);
     const imgUrl = createPublicUrl(imageSignedUrl.key);
     const url = createPublicUrl(zipFileSignedUrl.key);
-    const samples = samplesSignedUrls.map(({ key }, index) => ({
-      url: createPublicUrl(key),
-      name: formSamples.at(index)?.generatedName ?? "Unknown name (fix me)",
-    }));
+
+    const samples = await Promise.all(
+      samplesSignedUrls.map(async ({ key }, index) => {
+        const url = createPublicUrl(key);
+        const sample = formSamples.at(index);
+        if (!sample) throw new Error("Sample not found");
+        return {
+          url,
+          duration: await getAudioDuration(url),
+          name: sample.generatedName,
+        };
+      })
+    );
+
     return {
       samplePack: {
         price,

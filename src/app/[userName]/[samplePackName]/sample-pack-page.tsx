@@ -10,6 +10,7 @@ import { SamplePack } from "@/db/mod";
 import { Separator } from "@/components/ui/separator";
 import { motion } from "motion/react";
 import { container, item } from "@/anim";
+import { Clock3 } from "lucide-react";
 
 export default function SamplePackPage({
   samplePack,
@@ -101,14 +102,19 @@ export default function SamplePackPage({
           variants={item}
           className="mt-10 w-full hidden sm:block will-change-transform"
         >
-          <span className="ml-5 text-neutral-400 mb-3 text-sm">#</span>
-          <span className="ml-6 text-neutral-400 mb-3 text-sm">Title</span>
+          <div className="flex justify-between items-baseline -mb-2">
+            <div>
+              <span className="ml-5 text-neutral-400 text-sm">#</span>
+              <span className="ml-6 text-neutral-400 text-sm">Title</span>
+            </div>
+            <Clock3 size={17} className="mb-3 text-neutral-400 mr-8" />
+          </div>
           <Separator className="mb-3 mt-2" />
         </motion.div>
         <div className="w-full flex flex-col pt-10 sm:pt-0">
           {samplePack.samples
             .sort((a, b) => a.order - b.order)
-            .map(({ url, title }, index) => (
+            .map(({ url, title, duration }, index) => (
               <motion.div
                 variants={item}
                 className="will-change-transform"
@@ -120,6 +126,7 @@ export default function SamplePackPage({
                   userName={userName}
                   num={index + 1}
                   wholeSamplePack={samplePack}
+                  duration={duration}
                 />
               </motion.div>
             ))}

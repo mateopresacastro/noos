@@ -32,6 +32,7 @@ try {
                 .map((_, i) => ({
                   title: `title-${i + 1}`,
                   url: sampleUrl,
+                  duration: i + 1,
                 })),
             },
           },

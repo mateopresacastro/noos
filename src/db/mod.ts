@@ -27,6 +27,7 @@ export async function createSamplePack({
   samples: {
     name: string;
     url: string;
+    duration: number;
   }[];
 }) {
   try {
@@ -48,8 +49,9 @@ export async function createSamplePack({
         stripePaymentLink,
         stripeProductId,
         samples: {
-          create: samples.map(({ name, url }, index) => ({
+          create: samples.map(({ name, url, duration }, index) => ({
             url,
+            duration,
             title: name, // TODO fix inconsistencies on naming
             order: index,
           })),
@@ -98,6 +100,7 @@ export async function getSamplePack({
             url: true,
             title: true,
             order: true,
+            duration: true,
           },
         },
         creator: {
