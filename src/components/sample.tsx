@@ -79,7 +79,7 @@ export default function Sample({
     >
       <div className="flex items-center justify-start">
         <div
-          className="flex items-baseline justify-start w-5 sm:w-10 sm:pl-2 text-neutral-500 hover:scale-110 active:scale-90 active:text-neutral-300 hover:text-neutral-50 transition-all duration-150"
+          className="flex items-baseline justify-start w-5 sm:w-10 sm:pl-2 text-neutral-100 hover:scale-110 active:scale-90 active:text-neutral-300 hover:text-neutral-50 transition-all duration-150 will-change-transform"
           onClick={handlePlay}
         >
           <AnimatePresence initial={false} mode="popLayout">
