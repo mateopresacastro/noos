@@ -142,7 +142,9 @@ const persistSamplePackDataActionSchema = z.object({
     url: z.string(),
     key: z.string(),
   }),
-  samples: z.array(z.object({ url: z.string(), name: z.string() })),
+  samples: z.array(
+    z.object({ url: z.string(), name: z.string(), duration: z.number() })
+  ),
 });
 
 type SamplePackData = z.infer<typeof persistSamplePackDataActionSchema>;

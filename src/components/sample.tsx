@@ -2,10 +2,11 @@
 
 import Fade from "@/components/fade";
 import MusicBars from "@/components/music-bars";
-import { cn } from "@/utils";
+import { cn, formatDuration } from "@/utils";
 import { FaPlay } from "react-icons/fa";
 import { usePlayerStore } from "@/zustand/store";
 import { AnimatePresence } from "framer-motion";
+import { useState } from "react";
 import type { SamplePack } from "@/db/mod";
 
 export default function Sample({
@@ -13,13 +14,17 @@ export default function Sample({
   title,
   userName,
   wholeSamplePack,
+  num,
+  duration,
 }: {
   url: string;
   title: string;
   userName: string;
   num?: number;
   wholeSamplePack: SamplePack;
+  duration: number;
 }) {
+  const [hovering, setHovering] = useState(false);
   const {
     playingSampleUrl,
     isPlaying,
@@ -58,6 +63,7 @@ export default function Sample({
     if (wholeSamplePack.name === samplePack?.name) return;
     setSamplePack(wholeSamplePack);
   }
+  const fmtDuration = formatDuration(duration);
 
   return (
     <div
@@ -68,6 +74,8 @@ export default function Sample({
       )}
       onClick={handleClick}
       onDoubleClick={handleDoubleClick}
+      onMouseEnter={() => setHovering(true)}
+      onMouseLeave={() => setHovering(false)}
     >
       <div className="flex items-center justify-start">
         <div
@@ -79,9 +87,15 @@ export default function Sample({
               <Fade id="music-bars">
                 <MusicBars />
               </Fade>
-            ) : (
+            ) : hovering ? (
               <Fade id="play">
                 <FaPlay size={12} />
+              </Fade>
+            ) : (
+              <Fade id="num">
+                <span className="font-mono text-xs text-neutral-400">
+                  {num}
+                </span>{" "}
               </Fade>
             )}
           </AnimatePresence>
@@ -104,6 +118,16 @@ export default function Sample({
             @{userName}
           </span>
         </div>
+      </div>
+      <div>
+        <span
+          className={cn(
+            "text-xs text-neutral-400 font-mono mr-3 sm:mr-5 transition-colors",
+            isThisSampleSelected && "text-neutral-300"
+          )}
+        >
+          {fmtDuration}
+        </span>
       </div>
     </div>
   );
