@@ -10,6 +10,8 @@ import { increaseTimesSold } from "@/db/mod";
 async function handleSuccessfulPaymentIntent(
   event: Stripe.PaymentIntentSucceededEvent
 ) {
+  const isRealTransaction = event.livemode === true;
+  if (!isRealTransaction) await log.info("Processing test webhook");
   const metadata = event.data.object.metadata;
   if (!metadata || !metadata.s3Key || !metadata.stripeProductId) {
     throw new Error("Metadata not found. Cannot retrieve sample pack");
@@ -33,9 +35,21 @@ async function handleSuccessfulPaymentIntent(
   const { email, name } = customerData;
   const downloadUrl = await createSamplePackDownloadUrl(metadata.s3Key);
   if (!downloadUrl) throw new Error("Error creating download url");
-  await sendEmail(email, name, downloadUrl);
+
+  if (isRealTransaction) {
+    await sendEmail(email, name, downloadUrl);
+  } else {
+    await log.warn("Test webhook, skipping sending email", {
+      email,
+      name,
+      downloadUrl,
+    });
+  }
   await increaseTimesSold(metadata.stripeProductId);
-  await log.info(`${name} (${email}) just purchased a sample pack!`);
+
+  if (isRealTransaction) {
+    await log.info(`${name} (${email}) just purchased a sample pack!`);
+  }
 }
 
 async function sendEmail(email: string, name: string, downloadUrl: string) {
