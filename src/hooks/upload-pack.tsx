@@ -13,7 +13,6 @@ import type { UploadFormSchema } from "@/components/upload-form-schema";
 
 type PreSignedUrls = Awaited<ReturnType<typeof createPreSignedUrlAction>>;
 
-// TODO: error handling
 export function useUploadPack({
   formValues,
 }: {

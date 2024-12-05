@@ -5,7 +5,14 @@ import { Button, buttonVariants } from "@/components/ui/button";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useUser } from "@clerk/nextjs";
 import { useForm } from "react-hook-form";
+import { useRouter } from "next/navigation";
+import { useMutation } from "@tanstack/react-query";
+import { deleteSamplePackAction, updateSamplePackAction } from "@/actions";
+import { urlNameToTitle } from "@/utils";
+import { useEffect, useState } from "react";
+import { EllipsisVertical, Loader2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
+
 import {
   Dialog,
   DialogContent,
@@ -14,6 +21,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+
 import {
   AlertDialog,
   AlertDialogAction,
@@ -25,6 +33,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+
 import {
   Form,
   FormField,
@@ -33,12 +42,6 @@ import {
   FormControl,
   FormMessage,
 } from "@/components/ui/form";
-import { useRouter } from "next/navigation";
-import { useMutation } from "@tanstack/react-query";
-import { deleteSamplePackAction, updateSamplePackAction } from "@/actions";
-import { urlNameToTitle } from "@/utils";
-import { useEffect, useState } from "react";
-import { EllipsisVertical } from "lucide-react";
 
 const editPackSchema = z.object({
   title: z.string().min(5).max(50),
@@ -46,7 +49,7 @@ const editPackSchema = z.object({
   price: z.number().min(0),
 });
 
-type EditPackSchema = z.infer<typeof editPackSchema>;
+export type EditPackSchema = z.infer<typeof editPackSchema>;
 
 export default function EditPackButton({
   userName,
@@ -78,14 +81,18 @@ export default function EditPackButton({
     price: newPrice,
   } = form.getValues();
 
-  const { mutate: deleteSamplePack } = useMutation({
+  const { mutate: deleteSamplePack, isPending: isDeleting } = useMutation({
     mutationFn: async () => {
       await deleteSamplePackAction({ samplePackName: name, userName });
     },
     onSuccess: () => router.push(`/${userName}`),
   });
 
-  const { mutate: updateSamplePack, data: newSamplePackName } = useMutation({
+  const {
+    mutate: updateSamplePack,
+    data: newSamplePackName,
+    isPending: isUpdating,
+  } = useMutation({
     mutationFn: async () =>
       await updateSamplePackAction({
         name,
@@ -122,8 +129,8 @@ export default function EditPackButton({
         <DialogHeader className="p-1">
           <DialogTitle>Edit sample pack</DialogTitle>
           <DialogDescription>
-            If you want to change the samples delete this pack and create a new
-            one.
+            To change the cover art, name and order of the samples create a new
+            pack.
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
@@ -177,17 +184,28 @@ export default function EditPackButton({
                 </FormItem>
               )}
             />
-            <div className="flex justify-between items-center pt-8 flex-col w-full gap-2">
-              <Button type="submit" className="w-full">
-                Submit
+            <div className="flex justify-between items-center pt-8 w-full gap-2">
+              <Button type="submit" disabled={isDeleting || isUpdating}>
+                <div className="flex items-center justify-center w-fit transition-all duration-100">
+                  {isUpdating ? (
+                    <Loader2 className="animate-spin text-neutral-600" />
+                  ) : (
+                    "Submit"
+                  )}
+                </div>
               </Button>
               <AlertDialog>
                 <AlertDialogTrigger
-                  className={
-                    buttonVariants({ variant: "destructive" }) + " w-full"
-                  }
+                  className={buttonVariants({ variant: "destructive" })}
+                  disabled={isDeleting || isUpdating}
                 >
-                  Delete
+                  <div className="flex items-center justify-center w-fit transition-all duration-100">
+                    {isDeleting ? (
+                      <Loader2 className="animate-spin text-red-200" />
+                    ) : (
+                      "Delete"
+                    )}
+                  </div>
                 </AlertDialogTrigger>
                 <AlertDialogContent>
                   <AlertDialogHeader>
@@ -205,8 +223,15 @@ export default function EditPackButton({
                     <AlertDialogAction
                       className={buttonVariants({ variant: "destructive" })}
                       onClick={() => deleteSamplePack()}
+                      disabled={isDeleting || isUpdating}
                     >
-                      Continue
+                      <div className="flex items-center justify-center w-fit transition-all duration-100">
+                        {isDeleting ? (
+                          <Loader2 className="animate-spin text-red-200" />
+                        ) : (
+                          "Continue"
+                        )}
+                      </div>
                     </AlertDialogAction>
                   </AlertDialogFooter>
                 </AlertDialogContent>
