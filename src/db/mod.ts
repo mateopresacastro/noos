@@ -361,20 +361,30 @@ export async function deleteUser(clerkId: string) {
     return null;
   }
 }
-
 export async function getData(userName: string) {
   try {
     const data = await prisma.user.findUnique({
       where: { userName },
-      include: {
+      select: {
+        imgUrl: true,
+        name: true,
+        userName: true,
         samplePacks: {
-          include: {
-            samples: true,
+          select: {
+            title: true,
+            imgUrl: true,
+            name: true,
+            samples: {
+              select: {
+                title: true,
+                duration: true,
+                url: true,
+              },
+            },
           },
         },
       },
     });
-
     if (!data) throw new Error("User not found");
     return data;
   } catch (error) {
@@ -385,7 +395,6 @@ export async function getData(userName: string) {
     return null;
   }
 }
-
 export async function storeEmail(email: string) {
   try {
     const newEmail = await prisma.interestedUser.create({
@@ -516,5 +525,129 @@ export async function increaseTimesSold(stripeProductId: string) {
     });
 
     return null;
+  }
+}
+
+function getSearchableFields(q: string) {
+  return q
+    .trim()
+    .split(" ")
+    .filter((word) => word !== " ")
+    .join(" | ");
+}
+
+export async function searchSamplePacks(q: string, limit = 10) {
+  try {
+    const search = getSearchableFields(q);
+    const result = await prisma.samplePack.findMany({
+      where: {
+        OR: [{ title: { search } }, { description: { search } }],
+      },
+      orderBy: {
+        _relevance: {
+          fields: ["title", "description"],
+          sort: "desc",
+          search,
+        },
+      },
+      select: {
+        description: true,
+        imgUrl: true,
+        title: true,
+        price: true,
+        name: true,
+        samples: {
+          select: {
+            title: true,
+            duration: true,
+            url: true,
+          },
+        },
+        creator: {
+          select: {
+            userName: true,
+          },
+        },
+      },
+      take: limit,
+    });
+
+    return result;
+  } catch (error) {
+    await log.error("Error searching for sample packs", {
+      q,
+      error,
+    });
+  }
+}
+
+export async function searchUser(q: string, limit = 10) {
+  try {
+    const search = getSearchableFields(q);
+    const result = await prisma.user.findMany({
+      where: {
+        OR: [{ userName: { search } }, { name: { search } }],
+      },
+      orderBy: {
+        _relevance: {
+          fields: ["userName", "name"],
+          sort: "desc",
+          search,
+        },
+      },
+      select: {
+        imgUrl: true,
+        userName: true,
+        name: true,
+      },
+      take: limit,
+    });
+
+    return result;
+  } catch (error) {
+    await log.error("Error searching for users", {
+      q,
+      error,
+    });
+  }
+}
+
+export async function searchSample(q: string, limit = 10) {
+  try {
+    const search = getSearchableFields(q);
+    const result = await prisma.sample.findMany({
+      where: {
+        title: { search },
+      },
+      orderBy: {
+        _relevance: {
+          fields: ["title"],
+          sort: "desc",
+          search,
+        },
+      },
+      select: {
+        title: true,
+        duration: true,
+        samplePack: {
+          select: {
+            name: true,
+            creator: {
+              select: {
+                userName: true,
+              },
+            },
+          },
+        },
+      },
+      take: limit,
+    });
+
+    return result;
+  } catch (error) {
+    await log.error("Error searching for users", {
+      q,
+      error,
+    });
   }
 }

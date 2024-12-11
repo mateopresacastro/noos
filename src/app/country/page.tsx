@@ -10,7 +10,7 @@ export default async function Page() {
     userData.username
   );
 
-  if (userHasStripeAccount) redirect("/dashboard/payments");
+  if (userHasStripeAccount) redirect("/dashboard/onboarding");
 
   return <CountryForm />;
 }

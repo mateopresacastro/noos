@@ -48,7 +48,7 @@ try {
               create: Array(7)
                 .fill(null)
                 .map((_, i) => ({
-                  title: `title-${i + 1}`,
+                  title: `title2-${i + 1}`,
                   url: sampleUrl,
                 })),
             },
