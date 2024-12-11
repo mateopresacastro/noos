@@ -21,10 +21,11 @@ export default function SearchInput() {
 
   return (
     <Input
-      className="w-full max-w-80 bg-neutral-900 mx-auto"
+      className="w-full max-w-80 bg-neutral-900 mx-auto rounded-full"
       onChange={(e) => {
         handleSearch(e.target.value);
       }}
+      placeholder="Search..."
       defaultValue={searchParams.get("q")?.toString()}
     />
   );

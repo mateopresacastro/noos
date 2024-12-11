@@ -538,12 +538,16 @@ function getSearchableFields(q: string) {
 
 export async function searchSamplePacks(q: string, limit = 10) {
   try {
+    const search = getSearchableFields(q);
     const result = await prisma.samplePack.findMany({
+      where: {
+        OR: [{ title: { search } }, { description: { search } }],
+      },
       orderBy: {
         _relevance: {
           fields: ["title", "description"],
-          search: getSearchableFields(q),
           sort: "desc",
+          search,
         },
       },
       select: {
@@ -579,12 +583,16 @@ export async function searchSamplePacks(q: string, limit = 10) {
 
 export async function searchUser(q: string, limit = 10) {
   try {
+    const search = getSearchableFields(q);
     const result = await prisma.user.findMany({
+      where: {
+        OR: [{ userName: { search } }, { name: { search } }],
+      },
       orderBy: {
         _relevance: {
           fields: ["userName", "name"],
-          search: getSearchableFields(q),
           sort: "desc",
+          search,
         },
       },
       select: {
@@ -606,12 +614,16 @@ export async function searchUser(q: string, limit = 10) {
 
 export async function searchSample(q: string, limit = 10) {
   try {
+    const search = getSearchableFields(q);
     const result = await prisma.sample.findMany({
+      where: {
+        title: { search },
+      },
       orderBy: {
         _relevance: {
           fields: ["title"],
-          search: getSearchableFields(q),
           sort: "desc",
+          search,
         },
       },
       select: {

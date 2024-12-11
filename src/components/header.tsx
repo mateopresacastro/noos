@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Clerk from "@/components/clerk";
-import SearchInput from "@/components/search-input";
+import SearchInput from "@/app/search/search-input";
 
 export default function Header() {
   return (

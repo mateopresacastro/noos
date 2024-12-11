@@ -11,8 +11,6 @@ export default async function Search(props: {
   const searchParams = await props.searchParams;
   const query = searchParams?.q || "";
 
-  console.log({ query });
-
   const [users, packs, samples] = await Promise.all([
     searchUser(query, 3),
     searchSamplePacks(query, 3),
@@ -22,10 +20,16 @@ export default async function Search(props: {
   console.dir({ packs, users, samples }, { depth: null });
 
   return (
-    <div className="pt-32 max-w-3xl mx-auto flex flex-col items-start justify-center gap-20 w-full pb-32">
-      <UserResults users={users} />
-      <SamplePackResults packs={packs} />
-      <SampleResults samples={samples} />
+    <div className="pt-32 max-w-3xl mx-auto flex flex-col items-start justify-start gap-20 w-full pb-32 min-h-screen">
+      {query !== "" ? (
+        <>
+          <UserResults users={users} />
+          <SamplePackResults packs={packs} />
+          <SampleResults samples={samples} />
+        </>
+      ) : (
+        <p> Please enter a search term</p>
+      )}
     </div>
   );
 }
@@ -35,39 +39,45 @@ function UserResults({
 }: {
   users: Awaited<ReturnType<typeof searchUser>>;
 }) {
-  return users && users.length > 0 ? (
+  return (
     <div className="w-full">
       <h4 className="text-xl font-bold pb-4">Producers</h4>
-      <div className="flex items-center justify-center flex-col gap-4">
-        {users.map((user) => (
-          <div
-            key={user.userName}
-            className="flex items-center justify-center w-full"
-          >
-            <Link
-              href={`/${user.userName}`}
-              className="flex items-center justify-start w-full hover:bg-neutral-900 px-4 py-2 -ml-8 rounded-xl active:bg-neutral-800 transition-colors duration-150"
-              prefetch={true}
+      {users && users.length > 0 ? (
+        <div className="flex items-center justify-center flex-col gap-4">
+          {users.map((user) => (
+            <div
+              key={user.userName}
+              className="flex items-center justify-center w-full"
             >
-              <Image
-                src={user.imgUrl}
-                alt={user.userName}
-                width={50}
-                height={50}
-                className="size-10 rounded-full object-cover mr-2 self-center"
-              />
-              <div className="flex flex-col items-center justify-center">
-                <span className="block font-bold">{user.name}</span>
-                <span className="block text-neutral-400 transition-colors text-sm">
-                  @{user.userName}
-                </span>
-              </div>
-            </Link>
-          </div>
-        ))}
-      </div>
+              <Link
+                href={`/${user.userName}`}
+                className="flex items-center justify-start w-full hover:bg-neutral-900 px-4 py-2 -ml-8 rounded-xl active:bg-neutral-800 transition-colors duration-150"
+                prefetch={true}
+              >
+                <Image
+                  src={user.imgUrl}
+                  alt={user.userName}
+                  width={50}
+                  height={50}
+                  className="size-10 rounded-full object-cover mr-2 self-center"
+                />
+                <div className="flex flex-col items-center justify-center">
+                  <span className="block font-bold">{user.name}</span>
+                  <span className="block text-neutral-400 transition-colors text-sm">
+                    @{user.userName}
+                  </span>
+                </div>
+              </Link>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <span className="text-neutral-400 text-sm block">
+          No producers found
+        </span>
+      )}
     </div>
-  ) : null;
+  );
 }
 
 function SamplePackResults({
@@ -75,55 +85,59 @@ function SamplePackResults({
 }: {
   packs: Awaited<ReturnType<typeof searchSamplePacks>>;
 }) {
-  return packs && packs.length > 0 ? (
-    <div>
+  return (
+    <div className="w-full">
       <h4 className="text-xl font-bold pb-4">Sample Packs</h4>
-      <div className="grid grid-cols-2 sm:grid-cols-3 gap-6 sm:gap-14 w-full">
-        {packs.map((pack) => (
-          <SamplePack
-            key={pack.title}
-            samplePack={pack}
-            userName={pack.creator.userName}
-          />
-        ))}
-      </div>
+      {packs && packs.length > 0 ? (
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-6 sm:gap-14 w-full">
+          {packs.map((pack) => (
+            <SamplePack
+              key={pack.title}
+              samplePack={pack}
+              userName={pack.creator.userName}
+            />
+          ))}
+        </div>
+      ) : (
+        <span className="text-neutral-400 text-sm block">
+          No sample packs found
+        </span>
+      )}
     </div>
-  ) : null;
+  );
 }
-
 function SampleResults({
   samples,
 }: {
   samples: Awaited<ReturnType<typeof searchSample>>;
 }) {
-  return samples && samples.length > 0 ? (
+  return (
     <div className="w-full">
       <h4 className="text-xl font-bold pb-4">Samples</h4>
-      <div className="flex flex-col w-full gap-4">
-        {samples.map((sample, index) => (
-          <Link
-            href={`/${sample.samplePack.creator.userName}/${sample.samplePack.name}`}
-            key={sample.title.concat(String(index))}
-            className="flex w-[100%+6rem] cursor-pointer items-center justify-between rounded-lg transition-colors duration-150 ease-in-out hover:bg-neutral-900 h-16 pl-3 -ml-3 sm:-ml-3"
-          >
-            <div className="flex items-center justify-start">
-              <div>
-                <span className="block pl-1 text-neutral-50">
-                  {sample.title}
-                </span>
-                <span className="block text-xs sm:text-sm pl-1 text-neutral-400 transition-colors">
-                  @{sample.samplePack.creator.userName}
-                </span>
+      {samples && samples.length > 0 ? (
+        <div className="flex flex-col w-full gap-4">
+          {samples.map((sample, index) => (
+            <Link
+              href={`/${sample.samplePack.creator.userName}/${sample.samplePack.name}`}
+              key={sample.title.concat(String(index))}
+              className="flex w-[100%+6rem] cursor-pointer items-center justify-between rounded-lg transition-colors duration-150 ease-in-out hover:bg-neutral-900 h-16 pl-3 -ml-3 sm:-ml-3"
+            >
+              <div className="flex items-center justify-start">
+                <div>
+                  <span className="block pl-1 text-neutral-50">
+                    {sample.title}
+                  </span>
+                  <span className="block text-xs sm:text-sm pl-1 text-neutral-400 transition-colors">
+                    @{sample.samplePack.creator.userName}
+                  </span>
+                </div>
               </div>
-            </div>
-            <div>
-              <span className="text-xs text-neutral-400 font-mono mr-3 sm:mr-5 transition-colors">
-                {sample.duration}
-              </span>
-            </div>
-          </Link>
-        ))}
-      </div>
+            </Link>
+          ))}
+        </div>
+      ) : (
+        <span className="text-neutral-400 text-sm block">No samples found</span>
+      )}
     </div>
-  ) : null;
+  );
 }
