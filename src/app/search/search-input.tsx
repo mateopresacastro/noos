@@ -16,7 +16,7 @@ export default function SearchInput() {
       params.delete("q");
     }
 
-    router.replace(`search/?${params.toString()}`);
+    router.replace(`/search/?${params.toString()}`);
   }, 300);
 
   return (

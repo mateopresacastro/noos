@@ -93,13 +93,15 @@ export default function CountryForm() {
                       <SelectValue placeholder="Select Country" />
                     </SelectTrigger>
                     <SelectContent>
-                      {Array.from(STRIPE_COUNTRY_LOCALES.keys()).map(
-                        (country) => (
+                      {Array.from(STRIPE_COUNTRY_LOCALES.keys())
+                        .sort((a, b) =>
+                          a.split(" ")[1].localeCompare(b.split(" ")[1])
+                        )
+                        .map((country) => (
                           <SelectItem key={country} value={country}>
                             {country}
                           </SelectItem>
-                        )
-                      )}
+                        ))}
                     </SelectContent>
                   </Select>
                 </FormControl>
@@ -124,6 +126,7 @@ const STRIPE_COUNTRY_LOCALES = new Map([
   ["🇧🇪 Belgium", { locale: "BE" }],
   ["🇧🇬 Bulgaria", { locale: "BG" }],
   ["🇨🇦 Canada", { locale: "CA" }],
+  ["🇪🇸 Spain", { locale: "ES" }],
   ["🇨🇾 Cyprus", { locale: "CY" }],
   ["🇨🇿 Czech Republic", { locale: "CZ" }],
   ["🇩🇰 Denmark", { locale: "DK" }],
