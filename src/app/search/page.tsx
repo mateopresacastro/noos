@@ -25,19 +25,11 @@ export default async function Search(props: {
     searchSample(query, 6),
   ]);
 
-  console.dir({ packs, users, samples }, { depth: null });
-
   return (
     <div className="pt-32 max-w-3xl mx-auto flex flex-col items-start justify-start gap-20 w-full pb-32 min-h-screen">
-      {query !== "" ? (
-        <>
-          <UserResults users={users} />
-          <SamplePackResults packs={packs} />
-          <SampleResults samples={samples} />
-        </>
-      ) : (
-        <p> Please enter a search term</p>
-      )}
+      <UserResults users={users} />
+      <SamplePackResults packs={packs} />
+      <SampleResults samples={samples} />
     </div>
   );
 }
