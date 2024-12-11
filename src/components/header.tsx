@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Clerk from "@/components/clerk";
 import SearchInput from "@/app/search/search-input";
+import { Suspense } from "react";
 
 export default function Header() {
   return (
@@ -19,7 +20,9 @@ export default function Header() {
             <span className="text-neutral-300">Pricing</span>
           </Link>
         </div>
-        <SearchInput />
+        <Suspense fallback={null}>
+          <SearchInput />
+        </Suspense>
         <Clerk />
       </div>
     </header>
