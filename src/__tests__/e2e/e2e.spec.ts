@@ -143,3 +143,56 @@ test.describe("Sample pack page", () => {
     await expect(page.getByTestId("update-pack-button")).toBeVisible();
   });
 });
+
+test.describe("Search", () => {
+  test("Should search for users", async ({ page }) => {
+    await page.goto("/");
+    await page.getByPlaceholder("Search...").click();
+    await page.getByPlaceholder("Search...").fill("producer");
+    await page.waitForURL("/search?q=producer");
+    await expect(
+      page.getByRole("link", {
+        name: `${process.env.CLERK_TEST_USERNAME!} producer-1 @${process.env
+          .CLERK_TEST_USERNAME!}`,
+      })
+    ).toBeVisible();
+    await expect(page.getByText("No sample packs found")).toBeVisible();
+    await expect(page.getByText("No samples found")).toBeVisible();
+  });
+
+  test("Should search for samples", async ({ page }) => {
+    await page.goto("/");
+    await page.getByPlaceholder("Search...").click();
+    await page.getByPlaceholder("Search...").fill("title-1");
+    await page.waitForURL("/search?q=title-1");
+
+    await expect(
+      page.getByRole("link", {
+        name: `title-1 @${process.env.CLERK_TEST_USERNAME!}`,
+      })
+    ).toBeVisible();
+
+    await expect(page.getByText("No producers found")).toBeVisible();
+    await expect(page.getByText("No sample packs found")).toBeVisible();
+
+    await page.getByPlaceholder("Search...").dblclick();
+    await page.getByPlaceholder("Search...").fill("title");
+    await page.waitForURL("/search?q=title");
+    const promises = Array(5)
+      .fill(null)
+      .map((_, i) =>
+        expect(
+          page.getByRole("link", {
+            name: `title-${i + 1} @${process.env.CLERK_TEST_USERNAME!}`,
+          })
+        ).toBeVisible()
+      );
+
+    await Promise.all(promises);
+  });
+
+  test("Should display message when no term", async ({ page }) => {
+    await page.goto("/search");
+    await expect(page.getByText("Please enter a search term")).toBeVisible();
+  });
+});

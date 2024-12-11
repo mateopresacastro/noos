@@ -11,6 +11,14 @@ export default async function Search(props: {
   const searchParams = await props.searchParams;
   const query = searchParams?.q || "";
 
+  if (query === "") {
+    return (
+      <div className="pt-32 max-w-3xl mx-auto flex flex-col items-start justify-start gap-20 w-full pb-32 min-h-screen">
+        <p> Please enter a search term</p>
+      </div>
+    );
+  }
+
   const [users, packs, samples] = await Promise.all([
     searchUser(query, 3),
     searchSamplePacks(query, 3),
