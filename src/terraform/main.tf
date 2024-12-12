@@ -53,7 +53,7 @@ resource "aws_s3_bucket_cors_configuration" "public_cors" {
   cors_rule {
     allowed_headers = ["*"]
     allowed_methods = ["PUT", "HEAD", "GET"]
-    allowed_origins = ["https://noos-three.vercel.app"]
+    allowed_origins = ["https://www.noos.im"]
     expose_headers  = ["ETag"]
     max_age_seconds = 3000
   }
@@ -124,7 +124,7 @@ resource "aws_s3_bucket_cors_configuration" "private_cors" {
   cors_rule {
     allowed_headers = ["*"]
     allowed_methods = ["PUT", "POST", "HEAD"]
-    allowed_origins = ["https://noos-three.vercel.app"]
+    allowed_origins = ["https://www.noos.im"]
     expose_headers  = ["ETag"]
     max_age_seconds = 3000
   }

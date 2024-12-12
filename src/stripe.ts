@@ -102,8 +102,8 @@ export async function createConnectedAccount({
         },
         country,
         business_profile: {
-          support_url: `https://noos-three.vercel.app`, // TODO handle this url properly. Real URL to avoid stripe errors
-          url: `https://noos-three.vercel.app`,
+          support_url: `https://www.noos.im`, // TODO handle this url properly. Real URL to avoid stripe errors
+          url: `https://www.noos.im`,
           mcc: "5815", // digital goods (music)
           product_description: "Sample Packs",
         },
