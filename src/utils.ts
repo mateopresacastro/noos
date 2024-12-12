@@ -11,13 +11,10 @@ export const isTest = process.env.NODE_ENV === "test";
 export function createSamplePackName(str: string) {
   return encodeURIComponent(
     str
+      .trim()
       .split(" ")
-      .map((word) =>
-        word
-          .split("")
-          .map((char) => char.toLowerCase())
-          .join("")
-      )
+      .filter((word) => word !== "" && word !== " ")
+      .map((word) => word.toLowerCase())
       .join("-")
   );
 }
