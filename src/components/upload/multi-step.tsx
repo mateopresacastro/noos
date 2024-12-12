@@ -209,7 +209,11 @@ export default function UploadPage({ userName }: { userName: string }) {
               isSuccess={isSuccess}
             />
             <Form {...form}>
-              <form className="w-full" autoComplete="off">
+              <form
+                className="w-full"
+                autoComplete="off"
+                onSubmit={(e) => e.preventDefault()}
+              >
                 <AnimatePresence
                   mode="popLayout"
                   initial={false}

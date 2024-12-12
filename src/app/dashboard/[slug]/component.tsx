@@ -31,20 +31,25 @@ export default function Component({
         return (
           <>
             {hasRequirements ? (
-              <ConnectAccountOnboarding
-                onExit={() => router.refresh()}
-                collectionOptions={{
-                  fields: "eventually_due",
-                  futureRequirements: "include",
-                }}
-              />
+              <div className="max-w-[65ch] mx-auto w-full">
+                <ConnectAccountOnboarding
+                  onExit={() => router.refresh()}
+                  collectionOptions={{
+                    fields: "eventually_due",
+                    futureRequirements: "include",
+                  }}
+                />
+              </div>
             ) : (
-              <div className="flex flex-col items-center justify-center gap-2 w-full pt-20">
-                <h4 className="font-semibold">You are ready to go!</h4>
-                <p className="text-neutral-400 max-w-[65ch] text-sm">
-                  Your onboarding requirements are met. You can now start
-                  selling. If there ar new requirements, you will see them here.
-                </p>
+              <div className="flex items-center justify-center w-full pt-20 mx-auto">
+                <div className="w-full max-w-[65ch]">
+                  <h4 className="font-semibold pb-2">You are ready to go!</h4>
+                  <p className="text-neutral-400 ">
+                    Your onboarding requirements are met. You can now start
+                    selling. If there ar new requirements, you will see them
+                    here.
+                  </p>
+                </div>
               </div>
             )}
           </>

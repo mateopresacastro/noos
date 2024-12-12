@@ -50,7 +50,7 @@ export default function SamplePackPage({
               <span className="block text-3xl font-bold sm:text-4xl md:text-5xl md:tracking-tight lg:text-6xl xl:text-7xl 2xl:text-9xl lg:tracking-tighter">
                 {samplePack.title}
               </span>
-              <div className="flex items-baseline justify-between gap-2 sm:pl-2">
+              <div className="flex items-baseline justify-between flex-col">
                 <Link
                   href={`/${userName}`}
                   className="flex items-baseline justify-center py-1 pb-2"
@@ -67,7 +67,7 @@ export default function SamplePackPage({
                     @{userName}
                   </span>
                 </Link>
-                <span className="block text-neutral-400 text-xs pb-1 sm:text-sm">
+                <span className="block text-neutral-400 text-xs pb-1 sm:text-sm max-w-[65ch] h-fit leading-5 sm:leading-6 text-pretty">
                   {samplePack.description}
                 </span>
               </div>

@@ -11,6 +11,7 @@ import {
 
 import type { UploadFormSchema } from "@/components/upload-form-schema";
 import type { UseFormReturn } from "react-hook-form";
+import { Textarea } from "@/components/ui/textarea";
 
 export default function StepFour({
   form,
@@ -72,7 +73,7 @@ export default function StepFour({
             >
               <FormLabel className="transition-colors">Description</FormLabel>
               <FormControl>
-                <Input
+                <Textarea
                   {...field}
                   className="w-full text-sm bg-neutral-800 py-5 mt-1"
                   placeholder="Enter description"
