@@ -9,14 +9,11 @@ export default async function UploadPageRoot() {
   const userData = await currentUser();
   if (!userData || !userData.username) notFound();
   const { username: userName } = userData;
-  const userHasStripeAccountPromise = doesUserHaveStripeAccount(userName);
-  const hasRequirementsPromise = hasRequirementsDue();
-  const storageUsedPromise = getUserUsedStorage(userName);
   const [userHasStripeAccount, hasRequirements, storageUsed] =
     await Promise.all([
-      userHasStripeAccountPromise,
-      hasRequirementsPromise,
-      storageUsedPromise,
+      doesUserHaveStripeAccount(userName),
+      hasRequirementsDue(),
+      getUserUsedStorage(userName),
     ]);
 
   if (!userHasStripeAccount) redirect("/country");

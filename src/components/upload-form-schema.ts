@@ -13,7 +13,7 @@ export type SampleFile = {
 
 export const uploadFormSchema = z.object({
   title: z.string().min(5).max(35),
-  description: z.string().min(5).max(20).optional(),
+  description: z.string().min(5).max(200).optional(),
   price: z.coerce
     .number({
       invalid_type_error: "Price must be a valid number.",
