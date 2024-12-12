@@ -73,7 +73,7 @@ export default function Component({
       default:
         return <div>Not found</div>;
     }
-  }, [slug, router, storageUsed]);
+  }, [slug, router, storageUsed, hasRequirements]);
 
   return (
     <div className="w-full h-fit md:py-24 pb-40 flex items-center justify-center relative">
