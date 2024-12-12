@@ -18,22 +18,36 @@ import General from "@/components/general";
 export default function Component({
   slug,
   storageUsed,
+  hasRequirements,
 }: {
   slug: string;
   storageUsed: bigint;
+  hasRequirements: boolean;
 }) {
   const router = useRouter();
   const component = useMemo(() => {
     switch (slug) {
       case "onboarding":
         return (
-          <ConnectAccountOnboarding
-            onExit={() => router.refresh()}
-            collectionOptions={{
-              fields: "eventually_due",
-              futureRequirements: "include",
-            }}
-          />
+          <>
+            {hasRequirements ? (
+              <ConnectAccountOnboarding
+                onExit={() => router.refresh()}
+                collectionOptions={{
+                  fields: "eventually_due",
+                  futureRequirements: "include",
+                }}
+              />
+            ) : (
+              <div className="flex flex-col items-center justify-center gap-2 w-full pt-20">
+                <h4 className="font-semibold">You are ready to go!</h4>
+                <p className="text-neutral-400 max-w-[65ch] text-sm">
+                  Your onboarding requirements are met. You can now start
+                  selling. If there ar new requirements, you will see them here.
+                </p>
+              </div>
+            )}
+          </>
         );
       case "account-management":
         return <ConnectAccountManagement />;
