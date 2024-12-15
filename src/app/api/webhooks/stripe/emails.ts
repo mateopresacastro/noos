@@ -42,9 +42,9 @@ export async function notifySale(email: string) {
   const msg = {
     to: email,
     from: "mateopresacastro@gmail.com",
-    subject: "Your sample pack is now available!",
-    text: `Hey ${name}, your just made a sale! Check it out on your dashboard.`,
-    html: `<p>Hey ${name}, your just made a sale! Check it out on your dashboard.</p>`,
+    subject: "You just made a sale!",
+    text: `You just made a sale! Check it out on your dashboard.`,
+    html: `<p>You your just made a sale! Check it out on your dashboard.</p>`,
   };
 
   try {
