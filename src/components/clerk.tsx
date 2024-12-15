@@ -71,7 +71,7 @@ export default function Clerk() {
                 alt={userName!}
                 width={50}
                 height={50}
-                className="rounded-full object-cover size-7 hover:opacity-80 transition-opacity duration-150 active:opacity-60"
+                className="rounded-full object-cover size-7 hover:opacity-80 transition-opacity duration-150 active:opacity-60 mx-4"
               />
             </DropdownMenuTrigger>
             <DropdownMenuContent className="dark:bg-neutral-900 sm:mt-2 rounded-xl mr-2">

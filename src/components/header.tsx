@@ -9,12 +9,7 @@ export default function Header() {
       <div className="flex items-center justify-between py-3 sm:py-6 w-full backdrop-blur-3xl px-6 lg:px-10 2xl:px-16 bg-neutral-950/80 border-b border-neutral-900">
         <div className="flex items-baseline justify-center space-x-10 text-sm tracking-wide">
           <Link href="/" prefetch={true}>
-            <h1 className="text-xl tracking-normal">
-              noos
-              <span className="text-neutral-300 text-xs font-mono pl-2">
-                alpha
-              </span>
-            </h1>
+            <h1 className="text-xl tracking-normal">noos</h1>
           </Link>
           <Link href="/pricing" prefetch={true} className="hidden sm:block">
             <span className="text-neutral-300">Pricing</span>
