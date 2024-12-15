@@ -87,10 +87,13 @@ export async function updateSamplePackAction(
   updateData: UpdateSamplePackActionSchema
 ) {
   try {
-    const { userId } = await auth();
-    if (!userId) throw new Error("User not signed in");
+    const clerkUser = await currentUser();
+    if (!clerkUser || !clerkUser.primaryEmailAddress?.emailAddress) {
+      throw new Error("User not signed in");
+    }
+
     updateSamplePackActionSchema.parse(updateData);
-    const user = await readUser(userId);
+    const user = await readUser(clerkUser.id);
     if (!user) throw new Error("User not found");
     if (user.userName !== updateData.userName) {
       throw new Error("User not authorized");
@@ -108,7 +111,8 @@ export async function updateSamplePackAction(
       userName: updateData.userName,
       samplePackName: updateData.samplePackName,
       stripeConnectedAccountId: user.stripeId,
-      clerkId: userId,
+      clerkId: clerkUser.id,
+      email: clerkUser.primaryEmailAddress.emailAddress,
     });
 
     if (!updatedProduct) throw new Error("Error updating stripe product");
@@ -154,7 +158,7 @@ export async function persistSamplePackDataAction(
 ) {
   try {
     const user = await currentUser();
-    if (!user || !user.username) {
+    if (!user || !user.username || !user.primaryEmailAddress) {
       throw new Error("User not found or username not set");
     }
 
@@ -187,6 +191,7 @@ export async function persistSamplePackDataAction(
       stripeConnectedAccountId: userData.stripeId,
       stripeProductId: stripeProduct.product.id,
       userName: user.username,
+      email: user.primaryEmailAddress.emailAddress,
       key,
     });
 

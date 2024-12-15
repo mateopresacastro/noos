@@ -1,20 +1,33 @@
-import sgMail from "@sendgrid/mail";
 import log from "@/log";
 import { headers } from "next/headers";
 import { createSamplePackDownloadUrl } from "@/aws/mod";
 import { getCustomerData, stripe } from "@/stripe";
 import { STRIPE_WEBHOOK_SECRET } from "@/cfg";
-import type Stripe from "stripe";
 import { increaseTimesSold } from "@/db/mod";
+import {
+  notifySale,
+  sendEmailToCustomer,
+} from "@/app/api/webhooks/stripe/emails";
+
+import type Stripe from "stripe";
 
 async function handleSuccessfulPaymentIntent(
   event: Stripe.PaymentIntentSucceededEvent
 ) {
   const isRealTransaction = event.livemode === true;
-  if (!isRealTransaction) await log.info("Processing test webhook");
+  if (!isRealTransaction) {
+    await log.info("Processing test webhook");
+  }
+
   const metadata = event.data.object.metadata;
-  if (!metadata || !metadata.s3Key || !metadata.stripeProductId) {
-    throw new Error("Metadata not found. Cannot retrieve sample pack");
+  if (
+    !metadata ||
+    !metadata.s3Key ||
+    !metadata.stripeProductId ||
+    !metadata.ownerUserName ||
+    !metadata.ownerEmail
+  ) {
+    throw new Error("Metadata is not complete");
   }
 
   const paymentIntentId = event.data.object.id;
@@ -32,50 +45,17 @@ async function handleSuccessfulPaymentIntent(
     throw new Error("Customer data not found");
   }
 
-  const { email, name } = customerData;
   const downloadUrl = await createSamplePackDownloadUrl(metadata.s3Key);
   if (!downloadUrl) throw new Error("Error creating download url");
 
-  if (isRealTransaction) {
-    await sendEmail(email, name, downloadUrl);
-  } else {
-    await log.warn("Test webhook, skipping sending email", {
-      email,
-      name,
-      downloadUrl,
-    });
-  }
-  await increaseTimesSold(metadata.stripeProductId);
-
-  if (isRealTransaction) {
-    await log.info(`${name} (${email}) just purchased a sample pack!`);
-  }
-}
-
-async function sendEmail(email: string, name: string, downloadUrl: string) {
-  if (!process.env.SENDGRID_API_KEY) {
-    await log.warn("SENDGRID_API_KEY not set, skipping email");
-    return;
-  }
-
-  sgMail.setApiKey(process.env.SENDGRID_API_KEY);
-  const msg = {
-    to: email,
-    from: "mateopresacastro@gmail.com",
-    subject: "Your sample pack is ready!",
-    text: `Hey ${name}, your sample pack is ready to download at ${downloadUrl}`,
-    html: `<p>Hey ${name}, your sample pack is ready to download at ${downloadUrl}</p>`,
-  };
-
-  try {
-    await sgMail.send(msg);
-  } catch (error) {
-    await log.error(
-      `Error sending email with link to ${email}, ${name}, download url:${downloadUrl}`,
-      error
-    );
-    throw error;
-  }
+  await Promise.all([
+    sendEmailToCustomer(customerData.email, customerData.name, downloadUrl),
+    notifySale(metadata.ownerEmail),
+    increaseTimesSold(metadata.stripeProductId),
+    log.info(
+      `${customerData.name} (${customerData.email}) just purchased a sample pack from ${metadata.ownerUserName}!`
+    ),
+  ]);
 }
 
 export async function POST(req: Request) {
@@ -107,7 +87,9 @@ export async function POST(req: Request) {
 
     return new Response(null, { status: 200 });
   } catch (error) {
-    await log.error("Error handling Stripe webhook:", { error });
+    await log.error("Error handling Stripe webhook:", {
+      error: error instanceof Error ? error.message : error,
+    });
     return new Response(null, { status: 400 });
   }
 }

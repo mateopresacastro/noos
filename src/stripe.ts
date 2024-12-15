@@ -13,6 +13,7 @@ type CreatePaymentLink = {
   stripeConnectedAccountId: string;
   userName: string;
   stripeProductId: string;
+  email?: string;
   key?: string;
 };
 
@@ -22,17 +23,20 @@ export async function createPaymentLink({
   userName,
   stripeProductId,
   key,
+  email,
 }: CreatePaymentLink) {
   try {
     type Metadata = {
       ownerUserName: string;
       stripeProductId: string;
+      ownerEmail?: string;
       s3Key?: string;
     };
 
     const metadata: Metadata = {
       ownerUserName: userName,
       stripeProductId,
+      ownerEmail: email,
     };
 
     // To not reset it when updating the pack
@@ -222,6 +226,7 @@ type UpdateProductData = {
   imgUrl?: string;
   userName: string;
   samplePackName: string;
+  email: string;
   stripeConnectedAccountId: string;
   clerkId: string;
 };
@@ -234,6 +239,7 @@ export async function updateProduct({
   samplePackName,
   stripeConnectedAccountId,
   clerkId,
+  email,
 }: UpdateProductData) {
   try {
     const currentSamplePack = await getSamplePack({ userName, samplePackName });
@@ -266,6 +272,7 @@ export async function updateProduct({
         stripeProductId,
         stripeConnectedAccountId,
         userName,
+        email,
       });
 
       if (!newPaymentLink) throw new Error("Error creating payment link");
