@@ -21,9 +21,10 @@ class Logger {
 
   async #send(prefix: string, message: string, details?: unknown) {
     try {
+      const env = String(process.env.VERCEL_ENV).toUpperCase();
       const fullMessage = details
-        ? `${prefix}${message}\n${this.#formatDetails(details)}`
-        : `${prefix}${message}`;
+        ? `${env} - ${prefix}${message}\n${this.#formatDetails(details)}`
+        : `${env} - ${prefix}${message}`;
 
       await this.#bot.api.sendMessage(this.#chatId, fullMessage);
     } catch (error) {
