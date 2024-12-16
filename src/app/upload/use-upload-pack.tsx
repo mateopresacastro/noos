@@ -26,8 +26,8 @@ export function useUploadPack({
   } = useMutation({
     mutationFn: async () => {
       const [imageHash, zipHash, ...samplesHashes] = await Promise.all([
-        md5(formValues.zipFile),
         md5(formValues.img),
+        md5(formValues.zipFile),
         ...formValues.samples.map((sample) => md5(sample.file)),
       ]);
 
