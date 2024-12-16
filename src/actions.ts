@@ -251,18 +251,15 @@ export async function createPreSignedUrlAction(numOfSamples: number) {
       );
     }
 
-    // TODO optimize this
-    const zipFileSignedUrl = await createPresignedUrl({
+    const zipFileSignedUrlPromise = createPresignedUrl({
       bucketName: AWS_PRIVATE_BUCKET_NAME,
       fileType: "zip",
     });
-    if (!zipFileSignedUrl) throw new Error("Error creating zip signed URL");
 
-    const imageSignedUrl = await createPresignedUrl({
+    const imageSignedUrlPromise = createPresignedUrl({
       bucketName: AWS_PUBLIC_BUCKET_NAME,
       fileType: "image",
     });
-    if (!imageSignedUrl) throw new Error("Error creating image signed URL");
 
     const samplesSignedUrlsPromises = new Array(numOfSamples)
       .fill(null)
@@ -273,26 +270,12 @@ export async function createPreSignedUrlAction(numOfSamples: number) {
         })
       );
 
-    const samplesSignedUrlsSettled = await Promise.allSettled(
-      samplesSignedUrlsPromises
-    );
-
-    if (
-      samplesSignedUrlsSettled.some(
-        (result) => result.status === "rejected" || !result.value
-      )
-    ) {
-      throw new Error("Error creating samples signed URLs");
-    }
-
-    const samplesSignedUrls = samplesSignedUrlsSettled
-      .filter(
-        (
-          result
-        ): result is PromiseFulfilledResult<{ url: string; key: string }> =>
-          result.status === "fulfilled"
-      )
-      .map((result) => result.value);
+    const [zipFileSignedUrl, imageSignedUrl, ...samplesSignedUrls] =
+      await Promise.all([
+        zipFileSignedUrlPromise,
+        imageSignedUrlPromise,
+        ...samplesSignedUrlsPromises,
+      ]);
 
     return {
       zipFileSignedUrl,
