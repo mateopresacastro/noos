@@ -1,11 +1,10 @@
 "use client";
 
 import useMeasure from "react-use-measure";
-import StepInfoAndControls from "@/components/upload/info-and-controls";
 import { Form } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useUploadPack } from "@/hooks/upload-pack";
+import { useUploadPack } from "@/app/upload/use-upload-pack";
 import { container, item } from "@/anim";
 import { useMemo, useState } from "react";
 import { AnimatePresence, motion, MotionConfig } from "motion/react";
@@ -13,7 +12,9 @@ import { AnimatePresence, motion, MotionConfig } from "motion/react";
 import {
   uploadFormSchema,
   type UploadFormSchema,
-} from "@/components/upload-form-schema";
+} from "@/app/upload/upload-form-schema";
+
+import StepInfoAndControls from "@/app/upload/_components/info-and-controls";
 
 import {
   StepFive,
@@ -22,7 +23,7 @@ import {
   StepSix,
   StepThree,
   StepTwo,
-} from "@/components/upload/steps/mod";
+} from "@/app/upload/_components/steps/mod";
 
 const VARIANTS = {
   initial: (direction: number) => ({ x: `${110 * direction}%`, opacity: 0 }),

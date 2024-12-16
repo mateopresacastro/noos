@@ -240,59 +240,60 @@ export async function persistSamplePackDataAction(
   }
 }
 
-export async function createPreSignedUrlAction(numOfSamples: number) {
+const fileDataSchema = z.object({
+  hash: z.string(),
+  fileType: z.string(),
+});
+
+const createPresignedUrlActionSchema = z.object({
+  img: fileDataSchema,
+  zip: fileDataSchema,
+  samples: z.array(fileDataSchema),
+});
+
+type CreatePreSignedUrlActionSchema = z.infer<
+  typeof createPresignedUrlActionSchema
+>;
+
+export async function createPreSignedUrlAction({
+  img,
+  zip,
+  samples,
+}: CreatePreSignedUrlActionSchema) {
   try {
     const user = await currentUser();
     if (!user) throw new Error();
+    createPresignedUrlActionSchema.parse({ img, zip, samples });
 
-    if (!numOfSamples || typeof numOfSamples !== "number") {
-      throw new TypeError(
-        `Invalid number of samples. Expected a number, got: ${numOfSamples}`
-      );
-    }
-
-    // TODO optimize this
-    const zipFileSignedUrl = await createPresignedUrl({
+    const zipFileSignedUrlPromise = createPresignedUrl({
       bucketName: AWS_PRIVATE_BUCKET_NAME,
-      fileType: "zip",
+      type: "zip",
+      hash: zip.hash,
+      fileType: zip.fileType,
     });
-    if (!zipFileSignedUrl) throw new Error("Error creating zip signed URL");
 
-    const imageSignedUrl = await createPresignedUrl({
+    const imageSignedUrlPromise = createPresignedUrl({
       bucketName: AWS_PUBLIC_BUCKET_NAME,
-      fileType: "image",
+      type: "image",
+      hash: img.hash,
+      fileType: img.fileType,
     });
-    if (!imageSignedUrl) throw new Error("Error creating image signed URL");
 
-    const samplesSignedUrlsPromises = new Array(numOfSamples)
-      .fill(null)
-      .map(() =>
-        createPresignedUrl({
-          bucketName: AWS_PUBLIC_BUCKET_NAME,
-          fileType: "samples",
-        })
-      );
-
-    const samplesSignedUrlsSettled = await Promise.allSettled(
-      samplesSignedUrlsPromises
+    const samplesSignedUrlsPromises = samples.map(({ hash, fileType }) =>
+      createPresignedUrl({
+        bucketName: AWS_PUBLIC_BUCKET_NAME,
+        type: "samples",
+        hash,
+        fileType,
+      })
     );
 
-    if (
-      samplesSignedUrlsSettled.some(
-        (result) => result.status === "rejected" || !result.value
-      )
-    ) {
-      throw new Error("Error creating samples signed URLs");
-    }
-
-    const samplesSignedUrls = samplesSignedUrlsSettled
-      .filter(
-        (
-          result
-        ): result is PromiseFulfilledResult<{ url: string; key: string }> =>
-          result.status === "fulfilled"
-      )
-      .map((result) => result.value);
+    const [zipFileSignedUrl, imageSignedUrl, ...samplesSignedUrls] =
+      await Promise.all([
+        zipFileSignedUrlPromise,
+        imageSignedUrlPromise,
+        ...samplesSignedUrlsPromises,
+      ]);
 
     return {
       zipFileSignedUrl,

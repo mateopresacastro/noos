@@ -2,7 +2,7 @@ import Dropzone from "react-dropzone";
 import { FormField, FormItem, FormControl } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 
-import type { UploadFormSchema } from "@/components/upload-form-schema";
+import type { UploadFormSchema } from "@/app/upload/upload-form-schema";
 import type { Dispatch, SetStateAction } from "react";
 import type { UseFormReturn } from "react-hook-form";
 

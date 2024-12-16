@@ -1,6 +1,6 @@
 "use client";
 
-import { UploadToS3Data, handleUploadToS3 } from "@/aws/upload";
+import { UploadToS3Data, handleUploadToS3 } from "@/app/upload/upload";
 import { createSamplePackName, getAudioDuration, isDev } from "@/utils";
 import { useMutation } from "@tanstack/react-query";
 import {
@@ -9,7 +9,8 @@ import {
   updateUserUsedStorageAction,
 } from "@/actions";
 
-import type { UploadFormSchema } from "@/components/upload-form-schema";
+import type { UploadFormSchema } from "@/app/upload/upload-form-schema";
+import { md5 } from "@/app/upload/md5";
 
 type PreSignedUrls = Awaited<ReturnType<typeof createPreSignedUrlAction>>;
 
@@ -23,8 +24,24 @@ export function useUploadPack({
     data: preSignedUrls,
     isPending: isCreatingPresignedUrls,
   } = useMutation({
-    mutationFn: async () =>
-      await createPreSignedUrlAction(formValues.samples?.length),
+    mutationFn: async () => {
+      const [imageHash, zipHash, ...samplesHashes] = await Promise.all([
+        md5(formValues.zipFile),
+        md5(formValues.img),
+        ...formValues.samples.map((sample) => md5(sample.file)),
+      ]);
+
+      const data = {
+        img: { hash: imageHash, fileType: formValues.img.type },
+        zip: { hash: zipHash, fileType: formValues.zipFile.type },
+        samples: samplesHashes.map((hash, index) => ({
+          hash,
+          fileType: formValues.samples[index].file.type,
+        })),
+      };
+
+      return await createPreSignedUrlAction(data);
+    },
     onSuccess: createSignedUrlsOnSuccess,
   });
 

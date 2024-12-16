@@ -16,7 +16,7 @@ import {
   AnimatePresence,
 } from "framer-motion";
 
-import type { UploadFormSchema } from "@/components/upload-form-schema";
+import type { UploadFormSchema } from "@/app/upload/upload-form-schema";
 
 export default function StepTwo({
   form,

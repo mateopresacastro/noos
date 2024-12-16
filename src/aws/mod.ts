@@ -52,28 +52,29 @@ export async function listBuckets() {
 
 export async function createPresignedUrl({
   bucketName,
+  type,
+  hash,
   fileType,
 }: {
   bucketName: string;
-  fileType: "image" | "samples" | "zip";
+  type: "image" | "samples" | "zip";
+  hash: string;
+  fileType: string;
 }) {
-  try {
-    const randomPrefix = crypto.randomBytes(16).toString("hex");
-    const key = `uploads/${fileType}/${randomPrefix}`;
-    const command = new PutObjectCommand({
-      Bucket: bucketName,
-      Key: key,
-    });
+  const randomPrefix = crypto.randomBytes(16).toString("hex");
+  const key = `uploads/${type}/${randomPrefix}`;
+  const command = new PutObjectCommand({
+    Bucket: bucketName,
+    Key: key,
+    ContentMD5: hash,
+    ContentType: fileType,
+  });
 
-    const url = await getSignedUrl(s3, command, {
-      expiresIn: FIVE_MIN_IN_SECONDS,
-    });
+  const url = await getSignedUrl(s3, command, {
+    expiresIn: FIVE_MIN_IN_SECONDS,
+  });
 
-    return { url, key };
-  } catch (error) {
-    await log.error("Error creating presigned URL:", error);
-    return null;
-  }
+  return { url, key };
 }
 
 export async function getObject({

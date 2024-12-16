@@ -4,7 +4,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { Loader, Check } from "lucide-react";
 
 import type { UseFormReturn } from "react-hook-form";
-import type { UploadFormSchema } from "@/components/upload-form-schema";
+import type { UploadFormSchema } from "@/app/upload/upload-form-schema";
 
 export default function StepSix({
   form,
