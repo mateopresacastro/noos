@@ -2,7 +2,7 @@ import NumberFlow from "@number-flow/react";
 import { cn } from "@/utils";
 import { Button } from "@/components/ui/button";
 import { UseFormReturn } from "react-hook-form";
-import { UploadFormSchema } from "@/components/upload-form-schema";
+import { UploadFormSchema } from "@/app/upload/upload-form-schema";
 import { ArrowLeft, Loader, ArrowRight } from "lucide-react";
 
 import type { Dispatch, SetStateAction } from "react";

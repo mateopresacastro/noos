@@ -1,5 +1,7 @@
 "use client";
 
+import { md5 } from "@/app/upload/md5";
+
 export type UploadToS3Data = {
   zipFileSignedUrl: string;
   zipFile: File;
@@ -37,11 +39,13 @@ export async function handleUploadToS3({
 }
 
 async function uploadFile(url: string, file: File) {
+  const hash = await md5(file);
   const response = await fetch(url, {
     method: "PUT",
     body: file,
     headers: {
       "Content-Type": file.type,
+      "Content-MD5": hash,
     },
   });
 

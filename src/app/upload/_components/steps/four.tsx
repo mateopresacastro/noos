@@ -9,7 +9,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 
-import type { UploadFormSchema } from "@/components/upload-form-schema";
+import type { UploadFormSchema } from "@/app/upload/upload-form-schema";
 import type { UseFormReturn } from "react-hook-form";
 import { Textarea } from "@/components/ui/textarea";
 

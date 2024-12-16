@@ -1,4 +1,4 @@
-import UploadPage from "@/components/upload/multi-step";
+import UploadPage from "@/app/upload/_components/multi-step";
 import { STORAGE_LIMIT_50_GB_IN_BYTES } from "@/consts";
 import { doesUserHaveStripeAccount, getUserUsedStorage } from "@/db/mod";
 import { hasRequirementsDue } from "@/stripe";
