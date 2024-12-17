@@ -651,3 +651,28 @@ export async function searchSample(q: string, limit = 10) {
     });
   }
 }
+
+export async function getAllUsersData() {
+  try {
+    const result = await prisma.user.findMany({
+      select: {
+        userName: true,
+        createdAt: true,
+        samplePacks: {
+          select: {
+            name: true,
+            createdAt: true,
+          },
+        },
+      },
+    });
+
+    return result;
+  } catch (error) {
+    await log.error("Error getting all users data", {
+      error,
+    });
+  }
+
+  return null;
+}
