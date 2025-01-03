@@ -37,7 +37,7 @@ export default function Pricing() {
       variants={container}
       initial="hidden"
       animate="show"
-      className="flex flex-col items-center justify-center h-screen will-change-transform"
+      className="flex flex-col items-center justify-start h-screen my-50 will-change-transform mt-32 mx-auto"
     >
       <div className="flex flex-col items-center justify-start">
         <motion.h4

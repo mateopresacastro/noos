@@ -33,7 +33,7 @@ export default function Clerk() {
   }
 
   return (
-    <>
+    <div className="hidden sm:block">
       <SignedOut>
         <div className="flex justify-around items-center gap-4">
           <SignInButton>
@@ -104,6 +104,6 @@ export default function Clerk() {
           </DropdownMenu>
         </div>
       </SignedIn>
-    </>
+    </div>
   );
 }

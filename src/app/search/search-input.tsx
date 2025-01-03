@@ -21,7 +21,7 @@ export default function SearchInput() {
 
   return (
     <Input
-      className="w-full max-w-80 bg-neutral-900 rounded-full mx-10"
+      className="w-full max-w-80 bg-neutral-900 rounded-full mx-auto"
       onChange={(e) => {
         handleSearch(e.target.value);
       }}
