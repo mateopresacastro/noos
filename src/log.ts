@@ -37,10 +37,27 @@ class Logger {
       return details.message;
     }
 
-    try {
-      return JSON.stringify(details, null, 2);
-    } catch {
+    if (details == null) {
       return String(details);
+    }
+
+    try {
+      if (typeof details === "object") {
+        return JSON.stringify(
+          details,
+          (_, value) => {
+            if (typeof value === "bigint") {
+              return value.toString();
+            }
+            return value;
+          },
+          2
+        );
+      }
+
+      return String(details);
+    } catch (error) {
+      return `[Unable to stringify: ${String(error)}]`;
     }
   }
 
