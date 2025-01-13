@@ -59,8 +59,10 @@ export async function createSamplePack({
       },
     });
 
-    await log.info("Sample pack created", samplePack);
-
+    await log.info(
+      `Sample pack created by user with ID: ${user.id}`,
+      samplePack
+    );
     return samplePack;
   } catch (error) {
     await log.error("Error creating sample pack", { error });
