@@ -1,3 +1,5 @@
+import { AnimationGeneratorType } from "framer-motion";
+
 export const container = {
   show: {
     transition: {
@@ -17,7 +19,7 @@ export const item = {
     y: 0,
     filter: "blur(0px)",
     transition: {
-      type: "spring",
+      type: "spring" as AnimationGeneratorType,
       duration: 0.6,
       filter: {
         bounce: 0,

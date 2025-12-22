@@ -1,10 +1,10 @@
 services:
   db:
-    image: postgres:latest
+    image: postgres:17
     command: postgres -c 'max_connections=1000'
     restart: always
     environment:
-      POSTGRES_USER: yourusername
+      POSTGRES_USER: postgres
       POSTGRES_PASSWORD: yourpassword
       POSTGRES_DB: yourdatabase
     ports:
