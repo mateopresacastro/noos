@@ -19,8 +19,8 @@ jobs:
       CLERK_SECRET_KEY: ${{secrets.CLERK_SECRET_KEY}}
       CLERK_TEST_USER_EMAIL: ${{secrets.CLERK_TEST_USER_EMAIL}}
       CLERK_TEST_USERNAME: ${{secrets.CLERK_TEST_USERNAME}}
-      DATABASE_URL: postgresql://yourusername:yourpassword@localhost:5432/yourdatabase
-      DIRECT_URL: postgresql://yourusername:yourpassword@localhost:5432/yourdatabase
+      DATABASE_URL: postgresql://postgres:yourpassword@localhost:5432/yourdatabase
+      DIRECT_URL: postgresql://postgres:yourpassword@localhost:5432/yourdatabase
       CLERK_WEBHOOK_SECRET: mock-clerk-webhook-secret
       STRIPE_SECRET_KEY: mock-stripe-secret-key
       AWS_REGION: mock-aws-region
